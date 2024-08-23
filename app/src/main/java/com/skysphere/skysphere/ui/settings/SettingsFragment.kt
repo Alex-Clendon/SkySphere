@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.ui.slideshow
+package com.skysphere.skysphere.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.ui.gallery
+package com.skysphere.skysphere.ui.savedLocation
 
 import android.os.Bundle
 import android.view.LayoutInflater

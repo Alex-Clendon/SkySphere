@@ -14,5 +14,6 @@ data class WeatherData(
     val windSpeed: Int,
     val sunrise: Date,
     val sunset: Date,
-    val hourlyForecast: List<HourlyForecast>
+    val hourlyForecast: List<HourlyForecast>,
+    val weatherCode: Int
 )
