@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.skysphere.skysphere.ui.savedLocation.SavedLocationFragment"
+        android:name="com.skysphere.skysphere.ui.location.LocationFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_savedlocation" />
+        tools:layout="@layout/fragment_location" />
 
     <fragment
         android:id="@+id/nav_settings"
