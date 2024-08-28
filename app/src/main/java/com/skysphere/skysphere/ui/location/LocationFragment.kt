@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.ui.slideshow
+package com.skysphere.skysphere.ui.location
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.skysphere.skysphere.databinding.FragmentSettingsBinding
+import com.skysphere.skysphere.databinding.FragmentLocationBinding
 
-class SettingsFragment : Fragment() {
+class LocationFragment : Fragment() {
 
-    private var _binding: FragmentSettingsBinding? = null
+    private var _binding: FragmentLocationBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val settingsViewModel =
-            ViewModelProvider(this).get(SettingsViewModel::class.java)
+        val locationViewModel =
+            ViewModelProvider(this).get(LocationViewModel::class.java)
 
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentLocationBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        settingsViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textLocation
+        locationViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
