@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/action_settings"
+        android:text="@string/settings"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textColor="@color/white"
