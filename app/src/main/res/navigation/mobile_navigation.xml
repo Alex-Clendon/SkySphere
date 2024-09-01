@@ -12,8 +12,8 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.skysphere.skysphere.ui.location.LocationFragment"
+        android:id="@+id/nav_locations"
+        android:name="com.skysphere.skysphere.ui.location.LocationsFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_location" />
 
