@@ -53,5 +53,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
 
 }
