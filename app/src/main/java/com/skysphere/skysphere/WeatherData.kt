@@ -1,19 +1,10 @@
 package com.skysphere.skysphere
 
-import java.util.Date
-
 data class WeatherData(
-//    val location: String,
-//    val date: Date,
-//    val temperatureLow: Int,
-//    val temperatureHigh: Int,
-//    val feelsLikeTemperature: Int,
-//    val condition: String,
-//    val humidity: Int,
-//    val uvIndex: String,
-//    val windSpeed: Int,
-//    val sunrise: Date,
-//    val sunset: Date,
-//    val weatherResponse: List<WeatherResponse>,
-    val weatherCode: Int
+    val hourly: Hourly
+)
+
+data class Hourly(
+    val weather_code: List<Int>,
+    val temperature_2m: List<Double>
 )
