@@ -1,5 +1,7 @@
 package com.skysphere.skysphere
 
+import android.content.pm.PackageManager
+import android.Manifest
 import android.os.Bundle
 import android.view.Menu
 import androidx.activity.enableEdgeToEdge
@@ -12,18 +14,32 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var gpsManager: GPSManager // GPS manager object
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1 // Location permission code
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        gpsManager = GPSManager(this)
+
+        // Check if location permissions are granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        } else {
+            // Permission already granted, start GPS updates
+            gpsManager.startLocationUpdates()
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
@@ -44,5 +60,24 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    // Handle the result of the permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Permission granted, start GPS updates
+                gpsManager.startLocationUpdates()
+            } else {
+                // Permission denied, handle accordingly (show a message to the user or something)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Stop GPS updates to avoid memory leaks
+        gpsManager.stopLocationUpdates()
     }
 }
