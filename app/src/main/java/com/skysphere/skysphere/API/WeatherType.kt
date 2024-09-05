@@ -1,6 +1,7 @@
-package com.skysphere.skysphere
+package com.skysphere.skysphere.API
 
 import androidx.annotation.DrawableRes
+import com.skysphere.skysphere.R
 
 sealed class WeatherType (
     val weatherDesc: String,

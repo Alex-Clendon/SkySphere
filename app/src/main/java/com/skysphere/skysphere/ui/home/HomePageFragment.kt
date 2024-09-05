@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.RetrofitInstance
-import com.skysphere.skysphere.WeatherData
-import com.skysphere.skysphere.WeatherType
+import com.skysphere.skysphere.API.RetrofitInstance
+import com.skysphere.skysphere.API.WeatherData
+import com.skysphere.skysphere.API.WeatherType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

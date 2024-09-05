@@ -1,4 +1,4 @@
-package com.skysphere.skysphere
+package com.skysphere.skysphere.API
 
 import retrofit2.Call
 import retrofit2.http.GET

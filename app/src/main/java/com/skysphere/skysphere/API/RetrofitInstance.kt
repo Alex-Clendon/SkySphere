@@ -1,4 +1,4 @@
-package com.skysphere.skysphere
+package com.skysphere.skysphere.API
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

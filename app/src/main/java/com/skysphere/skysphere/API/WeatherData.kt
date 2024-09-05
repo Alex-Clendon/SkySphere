@@ -1,4 +1,4 @@
-package com.skysphere.skysphere
+package com.skysphere.skysphere.API
 
 data class WeatherData(
     val current: Current
