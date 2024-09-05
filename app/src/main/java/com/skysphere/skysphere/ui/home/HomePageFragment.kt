@@ -28,6 +28,7 @@ import java.util.Locale
 
 class HomePageFragment : Fragment() {
 
+    // Declare the views that have been created in the XML file.
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
     private lateinit var weatherCodeImageView: ImageView
@@ -35,6 +36,7 @@ class HomePageFragment : Fragment() {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
 
+    // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -45,6 +47,7 @@ class HomePageFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // Assign the views to variables declared above.
         dateTextView = view.findViewById(R.id.tvDate)
         locationTextView = view.findViewById(R.id.tvLocation)
         weatherCodeImageView = view.findViewById(R.id.ivWeatherIcon)
@@ -54,12 +57,14 @@ class HomePageFragment : Fragment() {
 
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+        // Call functions that get the current date and location of user.
         getDate()
         getLocation()
 
         return view
     }
 
+    // Get the current date and takes the format that I make.
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDate(){
         val date = LocalDateTime.now()
@@ -68,7 +73,9 @@ class HomePageFragment : Fragment() {
         dateTextView.text = formattedDate
     }
 
+    // Gets the user location by making user accept location permissions
     private fun getLocation(){
+        // This if statement checks if user has granted user location permissions (fine location and coarse location).
         if(ActivityCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -76,6 +83,7 @@ class HomePageFragment : Fragment() {
             requireContext(),
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED){
+            // This statement occurs when permissions haven't been granted, and sends the request to the user.
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
@@ -84,52 +92,60 @@ class HomePageFragment : Fragment() {
             return
         }
 
+        // If the location permission is granted, then it will attempt to get the last location of the user.
         locationClient.lastLocation.addOnSuccessListener { location ->
-            if(location != null){
-                val geocoder = Geocoder(requireContext(),Locale.getDefault())
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+            if(location != null){ // Checks if location is received
+                val geocoder = Geocoder(requireContext(),Locale.getDefault()) // Creates a Geocoder object to get address from current location
+                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Gets the address from the latitude and longitude, and sets the max results of addresses to 1.
                 if(addresses?.isNotEmpty() == true){
                     val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location"
+                    locationTextView.text = address.locality ?: "Uknown Location" // If address is found then it updates the locationTextView with the current location, or "Uknown location".
                 } else {
                     locationTextView.text = "Location Not Available"
                 }
-                getWeatherData(location.latitude, location.longitude)
+                getWeatherData(location.latitude, location.longitude) // Calls the getWeatherData function and parses the users latitude and longitude to get the precise location needed for the API call.
             } else {
                 locationTextView.text = "Location Not Available"
             }
         }
+            // Handles errors when retrieving location.
             .addOnFailureListener { e ->
                 locationTextView.text = "Location Not Available"
             }
     }
 
+    // Used to identify permission request.
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 101
     }
 
+    // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
-        val weatherService = RetrofitInstance.instance
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m")
+        val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+                    // Checks to see if we got a response from the API
                     if (response.isSuccessful) {
 
+                        // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperature = response.body()?.current?.temperature_2m
-
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
+                        // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {
+                        // If data retrieval fails, then notify user.
                         homeTextView.text = "Failed to get data"
                         temperatureTextView.text = "Failed to get data"
                     }
                 }
 
+                // If API response fails, then notify user.
                 override fun onFailure(call: Call<WeatherData>, t: Throwable) {
                     homeTextView.text = "Error: ${t.message}"
                     temperatureTextView.text = "Error: ${t.message}"
@@ -137,6 +153,7 @@ class HomePageFragment : Fragment() {
             })
     }
 
+    // Handles when the user grants or denies location permissions.
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -144,6 +161,7 @@ class HomePageFragment : Fragment() {
     ) {
         when(requestCode){
             LOCATION_PERMISSION_REQUEST_CODE -> {
+                // If user denies then it sends the request again. If user denies again then a message is shown to inform that permissions must be allowed.
                 if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     getLocation()
                 } else {
