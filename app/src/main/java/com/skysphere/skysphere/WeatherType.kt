@@ -117,8 +117,8 @@ sealed class WeatherType (
     )
 
     companion object {
-        fun fromWMO(code: Number): WeatherType {
-            return when(code.toInt()) {
+        fun fromWMO(code: Int?): WeatherType {
+            return when(code) {
                 0 -> ClearSky
                 1 -> MainlyClear
                 2 -> PartlyCloudy

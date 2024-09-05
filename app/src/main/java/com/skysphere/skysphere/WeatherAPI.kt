@@ -9,6 +9,6 @@ interface WeatherAPI {
     fun getWeatherData(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("hourly") hourly: String
+        @Query("current") current: String
     ): Call<WeatherData>
 }

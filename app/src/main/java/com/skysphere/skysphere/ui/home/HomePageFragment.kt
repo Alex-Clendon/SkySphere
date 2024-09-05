@@ -117,16 +117,16 @@ class HomePageFragment : Fragment() {
                     if (response.isSuccessful) {
                         val currentHour = LocalDateTime.now().hour
 
-                        val weatherCode = response.body()?.hourly?.weather_code
-                        val temperature = response.body()?.hourly?.temperature_2m
+                        val weatherCode = response.body()?.current?.weather_code
+                        val temperature = response.body()?.current?.temperature_2m
 
-                        val currentWeatherCode = weatherCode?.get(currentHour) ?: 0
-                        val currentTemperature = temperature?.get(currentHour) ?: 0.0
+                       // val currentWeatherCode = weatherCode?.get(currentHour) ?: 0
+                        //val currentTemperature = temperature?.get(currentHour) ?: 0.0
 
-                        val weatherType = WeatherType.fromWMO(currentWeatherCode)
+                        val weatherType = WeatherType.fromWMO(weatherCode)
 
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        temperatureTextView.text = "${currentTemperature}°C"
+                        temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {
                         homeTextView.text = "Failed to get data"

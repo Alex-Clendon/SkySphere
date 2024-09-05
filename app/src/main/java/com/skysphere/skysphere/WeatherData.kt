@@ -1,10 +1,10 @@
 package com.skysphere.skysphere
 
 data class WeatherData(
-    val hourly: Hourly
+    val current: Current
 )
 
-data class Hourly(
-    val weather_code: List<Int>,
-    val temperature_2m: List<Double>
+data class Current(
+    val weather_code: Int,
+    val temperature_2m: Double
 )
