@@ -1,6 +1,7 @@
-package com.skysphere.skysphere
+package com.skysphere.skysphere.API
 
 import androidx.annotation.DrawableRes
+import com.skysphere.skysphere.R
 
 sealed class WeatherType (
     val weatherDesc: String,
@@ -117,7 +118,7 @@ sealed class WeatherType (
     )
 
     companion object {
-        fun fromWMO(code: Int): WeatherType {
+        fun fromWMO(code: Int?): WeatherType {
             return when(code) {
                 0 -> ClearSky
                 1 -> MainlyClear
