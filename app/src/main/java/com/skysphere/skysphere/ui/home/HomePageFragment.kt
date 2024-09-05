@@ -115,13 +115,9 @@ class HomePageFragment : Fragment() {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
                     if (response.isSuccessful) {
-                        val currentHour = LocalDateTime.now().hour
 
                         val weatherCode = response.body()?.current?.weather_code
                         val temperature = response.body()?.current?.temperature_2m
-
-                       // val currentWeatherCode = weatherCode?.get(currentHour) ?: 0
-                        //val currentTemperature = temperature?.get(currentHour) ?: 0.0
 
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
