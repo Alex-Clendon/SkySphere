@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -68,10 +69,20 @@ class HomePageFragment : Fragment() {
         setCurrentLocationButton = view.findViewById(R.id.currentLocationButton)
 
         setCurrentLocationButton.setOnClickListener {
+            clearCustomLocationPreferences()
             getLocation()
+            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
         }
 
         return view
+    }
+
+    private fun clearCustomLocationPreferences() {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            clear()
+            apply()
+        }
     }
 
     private fun isCustomLocationSet(): Boolean {

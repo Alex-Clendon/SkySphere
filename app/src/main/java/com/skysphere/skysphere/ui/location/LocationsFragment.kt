@@ -88,7 +88,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
             apply() // Save data
         }
 
-        Toast.makeText(requireContext(), "Location Set", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
 
         // Optionally navigate back to the home fragment
         parentFragmentManager.popBackStack()
