@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,6 +23,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
     private var mGoogleMap:GoogleMap? = null
     private lateinit var autocompleteFragment:AutocompleteSupportFragment
+    private lateinit var setLocationButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +37,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
         autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
             override fun onError(p0: Status) {
-                Toast.makeText(requireContext(), "Search Error", Toast.LENGTH_SHORT).show()
+
             }
 
             override fun onPlaceSelected(place: Place) { //Values returned once place is selected
@@ -43,9 +45,12 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                 val id = place.id
                 val latLng = place.latLng
                 zoomIn(latLng)
+                setLocationButton.visibility = View.VISIBLE
             }
 
         })
+
+        setLocationButton = view.findViewById(R.id.btnSetLocation)
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
