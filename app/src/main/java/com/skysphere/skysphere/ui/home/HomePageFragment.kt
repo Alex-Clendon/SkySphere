@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.home
 
 import android.Manifest
+import android.content.Context
 import android.location.Geocoder
 import android.content.pm.PackageManager
 import android.os.Build
@@ -55,9 +56,29 @@ class HomePageFragment : Fragment() {
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         getDate()
-        getLocation()
+        if (isCustomLocationSet()) {
+            getCustomLocationWeather()
+        } else {
+            getLocation() // Get weather based on phone's current location
+        }
 
         return view
+    }
+
+    private fun isCustomLocationSet(): Boolean {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        return sharedPrefs.contains("latitude") && sharedPrefs.contains("longitude")
+    }
+
+    // Get weather for the custom location
+    private fun getCustomLocationWeather() {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
+        val longitude = sharedPrefs.getFloat("longitude", 0f).toDouble()
+        val placeName = sharedPrefs.getString("place_name", "Custom Location")
+
+        locationTextView.text = placeName // Update location text with the custom place name
+        getWeatherData(latitude, longitude) // Get weather data for the custom location
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

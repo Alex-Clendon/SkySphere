@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui.location
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +25,8 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     private var mGoogleMap:GoogleMap? = null
     private lateinit var autocompleteFragment:AutocompleteSupportFragment
     private lateinit var setLocationButton: Button
+    private lateinit var selectedLatLng: LatLng
+    private lateinit var selectedAddress: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,23 +37,28 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
         autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
                 as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
         autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
             override fun onError(p0: Status) {
 
             }
 
             override fun onPlaceSelected(place: Place) { //Values returned once place is selected
-                val add = place.address
-                val id = place.id
-                val latLng = place.latLng
-                zoomIn(latLng)
+                selectedLatLng = place.latLng
+                selectedAddress = place.address
+                zoomIn(selectedLatLng)
                 setLocationButton.visibility = View.VISIBLE
             }
 
         })
 
         setLocationButton = view.findViewById(R.id.btnSetLocation)
+
+        setLocationButton.setOnClickListener {
+            selectedLatLng?.let { latLng ->
+                saveLocation(latLng, selectedAddress)
+            }
+        }
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
@@ -68,5 +76,21 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
 
+    }
+
+    // Use SharedPreferences to save location
+    private fun saveLocation(latLng: LatLng, address: String?) {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            putFloat("latitude", latLng.latitude.toFloat())
+            putFloat("longitude", latLng.longitude.toFloat())
+            putString("place_name", address)
+            apply() // Save data
+        }
+
+        Toast.makeText(requireContext(), "Location Set", Toast.LENGTH_SHORT).show()
+
+        // Optionally navigate back to the home fragment
+        parentFragmentManager.popBackStack()
     }
 }
