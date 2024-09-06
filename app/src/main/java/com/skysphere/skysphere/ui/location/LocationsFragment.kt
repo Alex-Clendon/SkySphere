@@ -38,11 +38,11 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(requireContext(), "Search Error", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onPlaceSelected(place: Place) {
-                val add = place.address //Values returned once place is selected
+            override fun onPlaceSelected(place: Place) { //Values returned once place is selected
+                val add = place.address
                 val id = place.id
                 val latLng = place.latLng
-
+                zoomIn(latLng)
             }
 
         })
@@ -54,7 +54,11 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-
+    private fun zoomIn(latLng: LatLng) //Function to zoom in on map upon selecting a location
+    {
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng, 13f) // 13f -> zoom level
+        mGoogleMap?.animateCamera(newLatLngZoom)
+    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap

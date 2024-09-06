@@ -9,6 +9,6 @@
     <string name="google_map_api_key">AIzaSyB4S_d2HqzbeUQxRLzodOAuLyrNqarEh3k</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Location</string>
+    <string name="menu_locations">Locations</string>
     <string name="menu_settings">Settings</string>
 </resources>
