@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -35,6 +37,7 @@ class HomePageFragment : Fragment() {
     private lateinit var temperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
+    private lateinit var setCurrentLocationButton: ImageButton
 
     private lateinit var locationClient: FusedLocationProviderClient
 
@@ -60,6 +63,12 @@ class HomePageFragment : Fragment() {
             getCustomLocationWeather()
         } else {
             getLocation() // Get weather based on phone's current location
+        }
+
+        setCurrentLocationButton = view.findViewById(R.id.currentLocationButton)
+
+        setCurrentLocationButton.setOnClickListener {
+            getLocation()
         }
 
         return view
