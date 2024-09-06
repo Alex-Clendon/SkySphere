@@ -90,7 +90,7 @@ class HomePageFragment : Fragment() {
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
                 if(addresses?.isNotEmpty() == true){
                     val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location"
+                    locationTextView.text = address.locality ?: "Unknown Location"
                 } else {
                     locationTextView.text = "Location Not Available"
                 }
