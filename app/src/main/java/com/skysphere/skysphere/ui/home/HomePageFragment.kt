@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -25,6 +26,8 @@ import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import android.app.AlertDialog
+
 
 class HomePageFragment : Fragment() {
 
@@ -35,6 +38,14 @@ class HomePageFragment : Fragment() {
     private lateinit var temperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
+
+    private lateinit var showMoreButton: Button
+    private var currentWindSpeed: Double = 0.0
+    private var currentWindDirection: Double = 0.0
+    private var currentWindGusts: Double = 0.0
+
+
+
 
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
@@ -54,6 +65,15 @@ class HomePageFragment : Fragment() {
         temperatureTextView = view.findViewById(R.id.tvTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
+        showMoreButton = view.findViewById(R.id.btnShowMore) // Initialize the button
+
+
+
+        // Button to show wind details in an alert dialog
+        showMoreButton.setOnClickListener {
+            showWindDetailsDialog()
+        }
+
 
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -61,8 +81,30 @@ class HomePageFragment : Fragment() {
         getDate()
         getLocation()
 
+
         return view
     }
+
+    // Wind details in an AlertDialog
+    private fun showWindDetailsDialog() {
+        // Geting wind data directly from the variables set in the getWeatherData() function
+        val windSpeed = currentWindSpeed
+        val windDirection = currentWindDirection
+        val windGusts = currentWindGusts
+
+        val message = """
+        Wind Speed: $windSpeed m/s
+        Wind Direction: $windDirection°
+        Wind Gusts: $windGusts m/s
+    """.trimIndent()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Wind Details")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
 
     // Get the current date and takes the format that I make.
     @RequiresApi(Build.VERSION_CODES.O)
@@ -99,7 +141,7 @@ class HomePageFragment : Fragment() {
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Gets the address from the latitude and longitude, and sets the max results of addresses to 1.
                 if(addresses?.isNotEmpty() == true){
                     val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location" // If address is found then it updates the locationTextView with the current location, or "Uknown location".
+                    locationTextView.text = address.locality ?: "Unknown Location" // If address is found then it updates the locationTextView with the current location, or "Unknown location".
                 } else {
                     locationTextView.text = "Location Not Available"
                 }
@@ -122,7 +164,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "wind_speed_10m,wind_direction_10m,wind_gusts_10m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -133,11 +175,21 @@ class HomePageFragment : Fragment() {
                         val weatherCode = response.body()?.current?.weather_code
                         val temperature = response.body()?.current?.temperature_2m
                         val weatherType = WeatherType.fromWMO(weatherCode)
+                        // Handle hourly wind data (e.g., display the first value or calculate the average)
+                        val windSpeed = response.body()?.hourly?.wind_speed_10m?.get(0) ?: 0.0
+                        val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
+                        val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
+
+                        // Display wind data
+                        currentWindSpeed = windSpeed
+                        currentWindDirection = windDirection
+                        currentWindGusts = windGusts
+
                     } else {
                         // If data retrieval fails, then notify user.
                         homeTextView.text = "Failed to get data"
@@ -171,5 +223,7 @@ class HomePageFragment : Fragment() {
             }
         }
     }
+
+
 
 }
