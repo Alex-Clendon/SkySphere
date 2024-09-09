@@ -13,12 +13,11 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.API.WeatherType
+import com.skysphere.skysphere.GPSManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class HomePageFragment : Fragment() {
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     // Declare the views that have been created in the XML file.
     private lateinit var dateTextView: TextView
@@ -36,8 +35,8 @@ class HomePageFragment : Fragment() {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
 
-    // Declare the location client that uses the user's location.
-    private lateinit var locationClient: FusedLocationProviderClient
+    // Declare the GPS Manager class that uses the user's location.
+    private lateinit var gpsManager: GPSManager
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -55,7 +54,7 @@ class HomePageFragment : Fragment() {
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
-        locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        gpsManager = GPSManager(requireContext())
 
         // Call functions that get the current date and location of user.
         getDate()
@@ -92,26 +91,17 @@ class HomePageFragment : Fragment() {
             return
         }
 
-        // If the location permission is granted, then it will attempt to get the last location of the user.
-        locationClient.lastLocation.addOnSuccessListener { location ->
-            if(location != null){ // Checks if location is received
-                val geocoder = Geocoder(requireContext(),Locale.getDefault()) // Creates a Geocoder object to get address from current location
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Gets the address from the latitude and longitude, and sets the max results of addresses to 1.
-                if(addresses?.isNotEmpty() == true){
-                    val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location" // If address is found then it updates the locationTextView with the current location, or "Uknown location".
-                } else {
-                    locationTextView.text = "Location Not Available"
-                }
-                getWeatherData(location.latitude, location.longitude) // Calls the getWeatherData function and parses the users latitude and longitude to get the precise location needed for the API call.
-            } else {
-                locationTextView.text = "Location Not Available"
-            }
-        }
-            // Handles errors when retrieving location.
-            .addOnFailureListener { e ->
-                locationTextView.text = "Location Not Available"
-            }
+        // If the location permission is granted, then it will attempt to get the last location of the user from GPS Manager.
+        gpsManager.getCurrentLocation(this)
+    }
+
+    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
+        locationTextView.text = locality ?: "Unknown Location"
+        getWeatherData(latitude, longitude)
+    }
+
+    override fun onLocationError(error: String) {
+        locationTextView.text = error
     }
 
     // Used to identify permission request.
