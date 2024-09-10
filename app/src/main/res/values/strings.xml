@@ -9,6 +9,7 @@
     <string name="settings">Settings</string>
     <string name="Temperature">Temperature</string>
     <string name="Celsius">°C</string>
+    <string name="Kelvin">K</string>
     <string name="Fahrenheit">°F</string>
     <string name="Wind_Speed">Wind Speed</string>
     <string name="km_h">Km/h</string>

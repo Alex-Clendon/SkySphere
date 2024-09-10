@@ -2,6 +2,8 @@ package com.skysphere.skysphere.ui.home
 
 import android.Manifest
 import android.location.Geocoder
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -39,6 +41,9 @@ class HomePageFragment : Fragment() {
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
 
+    // Declare the shared preferences that stores the temperature unit
+    private lateinit var sharedPreferences: SharedPreferences
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +61,7 @@ class HomePageFragment : Fragment() {
         homeTextView = view.findViewById(R.id.text_home)
 
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
         // Call functions that get the current date and location of user.
         getDate()
@@ -131,12 +137,24 @@ class HomePageFragment : Fragment() {
 
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
-                        val temperature = response.body()?.current?.temperature_2m
+                        val temperatureCelsius = response.body()?.current?.temperature_2m
                         val weatherType = WeatherType.fromWMO(weatherCode)
+
+                        // Updates the displayed temperature to whichever type the user sets within the settings page
+                        val unit = sharedPreferences.getString("temperature_unit", "Celsius")
+                        val temperature = if (unit == "Celsius") {
+                            temperatureCelsius ?: 0.0
+                        } else if (unit == "Fahrenheit") {
+                            celsiusToFahrenheit(temperatureCelsius ?: 0.0)
+                        } else {
+                            celsiusToKelvin(temperatureCelsius ?: 0.0)
+                        }
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        temperatureTextView.text = "${temperature}°C"
+                        // Changes the metric unit to be display corresponding to the temperature
+                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else if (unit == "Fahrenheit") "°F" else " K"}"
+
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {
                         // If data retrieval fails, then notify user.
@@ -151,6 +169,16 @@ class HomePageFragment : Fragment() {
                     temperatureTextView.text = "Error: ${t.message}"
                 }
             })
+    }
+
+    // Converts the temperature to fahrenheit
+    private fun celsiusToFahrenheit(celsius: Double): Double {
+        return (celsius * (9/5)) + 32
+    }
+
+    // Converts the temperature to kelvin
+    private fun celsiusToKelvin(celsius: Double): Double {
+        return celsius + 273.15
     }
 
     // Handles when the user grants or denies location permissions.
