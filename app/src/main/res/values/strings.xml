@@ -8,6 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="settings">Settings</string>
     <string name="Temperature">Temperature</string>
+    <string name="Temp_Details">Temperature Details</string>
     <string name="Celsius">°C</string>
     <string name="Kelvin">K</string>
     <string name="Fahrenheit">°F</string>
