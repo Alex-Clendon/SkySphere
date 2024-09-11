@@ -34,7 +34,6 @@ class SettingsFragment : Fragment()
         // Assigning the buttons to their corresponding variables declared above
         val cButton: Button = view.findViewById(R.id.Celsius)
         val fButton: Button = view.findViewById(R.id.Fahrenheit)
-        val kButton: Button = view.findViewById(R.id.Kelvin)
 
         // Assigning the views to their corresponding variables declared above
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
