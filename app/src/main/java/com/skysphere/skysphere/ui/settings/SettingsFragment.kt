@@ -16,6 +16,8 @@ class SettingsFragment : Fragment()
     // Initializing variables to store user temperature metric unit preferences
     private lateinit var sharedPreferences: SharedPreferences
     private val temperatureUnitKey = "temperature_unit"
+
+    // Declared the views that have been created in the XML files
     private lateinit var temperatureUnitTextView: TextView
 
     override fun onCreateView(
