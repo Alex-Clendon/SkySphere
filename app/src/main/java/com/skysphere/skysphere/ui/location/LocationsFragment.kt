@@ -22,8 +22,9 @@ import com.skysphere.skysphere.R
 
 class LocationsFragment : Fragment(), OnMapReadyCallback {
 
-    private var mGoogleMap:GoogleMap? = null
-    private lateinit var autocompleteFragment:AutocompleteSupportFragment
+    // Initialize necessary variables
+    private var mGoogleMap:GoogleMap? = null // Google map object from Google API
+    private lateinit var autocompleteFragment:AutocompleteSupportFragment // Autocomplete object from Google API
     private lateinit var setLocationButton: Button
     private lateinit var selectedLatLng: LatLng
     private lateinit var selectedAddress: String
@@ -37,17 +38,17 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
         autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
                 as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG)) // Decide the variables returned on selection
         autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
             override fun onError(p0: Status) {
-
+                // Error handling
             }
 
-            override fun onPlaceSelected(place: Place) { //Values returned once place is selected
+            override fun onPlaceSelected(place: Place) { // Set variables once place has been selected
                 selectedLatLng = place.latLng
                 selectedAddress = place.address
-                zoomIn(selectedLatLng)
-                setLocationButton.visibility = View.VISIBLE
+                zoomIn(selectedLatLng) // Zoom in to selected location
+                setLocationButton.visibility = View.VISIBLE // Make button visible only when place has been selected
             }
 
         })
@@ -56,7 +57,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
         setLocationButton.setOnClickListener {
             selectedLatLng?.let { latLng ->
-                saveLocation(latLng, selectedAddress)
+                saveLocation(latLng, selectedAddress) // Save the chosen location to preferences
             }
         }
 
@@ -90,7 +91,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
         Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
 
-        // Optionally navigate back to the home fragment
+        // Navigate back to the home fragment
         parentFragmentManager.popBackStack()
     }
 }
