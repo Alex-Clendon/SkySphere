@@ -13,6 +13,7 @@ import com.skysphere.skysphere.R
 
 class SettingsFragment : Fragment()
 {
+    // Initializing
     private lateinit var sharedPreferences: SharedPreferences
     private val temperatureUnitKey = "temperature_unit"
     private lateinit var temperatureUnitTextView: TextView
@@ -30,8 +31,6 @@ class SettingsFragment : Fragment()
         val kButton: Button = view.findViewById(R.id.Kelvin)
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
 
-        updateTemperatureUnitTextView()
-
         cButton.setOnClickListener {
             saveTemperatureUnit("Celsius")
         }
@@ -44,6 +43,8 @@ class SettingsFragment : Fragment()
             saveTemperatureUnit("Kelvin")
         }
 
+        updateTemperatureUnitTextView()
+
         return view
     }
 
@@ -51,6 +52,8 @@ class SettingsFragment : Fragment()
         val editor = sharedPreferences.edit()
         editor.putString(temperatureUnitKey, unit)
         editor.apply()
+
+        updateTemperatureUnitTextView()
     }
 
     private fun updateTemperatureUnitTextView() {
