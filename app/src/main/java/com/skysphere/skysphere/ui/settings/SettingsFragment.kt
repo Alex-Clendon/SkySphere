@@ -46,9 +46,6 @@ class SettingsFragment : Fragment()
         fButton.setOnClickListener{
             saveTemperatureUnit("Fahrenheit")
         }
-        kButton.setOnClickListener {
-            saveTemperatureUnit("Kelvin")
-        }
 
         // Initializing the TextView Temperature Details with the current temperature unit
         updateTemperatureUnitTextView()
