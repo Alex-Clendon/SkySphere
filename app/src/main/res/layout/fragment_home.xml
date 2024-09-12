@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ScrollView
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.home.HomePageFragment"
-    android:id="@+id/fragment_home">
+    android:id="@+id/fragment_home"
+    android:paddingBottom="28dp">
 
 
     <TextView
@@ -31,10 +42,10 @@
         android:text="Date"
         android:textColor="@color/white"
         android:textSize="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
         app:layout_constraintVertical_bias="0.045" />
 
     <TextView
@@ -50,21 +61,21 @@
         android:autoSizeStepGranularity="2sp"
         android:textColor="@color/white"
         android:textSize="28dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        android:layout_marginTop="48dp"
         app:layout_constraintVertical_bias="0.087" />
 
     <ImageView
         android:id="@+id/ivWeatherIcon"
         android:layout_width="158dp"
         android:layout_height="173dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+        android:layout_marginTop="40dp"
         app:layout_constraintVertical_bias="0.086"
         tools:src="@tools:sample/avatars" />
 
@@ -76,11 +87,11 @@
         android:textColor="@color/white"
         android:textSize="28dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivWeatherIcon"
+        android:layout_marginTop="30dp"
         app:layout_constraintVertical_bias="0.073" />
 
     <TextView
@@ -91,9 +102,8 @@
         android:textColor="@color/white"
         android:textSize="28dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
         app:layout_constraintVertical_bias="0.0" />
@@ -109,4 +119,410 @@
         app:layout_constraintEnd_toStartOf="@+id/tvLocation"
         app:layout_constraintTop_toTopOf="@+id/tvLocation"
         app:tint="@color/white" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="524dp"
+        android:layout_marginEnd="20dp"
+        app:cardBackgroundColor="@color/transparent_blue"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="22dp">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22dp"
+            android:text="Today"
+            android:layout_marginStart="22dp"
+            android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_cloudy"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="55dp"
+            android:textSize="22dp"
+            android:text="11°"
+            android:textColor="@color/white"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="22dp"
+            android:text="8°"
+            android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                android:text="Friday"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_sunny"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_heavysnow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:text="11°"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="8°"
+                android:textColor="@color/white"
+                android:textSize="22dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="120dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="Saturday"
+                android:layout_marginStart="22dp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_sunnycloudy"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:textSize="22dp"
+                android:text="11°"
+                android:textColor="@color/white"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="22dp"
+                android:text="8°"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="170dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="Sunday"
+                android:layout_marginStart="22dp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_rainy"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:textSize="22dp"
+                android:text="11°"
+                android:textColor="@color/white"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="22dp"
+                android:text="8°"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="220dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="Monday"
+                android:layout_marginStart="22dp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_cloudy"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:textSize="22dp"
+                android:text="11°"
+                android:textColor="@color/white"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="22dp"
+                android:text="8°"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="270dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="Tuesday"
+                android:layout_marginStart="22dp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_rainythunder"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:textSize="22dp"
+                android:text="11°"
+                android:textColor="@color/white"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="22dp"
+                android:text="8°"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="320dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22dp"
+                android:text="Wednesday"
+                android:layout_marginStart="22dp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="95dp"
+                android:src="@drawable/ic_cloudy"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="33dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_heavysnow"
+                android:layout_marginStart="5dp"
+                app:layout_constraintVertical_bias="0.086"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="55dp"
+                android:textSize="22dp"
+                android:text="11°"
+                android:textColor="@color/white"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="22dp"
+                android:text="8°"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</LinearLayout>
