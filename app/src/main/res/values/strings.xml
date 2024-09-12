@@ -17,6 +17,7 @@
     <string name="mph">mph</string>
     <string name="Knots">Knots</string>
     <string name="Rainfall">Rainfall</string>
+    <string name="Rainfall_Details">Rainfall Details</string>
     <string name="Millimeters">mm</string>
     <string name="Inches">in</string>
     <string name="Notifications">Notifications</string>
