@@ -35,13 +35,14 @@ class HomePageFragment : Fragment() {
     private lateinit var locationTextView: TextView
     private lateinit var weatherCodeImageView: ImageView
     private lateinit var temperatureTextView: TextView
+    private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
 
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
 
-    // Declare the shared preferences that stores the temperature unit
+    // Declare the shared preferences that stores the metric units
     private lateinit var sharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -57,6 +58,7 @@ class HomePageFragment : Fragment() {
         locationTextView = view.findViewById(R.id.tvLocation)
         weatherCodeImageView = view.findViewById(R.id.ivWeatherIcon)
         temperatureTextView = view.findViewById(R.id.tvTemperature)
+        feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
@@ -138,22 +140,27 @@ class HomePageFragment : Fragment() {
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperatureCelsius = response.body()?.current?.temperature_2m
+                        val feelsLikeTemperatureCelsius = response.body()?.hourly?.apparentTemperature
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
                         // Updates the displayed temperature to whichever type the user sets within the settings page
                         val unit = sharedPreferences.getString("temperature_unit", "Celsius")
                         val temperature = if (unit == "Celsius") {
                             temperatureCelsius ?: 0.0
-                        } else if (unit == "Fahrenheit") {
-                            celsiusToFahrenheit(temperatureCelsius ?: 0.0)
                         } else {
-                            celsiusToKelvin(temperatureCelsius ?: 0.0)
+                            celsiusToFahrenheit(temperatureCelsius ?: 0.0)
+                        }
+                        val feelsLikeTemperature = if (unit == "Celsius") {
+                            feelsLikeTemperatureCelsius ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(feelsLikeTemperatureCelsius ?: 0.0)
                         }
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
-                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else if (unit == "Fahrenheit") "°F" else " K"}"
+                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else "°F"}"
+                        feelsLikeTemperatureTextView.text = "${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°C" else "°F"}"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {
@@ -174,11 +181,6 @@ class HomePageFragment : Fragment() {
     // Converts the temperature to fahrenheit
     private fun celsiusToFahrenheit(celsius: Double): Double {
         return (celsius * (9.0/5.0)) + 32
-    }
-
-    // Converts the temperature to kelvin
-    private fun celsiusToKelvin(celsius: Double): Double {
-        return celsius + 273.15
     }
 
     // Handles when the user grants or denies location permissions.
