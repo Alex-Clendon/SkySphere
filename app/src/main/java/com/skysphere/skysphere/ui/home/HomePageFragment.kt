@@ -130,7 +130,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "apparent_temperature") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -140,7 +140,8 @@ class HomePageFragment : Fragment() {
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperatureCelsius = response.body()?.current?.temperature_2m
-                        val feelsLikeTemperatureCelsius = response.body()?.hourly?.apparentTemperature
+                        val feelsLikeTemperatureList = response.body()?.hourly?.apparent_temperature
+                        val feelsLikeTemperatureCelsius = feelsLikeTemperatureList?.firstOrNull() ?: 0.0
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
                         // Updates the displayed temperature to whichever type the user sets within the settings page
@@ -160,7 +161,7 @@ class HomePageFragment : Fragment() {
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
                         temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else "°F"}"
-                        feelsLikeTemperatureTextView.text = "${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°C" else "°F"}"
+                        feelsLikeTemperatureTextView.text = "Feels like ${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°C" else "°F"}"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {

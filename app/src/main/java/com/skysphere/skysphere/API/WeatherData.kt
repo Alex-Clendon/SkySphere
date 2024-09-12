@@ -12,5 +12,5 @@ data class Current(
 
 data class Hourly(
     val weather_code: Int,
-    val apparentTemperature: Double
+    val apparent_temperature: List<Double>
 )
