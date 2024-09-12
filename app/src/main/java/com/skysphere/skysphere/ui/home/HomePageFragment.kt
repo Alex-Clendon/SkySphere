@@ -144,14 +144,16 @@ class HomePageFragment : Fragment() {
                         val unit = sharedPreferences.getString("temperature_unit", "Celsius")
                         val temperature = if (unit == "Celsius") {
                             temperatureCelsius ?: 0.0
-                        } else {
+                        } else if (unit == "Fahrenheit") {
                             celsiusToFahrenheit(temperatureCelsius ?: 0.0)
+                        } else {
+                            celsiusToKelvin(temperatureCelsius ?: 0.0)
                         }
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
-                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else "°F"}"
+                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else if (unit == "Fahrenheit") "°F" else " K"}"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                     } else {
@@ -172,6 +174,11 @@ class HomePageFragment : Fragment() {
     // Converts the temperature to fahrenheit
     private fun celsiusToFahrenheit(celsius: Double): Double {
         return (celsius * (9.0/5.0)) + 32
+    }
+
+    // Converts the temperature to kelvin
+    private fun celsiusToKelvin(celsius: Double): Double {
+        return celsius + 273.15
     }
 
     // Handles when the user grants or denies location permissions.
