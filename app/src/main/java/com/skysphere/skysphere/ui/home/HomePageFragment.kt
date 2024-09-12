@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.home
 
 import android.Manifest
+import android.content.Context
 import android.location.Geocoder
 import android.content.pm.PackageManager
 import android.os.Build
@@ -8,8 +9,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -35,6 +39,7 @@ class HomePageFragment : Fragment() {
     private lateinit var temperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
+    private lateinit var setCurrentLocationButton: ImageButton
 
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
@@ -57,14 +62,52 @@ class HomePageFragment : Fragment() {
 
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        // Call functions that get the current date and location of user.
+        // Call functions that get the current date and location of the user.
         getDate()
-        getLocation()
+        if (isCustomLocationSet())  // Conditional statement to check if the user has a custom location selected
+        {
+            getCustomLocationWeather()
+        }
+        else {
+            getLocation() // Get weather based on phone's current location
+        }
+
+        setCurrentLocationButton = view.findViewById(R.id.currentLocationButton) // Initialise current location button
+
+        setCurrentLocationButton.setOnClickListener { // Clear custom location preferences and get data from user's current location when clicked.
+            clearCustomLocationPreferences()
+            getLocation()
+            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
+        }
 
         return view
     }
 
-    // Get the current date and takes the format that I make.
+    private fun clearCustomLocationPreferences() { // Clears custom location preferences
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            clear()
+            apply()
+        }
+    }
+
+    private fun isCustomLocationSet(): Boolean { // Check if user has a custom location selected
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        return sharedPrefs.contains("latitude") && sharedPrefs.contains("longitude")
+    }
+
+    // Get weather for the custom location
+    private fun getCustomLocationWeather() {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
+        val longitude = sharedPrefs.getFloat("longitude", 0f).toDouble()
+        val placeName = sharedPrefs.getString("place_name", "Custom Location")
+
+        locationTextView.text = placeName // Update location text with the custom place name
+        getWeatherData(latitude, longitude) // Get weather data for the custom location
+    }
+
+    // Gets the current date and takes the format that I make.
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDate(){
         val date = LocalDateTime.now()
@@ -99,7 +142,7 @@ class HomePageFragment : Fragment() {
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Gets the address from the latitude and longitude, and sets the max results of addresses to 1.
                 if(addresses?.isNotEmpty() == true){
                     val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location" // If address is found then it updates the locationTextView with the current location, or "Uknown location".
+                    locationTextView.text = address.locality ?: "Unknown Location" // If address is found then it updates the locationTextView with the current location, or "Unknown location".
                 } else {
                     locationTextView.text = "Location Not Available"
                 }
