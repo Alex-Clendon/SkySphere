@@ -145,7 +145,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22dp"
+            android:textSize="18dp"
             android:text="Today"
             android:layout_marginStart="22dp"
             android:textColor="@color/white"/>
@@ -203,7 +203,7 @@
                 android:layout_marginStart="22dp"
                 android:text="Friday"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="18dp" />
 
             <ImageView
                 android:layout_width="36dp"
@@ -255,7 +255,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:text="Saturday"
                 android:layout_marginStart="22dp"
                 android:textColor="@color/white"/>
@@ -310,7 +310,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:text="Sunday"
                 android:layout_marginStart="22dp"
                 android:textColor="@color/white"/>
@@ -365,7 +365,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:text="Monday"
                 android:layout_marginStart="22dp"
                 android:textColor="@color/white"/>
@@ -420,7 +420,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:text="Tuesday"
                 android:layout_marginStart="22dp"
                 android:textColor="@color/white"/>
@@ -475,7 +475,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22dp"
+                android:textSize="18dp"
                 android:text="Wednesday"
                 android:layout_marginStart="22dp"
                 android:textColor="@color/white"/>
