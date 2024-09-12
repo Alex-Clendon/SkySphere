@@ -57,10 +57,10 @@ class SettingsFragment : Fragment()
             saveTemperatureUnit("Fahrenheit")
         }
         kilometersPerHourButton.setOnClickListener{
-            saveWindSpeedUnit("Kilometers_per_Hour")
+            saveWindSpeedUnit("Kilometers/Hour")
         }
         milesPerHourButton.setOnClickListener{
-            saveWindSpeedUnit("Miles_per_Hour")
+            saveWindSpeedUnit("Miles/Hour")
         }
         knotsButton.setOnClickListener{
             saveWindSpeedUnit("Knots")
@@ -124,7 +124,7 @@ class SettingsFragment : Fragment()
     // Retrieving the stored preference for wind speed metric unit of the user
     private fun updateWindSpeedUnitTextView() {
         val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val unit = sharedPreferences.getString("wind_speed_unit", "Kilometers_per_Hour") ?: "Kilometers_per_Hour"
+        val unit = sharedPreferences.getString("wind_speed_unit", "Kilometers/Hour") ?: "Kilometers/Hour"
 
         // This sets the TextView for the Wind Speed Details to what it equates and displays it onto the settings page
         windspeedUnitTextView.text = "The wind speed unit is currently set to $unit"
