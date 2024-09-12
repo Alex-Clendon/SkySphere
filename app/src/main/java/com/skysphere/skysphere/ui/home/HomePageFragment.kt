@@ -27,6 +27,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import android.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class HomePageFragment : Fragment() {
@@ -39,12 +41,15 @@ class HomePageFragment : Fragment() {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
 
+    // Declaring the button and the variables that will inside the alertbox.
     private lateinit var showMoreButton: Button
     private var currentWindSpeed: Double = 0.0
     private var currentWindDirection: Double = 0.0
     private var currentWindGusts: Double = 0.0
 
-
+    // Declaring Recyclerview and adapter which will be used to display hourly temperatures
+    private lateinit var hourlyRecyclerView: RecyclerView
+    private lateinit var hourlyAdapter: HourlyTemperatureAdapter
 
 
     // Declare the location client that uses the user's location.
@@ -65,8 +70,15 @@ class HomePageFragment : Fragment() {
         temperatureTextView = view.findViewById(R.id.tvTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
-        showMoreButton = view.findViewById(R.id.btnShowMore) // Initialize the button
 
+        // Initializing the show more details button
+        showMoreButton = view.findViewById(R.id.btnShowMore)
+
+        // Initializing the recyclerview
+        hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
+
+        // Setting a horizontal linearlayoutmanager to arrange items horizontally
+        hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
 
         // Button to show wind details in an alert dialog
@@ -85,9 +97,9 @@ class HomePageFragment : Fragment() {
         return view
     }
 
-    // Wind details in an AlertDialog
+    // The wind details in an AlertDialog
     private fun showWindDetailsDialog() {
-        // Geting wind data directly from the variables set in the getWeatherData() function
+        // Getting wind data directly from the variables set in the getWeatherData() function
         val windSpeed = currentWindSpeed
         val windDirection = currentWindDirection
         val windGusts = currentWindGusts
@@ -164,7 +176,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "wind_speed_10m,wind_direction_10m,wind_gusts_10m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m", 1) // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -179,16 +191,25 @@ class HomePageFragment : Fragment() {
                         val windSpeed = response.body()?.hourly?.wind_speed_10m?.get(0) ?: 0.0
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
+                        // Set up the hourly temperature adapter
+                        val temperatures = response.body()?.hourly?.temperature_2m ?: emptyList()
+
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
 
-                        // Display wind data
+                        // Sets the data retrieved from the API to the variables that will be in the extended views.
                         currentWindSpeed = windSpeed
                         currentWindDirection = windDirection
                         currentWindGusts = windGusts
+
+                        // Creating an adapter with the hourly temperatures and setting it to the recyclerview.
+                        hourlyAdapter = HourlyTemperatureAdapter(temperatures)
+                        hourlyRecyclerView.adapter = hourlyAdapter
+
+
 
                     } else {
                         // If data retrieval fails, then notify user.

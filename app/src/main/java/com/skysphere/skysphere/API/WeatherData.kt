@@ -12,5 +12,8 @@ data class Current(
 data class Hourly(
     val wind_speed_10m: List<Double>,
     val wind_direction_10m: List<Double>,
-    val wind_gusts_10m: List<Double>
+    val wind_gusts_10m: List<Double>,
+    val temperature_2m: List<Double>
+
+
 )
