@@ -12,6 +12,7 @@
     <string name="Celsius">°C</string>
     <string name="Fahrenheit">°F</string>
     <string name="Wind_Speed">Wind Speed</string>
+    <string name="Wind_Speed_Details">Wind Speed Details</string>
     <string name="km_h">Km/h</string>
     <string name="mph">mph</string>
     <string name="Knots">Knots</string>

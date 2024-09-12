@@ -13,9 +13,11 @@ import com.skysphere.skysphere.R
 
 class SettingsFragment : Fragment()
 {
-    // Initializing variables to store user temperature metric unit preferences
+    // Initializing variables to store user preferences
     private lateinit var sharedPreferences: SharedPreferences
     private val temperatureUnitKey = "temperature_unit"
+    private val wind_speedUnitKey = "wind_speed_unit"
+    private val rainfallUnitKey = "rainfall_unit"
 
     // Declared the views that have been created in the XML files
     private lateinit var temperatureUnitTextView: TextView
@@ -32,17 +34,22 @@ class SettingsFragment : Fragment()
         sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
         // Assigning the buttons to their corresponding variables declared above
-        val cButton: Button = view.findViewById(R.id.Celsius)
-        val fButton: Button = view.findViewById(R.id.Fahrenheit)
+        val celsiusButton: Button = view.findViewById(R.id.Celsius)
+        val fahrenheitButton: Button = view.findViewById(R.id.Fahrenheit)
+        val kilometerPerHourButton: Button = view.findViewById(R.id.Km_h)
+        val milesPerHourButton: Button = view.findViewById(R.id.Mph)
+        val knotsButton: Button = view.findViewById(R.id.Knots)
+        val millimetersButton: Button = view.findViewById(R.id.Millimeter)
+        val inchesButton: Button = view.findViewById(R.id.Inches)
 
         // Assigning the views to their corresponding variables declared above
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
 
-        // Setting up the buttons in the settings fragment xml file with their corresponding temperature metric unit
-        cButton.setOnClickListener {
+        // Setting up the buttons in the settings fragment xml file with their corresponding metric unit
+        celsiusButton.setOnClickListener {
             saveTemperatureUnit("Celsius")
         }
-        fButton.setOnClickListener{
+        fahrenheitButton.setOnClickListener{
             saveTemperatureUnit("Fahrenheit")
         }
 
