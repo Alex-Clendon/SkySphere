@@ -26,6 +26,7 @@
     <string name="Rain_Alerts">Rain Alerts</string>
     <string name="Daily_Summary">Daily Summary</string>
     <string name="menu_home">Home</string>
+    <string name="FeelsLikeTemperature">Feels Like Temperature</string>
     <string name="menu_gallery">Location</string>
     <string name="menu_settings">Settings</string>
 </resources>

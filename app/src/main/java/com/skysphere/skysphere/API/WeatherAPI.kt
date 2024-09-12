@@ -11,4 +11,9 @@ interface WeatherAPI {
         @Query("longitude") longitude: Double,
         @Query("current") current: String
     ): Call<WeatherData>
+
+    @GET("&hourly=")
+    fun getWeatherData(
+        @Query("apparent_temperature") apparentTemperature: String
+    ): Call<WeatherData>
 }
