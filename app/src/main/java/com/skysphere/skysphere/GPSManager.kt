@@ -11,6 +11,7 @@ import java.util.Locale
 
 class GPSManager(private val context: Context) {
 
+    // Initialize the FusedLocationProviderClient to get the user's location.
     private var fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
@@ -22,6 +23,8 @@ class GPSManager(private val context: Context) {
 
     // Get the current location of the user, checking for necessary permissions.
     fun getCurrentLocation(callback: GPSManagerCallback) {
+
+        // Check for location permissions.
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -30,10 +33,12 @@ class GPSManager(private val context: Context) {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            // If permissions are not granted, send an error
             callback.onLocationError("Location permissions are not granted.")
             return
         }
 
+        // Use geocoder to return a human readable address for display.
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 // Use Geocoder to get the locality (city/town name).
