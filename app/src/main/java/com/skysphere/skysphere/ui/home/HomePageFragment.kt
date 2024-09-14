@@ -176,7 +176,7 @@ class HomePageFragment : Fragment() {
         getWeatherData(latitude, longitude) // Get weather data for the custom location
     }
 
-    // Instead of taking local time, it now takes the date from the API call and reformats it
+    // Function that takes the date from the API call and reformats it for display
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getDate(dateString: String?) {
         // Parse the input string (formatted as "yyyy-MM-dd" from the API) to a LocalDate object
