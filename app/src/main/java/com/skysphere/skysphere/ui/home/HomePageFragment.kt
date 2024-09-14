@@ -29,6 +29,7 @@ import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class HomePageFragment : Fragment() {
 
@@ -40,6 +41,30 @@ class HomePageFragment : Fragment() {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
     private lateinit var setCurrentLocationButton: ImageButton
+
+    // Weekly Forecast Variables
+    private lateinit var day2TextView: TextView
+    private lateinit var day3TextView: TextView
+    private lateinit var day4TextView: TextView
+    private lateinit var day5TextView: TextView
+    private lateinit var day6TextView: TextView
+    private lateinit var day7TextView: TextView
+
+    private lateinit var day1IconImageView: ImageView
+    private lateinit var day2IconImageView: ImageView
+    private lateinit var day3IconImageView: ImageView
+    private lateinit var day4IconImageView: ImageView
+    private lateinit var day5IconImageView: ImageView
+    private lateinit var day6IconImageView: ImageView
+    private lateinit var day7IconImageView: ImageView
+
+    private lateinit var day1TemperatureTextView: TextView
+    private lateinit var day2TemperatureTextView: TextView
+    private lateinit var day3TemperatureTextView: TextView
+    private lateinit var day4TemperatureTextView: TextView
+    private lateinit var day5TemperatureTextView: TextView
+    private lateinit var day6TemperatureTextView: TextView
+    private lateinit var day7TemperatureTextView: TextView
 
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
@@ -60,6 +85,32 @@ class HomePageFragment : Fragment() {
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
+        // Weekly Forecast variables
+        day2TextView = view.findViewById(R.id.day2_day)
+        day3TextView = view.findViewById(R.id.day3_day)
+        day4TextView = view.findViewById(R.id.day4_day)
+        day5TextView = view.findViewById(R.id.day5_day)
+        day6TextView = view.findViewById(R.id.day6_day)
+        day7TextView = view.findViewById(R.id.day7_day)
+
+        day1IconImageView = view.findViewById(R.id.day1_icon)
+        day2IconImageView = view.findViewById(R.id.day2_icon)
+        day3IconImageView = view.findViewById(R.id.day3_icon)
+        day4IconImageView = view.findViewById(R.id.day4_icon)
+        day5IconImageView = view.findViewById(R.id.day5_icon)
+        day6IconImageView = view.findViewById(R.id.day6_icon)
+        day7IconImageView = view.findViewById(R.id.day7_icon)
+
+        day1TemperatureTextView = view.findViewById(R.id.day1_temp)
+        day2TemperatureTextView = view.findViewById(R.id.day2_temp)
+        day3TemperatureTextView = view.findViewById(R.id.day3_temp)
+        day4TemperatureTextView = view.findViewById(R.id.day4_temp)
+        day5TemperatureTextView = view.findViewById(R.id.day5_temp)
+        day6TemperatureTextView = view.findViewById(R.id.day6_temp)
+        day7TemperatureTextView = view.findViewById(R.id.day7_temp)
+        // End of Weekly Forecast variables
+
+        // Location Client
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         // Call functions that get the current date and location of the user.
@@ -161,7 +212,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code, temperature_2m_max, temperature_2m_min") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -175,22 +226,22 @@ class HomePageFragment : Fragment() {
 
                         // Weekly Forecast Variables
                         // Max Temp
-                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0) ?: 0.0
-                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1) ?: 0.0
-                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2) ?: 0.0
-                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3) ?: 0.0
-                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4) ?: 0.0
-                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5) ?: 0.0
-                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6) ?: 0.0
+                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0)?.roundToInt()
+                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1)?.roundToInt()
+                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2)?.roundToInt()
+                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3)?.roundToInt()
+                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4)?.roundToInt()
+                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5)?.roundToInt()
+                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6)?.roundToInt()
 
                         // Min Temp
-                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0) ?: 0.0
-                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1) ?: 0.0
-                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2) ?: 0.0
-                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3) ?: 0.0
-                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4) ?: 0.0
-                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5) ?: 0.0
-                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6) ?: 0.0
+                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0)?.roundToInt()
+                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1)?.roundToInt()
+                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2)?.roundToInt()
+                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3)?.roundToInt()
+                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4)?.roundToInt()
+                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5)?.roundToInt()
+                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6)?.roundToInt()
 
                         // Weather Code
                         val day1WeatherCode = response.body()?.daily?.weather_code?.get(0) ?: 0
@@ -215,6 +266,26 @@ class HomePageFragment : Fragment() {
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
+
+                        // Set Weekly Forecast data
+                        // Icons
+                        day1IconImageView.setImageResource(day1WeatherType.iconRes)
+                        day2IconImageView.setImageResource(day2WeatherType.iconRes)
+                        day3IconImageView.setImageResource(day3WeatherType.iconRes)
+                        day4IconImageView.setImageResource(day4WeatherType.iconRes)
+                        day5IconImageView.setImageResource(day5WeatherType.iconRes)
+                        day6IconImageView.setImageResource(day6WeatherType.iconRes)
+                        day7IconImageView.setImageResource(day7WeatherType.iconRes)
+
+                        // Temperature Data
+                        day1TemperatureTextView.text = "${day1Max}° ${day1Min}°"
+                        day2TemperatureTextView.text = "${day2Max}°"
+                        day3TemperatureTextView.text = "${day3Max}° ${day3Min}°"
+                        day4TemperatureTextView.text = "${day4Max}° ${day4Min}°"
+                        day5TemperatureTextView.text = "${day5Max}° ${day5Min}°"
+                        day6TemperatureTextView.text = "${day6Max}° ${day6Min}°"
+                        day6TemperatureTextView.text = "${day7Max}° ${day7Min}°"
+
                     } else {
                         homeTextView.text = "Failed to get data"
                         temperatureTextView.text = "Failed to get data"
