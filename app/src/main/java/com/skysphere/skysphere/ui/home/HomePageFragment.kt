@@ -173,6 +173,45 @@ class HomePageFragment : Fragment() {
                         val temperature = response.body()?.current?.temperature_2m
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
+                        // Weekly Forecast Variables
+                        // Max Temp
+                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0) ?: 0.0
+                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1) ?: 0.0
+                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2) ?: 0.0
+                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3) ?: 0.0
+                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4) ?: 0.0
+                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5) ?: 0.0
+                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6) ?: 0.0
+
+                        // Min Temp
+                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0) ?: 0.0
+                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1) ?: 0.0
+                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2) ?: 0.0
+                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3) ?: 0.0
+                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4) ?: 0.0
+                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5) ?: 0.0
+                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6) ?: 0.0
+
+                        // Weather Code
+                        val day1WeatherCode = response.body()?.daily?.weather_code?.get(0) ?: 0
+                        val day2WeatherCode = response.body()?.daily?.weather_code?.get(1) ?: 0
+                        val day3WeatherCode = response.body()?.daily?.weather_code?.get(2) ?: 0
+                        val day4WeatherCode = response.body()?.daily?.weather_code?.get(3) ?: 0
+                        val day5WeatherCode = response.body()?.daily?.weather_code?.get(4) ?: 0
+                        val day6WeatherCode = response.body()?.daily?.weather_code?.get(5) ?: 0
+                        val day7WeatherCode = response.body()?.daily?.weather_code?.get(6) ?: 0
+
+                        // Weather Type
+                        val day1WeatherType = WeatherType.fromWMO(day1WeatherCode)
+                        val day2WeatherType = WeatherType.fromWMO(day2WeatherCode)
+                        val day3WeatherType = WeatherType.fromWMO(day3WeatherCode)
+                        val day4WeatherType = WeatherType.fromWMO(day4WeatherCode)
+                        val day5WeatherType = WeatherType.fromWMO(day5WeatherCode)
+                        val day6WeatherType = WeatherType.fromWMO(day6WeatherCode)
+                        val day7WeatherType = WeatherType.fromWMO(day7WeatherCode)
+
+
+
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°C"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
