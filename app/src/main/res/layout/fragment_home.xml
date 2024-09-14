@@ -57,24 +57,23 @@
         android:text="Location"
         android:autoSizeTextType="uniform"
         android:autoSizeMinTextSize="12sp"
-        android:autoSizeMaxTextSize="28sp"
+        android:autoSizeMaxTextSize="24sp"
         android:autoSizeStepGranularity="2sp"
         android:textColor="@color/white"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDate"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="45dp"
         app:layout_constraintVertical_bias="0.087" />
 
     <ImageView
         android:id="@+id/ivWeatherIcon"
-        android:layout_width="75sp"
-        android:layout_height="70sp"
-        android:layout_marginTop="230dp"
+        android:layout_width="75dp"
+        android:layout_height="80dp"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toEndOf="@id/tvTemperature"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tvTemperature"
         tools:src="@tools:sample/avatars" />
 
     <TextView
