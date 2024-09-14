@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomePageFragment">
 
+    <FrameLayout
+        android:id="@+id/upperRegion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/rvHourlyTemperatures"/>
+
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
@@ -90,16 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/btnShowMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show More Details"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.1"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHourlyTemperatures"

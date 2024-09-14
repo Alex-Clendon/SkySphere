@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -27,6 +26,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import android.app.AlertDialog
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -41,8 +41,10 @@ class HomePageFragment : Fragment() {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
 
-    // Declaring the button and the variables that will inside the alertbox.
-    private lateinit var showMoreButton: Button
+
+
+    // Declaring the clickable upper region and the variables that will inside the alertbox.
+    private lateinit var upperRegion: FrameLayout
     private var currentWindSpeed: Double = 0.0
     private var currentWindDirection: Double = 0.0
     private var currentWindGusts: Double = 0.0
@@ -71,8 +73,8 @@ class HomePageFragment : Fragment() {
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
-        // Initializing the show more details button
-        showMoreButton = view.findViewById(R.id.btnShowMore)
+        // Initializing the show more details functionality
+        upperRegion = view.findViewById(R.id.upperRegion)
 
         // Initializing the recyclerview
         hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
@@ -81,8 +83,8 @@ class HomePageFragment : Fragment() {
         hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
 
-        // Button to show wind details in an alert dialog
-        showMoreButton.setOnClickListener {
+        // Clickable region to show wind details in an alert dialog
+        upperRegion.setOnClickListener {
             showWindDetailsDialog()
         }
 
