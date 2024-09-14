@@ -52,8 +52,8 @@
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="270dp"
-        android:maxHeight="50dp"
+        android:maxWidth="270sp"
+        android:maxHeight="50sp"
         android:text="Location"
         android:autoSizeTextType="uniform"
         android:autoSizeMinTextSize="12sp"
@@ -69,8 +69,8 @@
 
     <ImageView
         android:id="@+id/ivWeatherIcon"
-        android:layout_width="75dp"
-        android:layout_height="70dp"
+        android:layout_width="75sp"
+        android:layout_height="70sp"
         android:layout_marginTop="230dp"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toEndOf="@id/tvTemperature"
