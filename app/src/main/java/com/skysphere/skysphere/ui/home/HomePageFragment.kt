@@ -58,13 +58,21 @@ class HomePageFragment : Fragment() {
     private lateinit var day6IconImageView: ImageView
     private lateinit var day7IconImageView: ImageView
 
-    private lateinit var day1TemperatureTextView: TextView
-    private lateinit var day2TemperatureTextView: TextView
-    private lateinit var day3TemperatureTextView: TextView
-    private lateinit var day4TemperatureTextView: TextView
-    private lateinit var day5TemperatureTextView: TextView
-    private lateinit var day6TemperatureTextView: TextView
-    private lateinit var day7TemperatureTextView: TextView
+    private lateinit var day1MaxTextView: TextView
+    private lateinit var day2MaxTextView: TextView
+    private lateinit var day3MaxTextView: TextView
+    private lateinit var day4MaxTextView: TextView
+    private lateinit var day5MaxTextView: TextView
+    private lateinit var day6MaxTextView: TextView
+    private lateinit var day7MaxTextView: TextView
+
+    private lateinit var day1MinTextView: TextView
+    private lateinit var day2MinTextView: TextView
+    private lateinit var day3MinTextView: TextView
+    private lateinit var day4MinTextView: TextView
+    private lateinit var day5MinTextView: TextView
+    private lateinit var day6MinTextView: TextView
+    private lateinit var day7MinTextView: TextView
 
     // Declare the location client that uses the user's location.
     private lateinit var locationClient: FusedLocationProviderClient
@@ -101,13 +109,21 @@ class HomePageFragment : Fragment() {
         day6IconImageView = view.findViewById(R.id.day6_icon)
         day7IconImageView = view.findViewById(R.id.day7_icon)
 
-        day1TemperatureTextView = view.findViewById(R.id.day1_temp)
-        day2TemperatureTextView = view.findViewById(R.id.day2_temp)
-        day3TemperatureTextView = view.findViewById(R.id.day3_temp)
-        day4TemperatureTextView = view.findViewById(R.id.day4_temp)
-        day5TemperatureTextView = view.findViewById(R.id.day5_temp)
-        day6TemperatureTextView = view.findViewById(R.id.day6_temp)
-        day7TemperatureTextView = view.findViewById(R.id.day7_temp)
+        day1MaxTextView = view.findViewById(R.id.day1_max)
+        day2MaxTextView = view.findViewById(R.id.day2_max)
+        day3MaxTextView = view.findViewById(R.id.day3_max)
+        day4MaxTextView = view.findViewById(R.id.day4_max)
+        day5MaxTextView = view.findViewById(R.id.day5_max)
+        day6MaxTextView = view.findViewById(R.id.day6_max)
+        day7MaxTextView = view.findViewById(R.id.day7_max)
+
+        day1MinTextView = view.findViewById(R.id.day1_min)
+        day2MinTextView = view.findViewById(R.id.day2_min)
+        day3MinTextView = view.findViewById(R.id.day3_min)
+        day4MinTextView = view.findViewById(R.id.day4_min)
+        day5MinTextView = view.findViewById(R.id.day5_min)
+        day6MinTextView = view.findViewById(R.id.day6_min)
+        day7MinTextView = view.findViewById(R.id.day7_min)
         // End of Weekly Forecast variables
 
         // Location Client
@@ -278,13 +294,21 @@ class HomePageFragment : Fragment() {
                         day7IconImageView.setImageResource(day7WeatherType.iconRes)
 
                         // Temperature Data
-                        day1TemperatureTextView.text = "${day1Max}° ${day1Min}°"
-                        day2TemperatureTextView.text = "${day2Max}°"
-                        day3TemperatureTextView.text = "${day3Max}° ${day3Min}°"
-                        day4TemperatureTextView.text = "${day4Max}° ${day4Min}°"
-                        day5TemperatureTextView.text = "${day5Max}° ${day5Min}°"
-                        day6TemperatureTextView.text = "${day6Max}° ${day6Min}°"
-                        day6TemperatureTextView.text = "${day7Max}° ${day7Min}°"
+                        day1MaxTextView.text = "${day1Max}°"
+                        day2MaxTextView.text = "${day2Max}°"
+                        day3MaxTextView.text = "${day3Max}°"
+                        day4MaxTextView.text = "${day4Max}°"
+                        day5MaxTextView.text = "${day5Max}°"
+                        day6MaxTextView.text = "${day6Max}°"
+                        day6MaxTextView.text = "${day7Max}°"
+
+                        day1MinTextView.text = "${day1Min}°"
+                        day2MinTextView.text = "${day2Min}°"
+                        day3MinTextView.text = "${day3Min}°"
+                        day4MinTextView.text = "${day4Min}°"
+                        day5MinTextView.text = "${day5Min}°"
+                        day6MinTextView.text = "${day6Min}°"
+                        day6MinTextView.text = "${day7Min}°"
 
                     } else {
                         homeTextView.text = "Failed to get data"
