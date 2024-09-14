@@ -10,6 +10,7 @@ interface WeatherAPI {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("current") current: String,
-        @Query("daily") daily: String
+        @Query("daily") daily: String,
+        @Query("timezone") timezone: String
     ): Call<WeatherData>
 }

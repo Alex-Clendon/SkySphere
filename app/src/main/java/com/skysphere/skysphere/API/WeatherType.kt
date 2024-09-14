@@ -105,15 +105,15 @@ sealed class WeatherType (
         iconRes = R.drawable.ic_snowy
     )
     object ModerateThunderstorm: WeatherType(
-        weatherDesc = "Moderate Thunderstorm",
+        weatherDesc = "Moderate Thunderstorms",
         iconRes = R.drawable.ic_thunder
     )
     object SlightHailThunderstorm: WeatherType(
-        weatherDesc = "Thunderstorm With Slight Hail",
+        weatherDesc = "Thunderstorms With Slight Hail",
         iconRes = R.drawable.ic_rainythunder
     )
     object HeavyHailThunderstorm: WeatherType(
-        weatherDesc = "Thunderstorm With Heavy Hail",
+        weatherDesc = "Thunderstorms With Heavy Hail",
         iconRes = R.drawable.ic_rainythunder
     )
 

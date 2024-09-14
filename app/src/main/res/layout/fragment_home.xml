@@ -155,7 +155,7 @@
                 android:layout_width="75sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3.6"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:text="Today"
                 android:textColor="@color/white"/>
 
@@ -181,7 +181,7 @@
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/day1_min"
@@ -190,7 +190,7 @@
                     android:text="2°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -210,7 +210,7 @@
                         android:layout_width="75sp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3.6"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="Day 2"
                         android:textColor="@color/white"/>
 
@@ -236,7 +236,7 @@
                         android:text="11°"
                         android:textAlignment="textEnd"
                         android:textColor="@color/white"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/day2_min"
@@ -245,7 +245,7 @@
                         android:text="2°"
                         android:textAlignment="textEnd"
                         android:textColor="@color/white"
-                        android:textSize="22sp" />
+                        android:textSize="20sp" />
 
                 </LinearLayout>
 
@@ -265,7 +265,7 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:text="Day 3"
                     android:textColor="@color/white"/>
 
@@ -291,8 +291,7 @@
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
-
+                    android:textSize="20sp" />
                 <TextView
                     android:id="@+id/day3_min"
                     android:layout_width="40sp"
@@ -300,7 +299,7 @@
                     android:text="2°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -320,7 +319,7 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:text="Day 4"
                     android:textColor="@color/white"/>
 
@@ -346,7 +345,7 @@
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/day4_min"
@@ -355,7 +354,7 @@
                     android:text="2°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -375,7 +374,7 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:text="Day 5"
                     android:textColor="@color/white"/>
 
@@ -401,7 +400,7 @@
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/day5_min"
@@ -410,7 +409,7 @@
                     android:text="2°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -430,7 +429,7 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:text="Day 6"
                     android:textColor="@color/white"/>
 
@@ -456,7 +455,7 @@
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/day6_min"
@@ -465,7 +464,7 @@
                     android:text="2°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -485,7 +484,7 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:text="Day 7"
                     android:textColor="@color/white"/>
 
