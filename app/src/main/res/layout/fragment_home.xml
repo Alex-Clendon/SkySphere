@@ -164,14 +164,13 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -226,7 +225,7 @@
                         android:layout_width="36sp"
                         android:layout_height="33sp"
                         android:paddingStart="5sp"
-                        android:src="@drawable/ic_heavysnow"
+                        android:src="@drawable/night"
                         tools:src="@tools:sample/avatars" />
 
                     <TextView
@@ -281,7 +280,7 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -336,7 +335,7 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -391,7 +390,7 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -446,7 +445,7 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
@@ -494,7 +493,6 @@
                     android:id="@+id/day7_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
                     tools:src="@tools:sample/avatars" />
 
@@ -502,7 +500,7 @@
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     android:paddingStart="5sp"
-                    android:src="@drawable/ic_heavysnow"
+                    android:src="@drawable/night"
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
