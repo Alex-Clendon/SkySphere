@@ -137,387 +137,330 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="22dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:text="Today"
-            android:layout_marginStart="22dp"
-            android:textColor="@color/white"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:paddingStart="22sp"
+                android:textSize="18sp"
+                android:text="Today"
+                android:textColor="@color/white"/>
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_cloudy"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="55dp"
-            android:textSize="22dp"
-            android:text="11°"
-            android:textColor="@color/white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="5"
+                    android:layout_marginBottom="16dp">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:textSize="22dp"
-            android:text="8°"
-            android:textColor="@color/white"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:paddingStart="22sp"
+                        android:textSize="18sp"
+                        android:text="Today"
+                        android:textColor="@color/white"/>
+
+                    <ImageView
+                        android:layout_width="36sp"
+                        android:layout_height="33sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:src="@drawable/ic_cloudy"
+                        app:layout_constraintVertical_bias="0.086"
+                        tools:src="@tools:sample/avatars" />
+
+                    <ImageView
+                        android:layout_width="36sp"
+                        android:layout_height="33sp"
+                        android:paddingStart="5sp"
+                        android:src="@drawable/ic_heavysnow"
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:text="11°8°"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="22sp"
+                    android:textSize="18sp"
+                    android:text="Today"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="22sp"
+                    android:textSize="18sp"
+                    android:text="Today"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="22sp"
+                    android:textSize="18sp"
+                    android:text="Today"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="22sp"
+                    android:textSize="18sp"
+                    android:text="Today"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="5"
+                android:layout_marginBottom="16dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingStart="22sp"
+                    android:textSize="18sp"
+                    android:text="Today"
+                    android:textColor="@color/white"/>
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/ic_cloudy"
+                    app:layout_constraintVertical_bias="0.086"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="36sp"
+                    android:layout_height="33sp"
+                    android:paddingStart="5sp"
+                    android:src="@drawable/ic_heavysnow"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.2"
+                    android:text="11°8°"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:text="Friday"
-                android:textColor="@color/white"
-                android:textSize="18dp" />
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_sunny"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                android:layout_marginStart="5dp"
-                android:src="@drawable/ic_heavysnow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:text="16°"
-                android:textColor="@color/white"
-                android:textSize="22dp" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="9°"
-                android:textColor="@color/white"
-                android:textSize="22dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="120dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Saturday"
-                android:layout_marginStart="22dp"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="65dp"
-                android:src="@drawable/ic_sunnycloudy"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:textSize="22dp"
-                android:text="17°"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textSize="22dp"
-                android:text="10°"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="170dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Sunday"
-                android:layout_marginStart="22dp"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_rainy"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:textSize="22dp"
-                android:text="11°"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textSize="22dp"
-                android:text="8°"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="220dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Monday"
-                android:layout_marginStart="22dp"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_cloudy"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:textSize="22dp"
-                android:text="11°"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textSize="22dp"
-                android:text="8°"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="270dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Tuesday"
-                android:layout_marginStart="22dp"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_rainythunder"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:textSize="22dp"
-                android:text="11°"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textSize="22dp"
-                android:text="8°"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="320dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Wednesday"
-                android:layout_marginStart="22dp"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="95dp"
-                android:src="@drawable/ic_cloudy"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="33dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_heavysnow"
-                android:layout_marginStart="5dp"
-                app:layout_constraintVertical_bias="0.086"
-                tools:src="@tools:sample/avatars" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="55dp"
-                android:textSize="22dp"
-                android:text="11°"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:textSize="22dp"
-                android:text="8°"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
 
 
     </androidx.cardview.widget.CardView>
