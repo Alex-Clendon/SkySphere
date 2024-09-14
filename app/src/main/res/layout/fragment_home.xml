@@ -97,7 +97,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
         app:layout_constraintVertical_bias="0.0" />
-
+  
     <ImageButton
         android:id="@+id/currentLocationButton"
         android:layout_width="wrap_content"
@@ -109,4 +109,5 @@
         app:layout_constraintEnd_toStartOf="@+id/tvLocation"
         app:layout_constraintTop_toTopOf="@+id/tvLocation"
         app:tint="@color/white" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
