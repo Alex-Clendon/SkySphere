@@ -26,8 +26,10 @@ import com.skysphere.skysphere.API.WeatherType
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -277,6 +279,21 @@ class HomePageFragment : Fragment() {
                         val day6WeatherType = WeatherType.fromWMO(day6WeatherCode)
                         val day7WeatherType = WeatherType.fromWMO(day7WeatherCode)
 
+                        //Dates
+                        val day2Date = response.body()?.daily?.time?.get(1)
+                        val day3Date = response.body()?.daily?.time?.get(2)
+                        val day4Date = response.body()?.daily?.time?.get(3)
+                        val day5Date = response.body()?.daily?.time?.get(4)
+                        val day6Date = response.body()?.daily?.time?.get(5)
+                        val day7Date = response.body()?.daily?.time?.get(6)
+
+                        // Parse the dates into the getDayName() function
+                        val day2Name = getDayName(day2Date)
+                        val day3Name = getDayName(day3Date)
+                        val day4Name = getDayName(day4Date)
+                        val day5Name = getDayName(day5Date)
+                        val day6Name = getDayName(day6Date)
+                        val day7Name = getDayName(day7Date)
 
 
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
@@ -284,6 +301,14 @@ class HomePageFragment : Fragment() {
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
 
                         // Set Weekly Forecast data
+                        // Days
+                        day2TextView.text = "${day2Name}"
+                        day3TextView.text = "${day3Name}"
+                        day4TextView.text = "${day4Name}"
+                        day5TextView.text = "${day5Name}"
+                        day6TextView.text = "${day6Name}"
+                        day7TextView.text = "${day7Name}"
+
                         // Icons
                         day1IconImageView.setImageResource(day1WeatherType.iconRes)
                         day2IconImageView.setImageResource(day2WeatherType.iconRes)
@@ -322,6 +347,21 @@ class HomePageFragment : Fragment() {
                     temperatureTextView.text = "Error: ${t.message}"
                 }
             })
+    }
+
+    // Function to convert date string into day name
+    fun getDayName(dateString: String?): String {
+        return try {
+            // Parse the date string (The format from the API doc is "yyyy-MM-dd")
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
+
+            // Format the date to get the day name
+            val outputFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+            outputFormat.format(date ?: Date())
+        } catch (e: Exception) {
+            "Unknown"
+        }
     }
 
     // Handles when the user grants or denies location permissions.

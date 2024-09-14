@@ -13,5 +13,6 @@ data class Current(
 data class Daily(
     val weather_code: List<Int>,
     val temperature_2m_max: List<Double>,
-    val temperature_2m_min: List<Double>
+    val temperature_2m_min: List<Double>,
+    val time: List<String>
 )
