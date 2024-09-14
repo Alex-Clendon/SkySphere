@@ -20,7 +20,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.SkySphere.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="NavigationTheme">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+<style name="Theme.SkySphere.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.SkySphere.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
