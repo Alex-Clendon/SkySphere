@@ -163,8 +163,6 @@
                     android:id="@+id/day1_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
                     app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
@@ -221,10 +219,7 @@
                         android:id="@+id/day2_icon"
                         android:layout_width="36sp"
                         android:layout_height="33sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         android:src="@drawable/ic_cloudy"
-                        app:layout_constraintVertical_bias="0.086"
                         tools:src="@tools:sample/avatars" />
 
                     <ImageView
@@ -279,10 +274,7 @@
                     android:id="@+id/day3_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
@@ -337,10 +329,7 @@
                     android:id="@+id/day4_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
@@ -395,10 +384,7 @@
                     android:id="@+id/day5_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
@@ -453,10 +439,7 @@
                     android:id="@+id/day6_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
@@ -511,10 +494,8 @@
                     android:id="@+id/day7_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/ic_cloudy"
-                    app:layout_constraintVertical_bias="0.086"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
