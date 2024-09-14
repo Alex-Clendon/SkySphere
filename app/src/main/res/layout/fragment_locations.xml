@@ -40,13 +40,15 @@
         android:id="@+id/btnSetLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:text="Set Location"
-        android:visibility="gone"
+        android:visibility="invisible"
+        android:backgroundTint="@color/gradient_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.926" />
+        app:layout_constraintVertical_bias="0.926"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
