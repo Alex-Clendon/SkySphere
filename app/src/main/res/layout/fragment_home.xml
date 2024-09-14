@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomePageFragment">
+    tools:context=".ui.home.HomePageFragment"
+    android:id="@+id/fragment_home">
+
 
     <TextView
         android:id="@+id/text_home"
@@ -39,7 +41,13 @@
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="300dp"
+        android:maxHeight="50dp"
         android:text="Location"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="28dp"
+        android:autoSizeStepGranularity="2sp"
         android:textColor="@color/white"
         android:textSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,5 +97,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
         app:layout_constraintVertical_bias="0.0" />
+  
+    <ImageButton
+        android:id="@+id/currentLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/locations_24"
+        app:layout_constraintEnd_toStartOf="@+id/tvLocation"
+        app:layout_constraintTop_toTopOf="@+id/tvLocation"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
