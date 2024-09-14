@@ -332,7 +332,7 @@ class HomePageFragment : Fragment() {
                         day4MaxTextView.text = "${day4Max}°"
                         day5MaxTextView.text = "${day5Max}°"
                         day6MaxTextView.text = "${day6Max}°"
-                        day6MaxTextView.text = "${day7Max}°"
+                        day7MaxTextView.text = "${day7Max}°"
 
                         day1MinTextView.text = "${day1Min}°"
                         day2MinTextView.text = "${day2Min}°"
