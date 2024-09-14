@@ -27,6 +27,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -132,7 +133,6 @@ class HomePageFragment : Fragment() {
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         // Call functions that get the current date and location of the user.
-        getDate()
         if (isCustomLocationSet())  // Conditional statement to check if the user has a custom location selected
         {
             getCustomLocationWeather()
@@ -176,12 +176,17 @@ class HomePageFragment : Fragment() {
         getWeatherData(latitude, longitude) // Get weather data for the custom location
     }
 
-    // Gets the current date and takes the format that I make.
+    // Instead of taking local time, it now takes the date from the API call and reformats it
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDate(){
-        val date = LocalDateTime.now()
+    private fun getDate(dateString: String?) {
+        // Parse the input string (formatted as "yyyy-MM-dd" from the API) to a LocalDate object
+        val date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+        // Format the date
         val format = DateTimeFormatter.ofPattern("EEE, dd MMM", Locale.ENGLISH)
         val formattedDate = date.format(format)
+
+        // Set the formatted date to the TextView
         dateTextView.text = formattedDate
     }
 
@@ -230,7 +235,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -280,6 +285,7 @@ class HomePageFragment : Fragment() {
                         val day7WeatherType = WeatherType.fromWMO(day7WeatherCode)
 
                         //Dates
+                        val day1Date = response.body()?.daily?.time?.get(0)
                         val day2Date = response.body()?.daily?.time?.get(1)
                         val day3Date = response.body()?.daily?.time?.get(2)
                         val day4Date = response.body()?.daily?.time?.get(3)
@@ -299,6 +305,7 @@ class HomePageFragment : Fragment() {
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
+                        getDate(day1Date)
 
                         // Set Weekly Forecast data
                         // Days
