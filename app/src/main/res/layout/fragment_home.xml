@@ -69,43 +69,37 @@
 
     <ImageView
         android:id="@+id/ivWeatherIcon"
-        android:layout_width="158dp"
-        android:layout_height="173dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+        android:layout_width="98dp"
+        android:layout_height="96dp"
+        app:layout_constraintStart_toEndOf="@id/tvTemperature"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="250dp"
+        android:layout_marginStart="25dp"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temperature"
+        android:text=""
         android:textColor="@color/white"
-        android:textSize="28sp"
+        android:textSize="90sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivWeatherIcon"
-        android:layout_marginTop="30dp"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="40dp"/>
 
     <TextView
         android:id="@+id/tvWeatherState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Weather State"
+        android:text=""
         android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_marginStart="40dp"/>
 
     <ImageButton
         android:id="@+id/currentLocationButton"
@@ -123,7 +117,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="550dp"
+        android:layout_marginTop="190dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/transparent_blue"
         app:cardCornerRadius="12dp"
@@ -131,7 +125,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toBottomOf="@id/tvWeatherState">
 
         <LinearLayout
             android:layout_width="match_parent"

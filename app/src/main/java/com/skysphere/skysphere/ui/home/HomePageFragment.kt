@@ -295,9 +295,9 @@ class HomePageFragment : Fragment() {
                         val day6Name = getDayName(day6Date)
                         val day7Name = getDayName(day7Date)
 
-
+                        // Set current variables
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        temperatureTextView.text = "${temperature}°C"
+                        temperatureTextView.text = "${temperature}°"
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
 
                         // Set Weekly Forecast data
