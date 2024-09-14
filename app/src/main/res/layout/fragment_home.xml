@@ -145,6 +145,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp">
 
@@ -153,7 +155,6 @@
                 android:layout_width="75sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3.6"
-                android:paddingStart="22sp"
                 android:textSize="18sp"
                 android:text="Today"
                 android:textColor="@color/white"/>
@@ -179,7 +180,7 @@
                     android:id="@+id/day1_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -202,6 +203,8 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:weightSum="5"
+                    android:paddingStart="22sp"
+                    android:paddingEnd="22sp"
                     android:layout_marginBottom="16dp">
 
 
@@ -210,7 +213,6 @@
                         android:layout_width="75sp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3.6"
-                        android:paddingStart="22sp"
                         android:textSize="18sp"
                         android:text="Day 2"
                         android:textColor="@color/white"/>
@@ -236,7 +238,7 @@
                         android:id="@+id/day2_max"
                         android:layout_width="55sp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
+                        android:layout_weight="1.5"
                         android:text="11°"
                         android:textAlignment="textEnd"
                         android:textColor="@color/white"
@@ -259,6 +261,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginBottom="16dp">
 
 
@@ -267,7 +271,6 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:paddingStart="22sp"
                     android:textSize="18sp"
                     android:text="Day 3"
                     android:textColor="@color/white"/>
@@ -293,7 +296,7 @@
                     android:id="@+id/day3_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -316,6 +319,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginBottom="16dp">
 
 
@@ -324,7 +329,6 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:paddingStart="22sp"
                     android:textSize="18sp"
                     android:text="Day 4"
                     android:textColor="@color/white"/>
@@ -350,7 +354,7 @@
                     android:id="@+id/day4_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -373,6 +377,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginBottom="16dp">
 
 
@@ -381,7 +387,6 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:paddingStart="22sp"
                     android:textSize="18sp"
                     android:text="Day 5"
                     android:textColor="@color/white"/>
@@ -407,7 +412,7 @@
                     android:id="@+id/day5_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -430,6 +435,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginBottom="16dp">
 
 
@@ -438,7 +445,6 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:paddingStart="22sp"
                     android:textSize="18sp"
                     android:text="Day 6"
                     android:textColor="@color/white"/>
@@ -464,7 +470,7 @@
                     android:id="@+id/day6_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"
@@ -487,6 +493,8 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:weightSum="5"
+                android:paddingStart="22sp"
+                android:paddingEnd="22sp"
                 android:layout_marginBottom="16dp">
 
 
@@ -495,7 +503,6 @@
                     android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3.6"
-                    android:paddingStart="22sp"
                     android:textSize="18sp"
                     android:text="Day 7"
                     android:textColor="@color/white"/>
@@ -521,7 +528,7 @@
                     android:id="@+id/day7_max"
                     android:layout_width="55sp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1.5"
                     android:text="11°"
                     android:textAlignment="textEnd"
                     android:textColor="@color/white"

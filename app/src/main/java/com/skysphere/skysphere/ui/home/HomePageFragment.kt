@@ -308,7 +308,7 @@ class HomePageFragment : Fragment() {
                         day4MinTextView.text = "${day4Min}°"
                         day5MinTextView.text = "${day5Min}°"
                         day6MinTextView.text = "${day6Min}°"
-                        day6MinTextView.text = "${day7Min}°"
+                        day7MinTextView.text = "${day7Min}°"
 
                     } else {
                         homeTextView.text = "Failed to get data"
