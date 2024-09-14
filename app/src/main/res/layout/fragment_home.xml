@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:text="Date"
         android:textColor="@color/white"
-        android:textSize="24dp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -57,10 +57,10 @@
         android:text="Location"
         android:autoSizeTextType="uniform"
         android:autoSizeMinTextSize="12sp"
-        android:autoSizeMaxTextSize="28dp"
+        android:autoSizeMaxTextSize="28sp"
         android:autoSizeStepGranularity="2sp"
         android:textColor="@color/white"
-        android:textSize="28dp"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDate"
@@ -71,12 +71,11 @@
         android:id="@+id/ivWeatherIcon"
         android:layout_width="158dp"
         android:layout_height="173dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation"
-        android:layout_marginTop="40dp"
-        app:layout_constraintVertical_bias="0.086"
         tools:src="@tools:sample/avatars" />
 
     <TextView
@@ -85,7 +84,7 @@
         android:layout_height="wrap_content"
         android:text="Temperature"
         android:textColor="@color/white"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -100,7 +99,7 @@
         android:layout_height="wrap_content"
         android:text="Weather State"
         android:textColor="@color/white"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -124,7 +123,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="524dp"
+        android:layout_marginTop="550dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/transparent_blue"
         app:cardCornerRadius="12dp"
@@ -151,7 +150,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="75sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:paddingStart="22sp"
@@ -160,6 +159,7 @@
                 android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day1_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -176,6 +176,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day1_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
@@ -196,15 +197,17 @@
 
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/day2_day"
+                        android:layout_width="75sp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:paddingStart="22sp"
                         android:textSize="18sp"
-                        android:text="Today"
+                        android:text="Day 2"
                         android:textColor="@color/white"/>
 
                     <ImageView
+                        android:id="@+id/day2_icon"
                         android:layout_width="36sp"
                         android:layout_height="33sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -221,6 +224,7 @@
                         tools:src="@tools:sample/avatars" />
 
                     <TextView
+                        android:id="@+id/day2_temp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.2"
@@ -241,15 +245,17 @@
 
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/day3_day"
+                    android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingStart="22sp"
                     android:textSize="18sp"
-                    android:text="Today"
+                    android:text="Day 3"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day3_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -266,6 +272,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day3_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
@@ -286,15 +293,17 @@
 
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/day4_day"
+                    android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingStart="22sp"
                     android:textSize="18sp"
-                    android:text="Today"
+                    android:text="Day 4"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day4_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -311,6 +320,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day4_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
@@ -331,15 +341,17 @@
 
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/day5_day"
+                    android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingStart="22sp"
                     android:textSize="18sp"
-                    android:text="Today"
+                    android:text="Day 5"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day5_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -356,6 +368,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day5_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
@@ -376,15 +389,17 @@
 
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/day6_day"
+                    android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingStart="22sp"
                     android:textSize="18sp"
-                    android:text="Today"
+                    android:text="Day 6"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day6_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -401,6 +416,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day6_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
@@ -421,15 +437,17 @@
 
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/day7_day"
+                    android:layout_width="75sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:paddingStart="22sp"
                     android:textSize="18sp"
-                    android:text="Today"
+                    android:text="Day 7"
                     android:textColor="@color/white"/>
 
                 <ImageView
+                    android:id="@+id/day7_icon"
                     android:layout_width="36sp"
                     android:layout_height="33sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -446,6 +464,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
+                    android:id="@+id/day7_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
