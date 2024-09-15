@@ -10,25 +10,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.API.WeatherType
+import com.skysphere.skysphere.GPSManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
+import android.app.AlertDialog
+import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-class HomePageFragment : Fragment() {
+
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     // Declare the views that have been created in the XML file.
     private lateinit var dateTextView: TextView
@@ -38,9 +48,52 @@ class HomePageFragment : Fragment() {
     private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
+    private lateinit var setCurrentLocationButton: ImageButton
 
-    // Declare the location client that uses the user's location.
-    private lateinit var locationClient: FusedLocationProviderClient
+    // Weekly Forecast Variables
+    private lateinit var day2TextView: TextView
+    private lateinit var day3TextView: TextView
+    private lateinit var day4TextView: TextView
+    private lateinit var day5TextView: TextView
+    private lateinit var day6TextView: TextView
+    private lateinit var day7TextView: TextView
+
+    private lateinit var day1IconImageView: ImageView
+    private lateinit var day2IconImageView: ImageView
+    private lateinit var day3IconImageView: ImageView
+    private lateinit var day4IconImageView: ImageView
+    private lateinit var day5IconImageView: ImageView
+    private lateinit var day6IconImageView: ImageView
+    private lateinit var day7IconImageView: ImageView
+
+    private lateinit var day1MaxTextView: TextView
+    private lateinit var day2MaxTextView: TextView
+    private lateinit var day3MaxTextView: TextView
+    private lateinit var day4MaxTextView: TextView
+    private lateinit var day5MaxTextView: TextView
+    private lateinit var day6MaxTextView: TextView
+    private lateinit var day7MaxTextView: TextView
+
+    private lateinit var day1MinTextView: TextView
+    private lateinit var day2MinTextView: TextView
+    private lateinit var day3MinTextView: TextView
+    private lateinit var day4MinTextView: TextView
+    private lateinit var day5MinTextView: TextView
+    private lateinit var day6MinTextView: TextView
+    private lateinit var day7MinTextView: TextView
+
+    // Declaring the clickable upper region and the variables that will inside the alertbox.
+    private lateinit var upperRegion: FrameLayout
+    private var currentWindSpeed: Double = 0.0
+    private var currentWindDirection: Double = 0.0
+    private var currentWindGusts: Double = 0.0
+
+    // Declaring Recyclerview and adapter which will be used to display hourly temperatures
+    private lateinit var hourlyRecyclerView: RecyclerView
+    private lateinit var hourlyAdapter: HourlyTemperatureAdapter
+
+    // Declare the GPS Manager class that uses the user's location.
+    private lateinit var gpsManager: GPSManager
 
     // Declare the shared preferences that stores the metric units
     private lateinit var sharedPreferences: SharedPreferences
@@ -62,22 +115,132 @@ class HomePageFragment : Fragment() {
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
-        locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        // Weekly Forecast variables
+        day2TextView = view.findViewById(R.id.day2_day)
+        day3TextView = view.findViewById(R.id.day3_day)
+        day4TextView = view.findViewById(R.id.day4_day)
+        day5TextView = view.findViewById(R.id.day5_day)
+        day6TextView = view.findViewById(R.id.day6_day)
+        day7TextView = view.findViewById(R.id.day7_day)
+
+        day1IconImageView = view.findViewById(R.id.day1_icon)
+        day2IconImageView = view.findViewById(R.id.day2_icon)
+        day3IconImageView = view.findViewById(R.id.day3_icon)
+        day4IconImageView = view.findViewById(R.id.day4_icon)
+        day5IconImageView = view.findViewById(R.id.day5_icon)
+        day6IconImageView = view.findViewById(R.id.day6_icon)
+        day7IconImageView = view.findViewById(R.id.day7_icon)
+
+        day1MaxTextView = view.findViewById(R.id.day1_max)
+        day2MaxTextView = view.findViewById(R.id.day2_max)
+        day3MaxTextView = view.findViewById(R.id.day3_max)
+        day4MaxTextView = view.findViewById(R.id.day4_max)
+        day5MaxTextView = view.findViewById(R.id.day5_max)
+        day6MaxTextView = view.findViewById(R.id.day6_max)
+        day7MaxTextView = view.findViewById(R.id.day7_max)
+
+        day1MinTextView = view.findViewById(R.id.day1_min)
+        day2MinTextView = view.findViewById(R.id.day2_min)
+        day3MinTextView = view.findViewById(R.id.day3_min)
+        day4MinTextView = view.findViewById(R.id.day4_min)
+        day5MinTextView = view.findViewById(R.id.day5_min)
+        day6MinTextView = view.findViewById(R.id.day6_min)
+        day7MinTextView = view.findViewById(R.id.day7_min)
+        // End of Weekly Forecast variables
+
+        // Initializing the show more details functionality
+        upperRegion = view.findViewById(R.id.upperRegion)
+
+        // Clickable region to show wind details in an alert dialog
+        upperRegion.setOnClickListener {
+            showWindDetailsDialog()
+        }
+
+        // Initializing the recyclerview
+        hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
+
+        // Initializing the users preferences
         sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
-        // Call functions that get the current date and location of user.
-        getDate()
-        getLocation()
+        // Setting a horizontal linearlayoutmanager to arrange items horizontally
+        hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        // GPS client
+        gpsManager = GPSManager(requireContext())
+
+        // Call functions that get the current date and location of the user.
+        if (isCustomLocationSet())  // Conditional statement to check if the user has a custom location selected
+        {
+            getCustomLocationWeather()
+        }
+        else {
+            getLocation() // Get weather based on phone's current location
+        }
+
+        setCurrentLocationButton = view.findViewById(R.id.currentLocationButton) // Initialise current location button
+
+        setCurrentLocationButton.setOnClickListener { // Clear custom location preferences and get data from user's current location when clicked.
+            clearCustomLocationPreferences()
+            getLocation()
+            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
+        }
 
         return view
     }
 
-    // Get the current date and takes the format that I make.
+    // The wind details in an AlertDialog
+    private fun showWindDetailsDialog() {
+        // Getting wind data directly from the variables set in the getWeatherData() function
+        val windSpeed = currentWindSpeed
+        val windDirection = currentWindDirection
+        val windGusts = currentWindGusts
+        val message = """
+        Wind Speed: $windSpeed m/s
+        Wind Direction: $windDirection°
+        Wind Gusts: $windGusts m/s
+    """.trimIndent()
+        AlertDialog.Builder(requireContext())
+            .setTitle("Wind Details")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun clearCustomLocationPreferences() { // Clears custom location preferences
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            clear()
+            apply()
+        }
+    }
+
+    private fun isCustomLocationSet(): Boolean { // Check if user has a custom location selected
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        return sharedPrefs.contains("latitude") && sharedPrefs.contains("longitude")
+    }
+
+    // Get weather for the custom location
+    private fun getCustomLocationWeather() {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
+        val longitude = sharedPrefs.getFloat("longitude", 0f).toDouble()
+        val placeName = sharedPrefs.getString("place_name", "Custom Location")
+
+        locationTextView.text = placeName // Update location text with the custom place name
+        getWeatherData(latitude, longitude) // Get weather data for the custom location
+    }
+
+    // Instead of taking local time, it now takes the date from the API call and reformats it
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDate(){
-        val date = LocalDateTime.now()
+    private fun getDate(dateString: String?) {
+        // Parse the input string (formatted as "yyyy-MM-dd" from the API) to a LocalDate object
+        val date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+        // Format the date
         val format = DateTimeFormatter.ofPattern("EEE, dd MMM", Locale.ENGLISH)
         val formattedDate = date.format(format)
+
+        // Set the formatted date to the TextView
         dateTextView.text = formattedDate
     }
 
@@ -100,26 +263,17 @@ class HomePageFragment : Fragment() {
             return
         }
 
-        // If the location permission is granted, then it will attempt to get the last location of the user.
-        locationClient.lastLocation.addOnSuccessListener { location ->
-            if(location != null){ // Checks if location is received
-                val geocoder = Geocoder(requireContext(),Locale.getDefault()) // Creates a Geocoder object to get address from current location
-                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1) // Gets the address from the latitude and longitude, and sets the max results of addresses to 1.
-                if(addresses?.isNotEmpty() == true){
-                    val address = addresses[0]
-                    locationTextView.text = address.locality ?: "Uknown Location" // If address is found then it updates the locationTextView with the current location, or "Uknown location".
-                } else {
-                    locationTextView.text = "Location Not Available"
-                }
-                getWeatherData(location.latitude, location.longitude) // Calls the getWeatherData function and parses the users latitude and longitude to get the precise location needed for the API call.
-            } else {
-                locationTextView.text = "Location Not Available"
-            }
-        }
-            // Handles errors when retrieving location.
-            .addOnFailureListener { e ->
-                locationTextView.text = "Location Not Available"
-            }
+        // If the location permission is granted, then it will attempt to get the last location of the user from GPS Manager.
+        gpsManager.getCurrentLocation(this)
+    }
+
+    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
+        locationTextView.text = locality ?: "Unknown Location"
+        getWeatherData(latitude, longitude)
+    }
+
+    override fun onLocationError(error: String) {
+        locationTextView.text = error
     }
 
     // Used to identify permission request.
@@ -129,8 +283,8 @@ class HomePageFragment : Fragment() {
 
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
-        val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "apparent_temperature") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -144,6 +298,69 @@ class HomePageFragment : Fragment() {
                         val feelsLikeTemperatureCelsius = feelsLikeTemperatureList?.firstOrNull() ?: 0.0
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
+                        // Weekly Forecast Variables
+                        // Max Temp
+                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0)?.roundToInt()
+                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1)?.roundToInt()
+                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2)?.roundToInt()
+                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3)?.roundToInt()
+                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4)?.roundToInt()
+                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5)?.roundToInt()
+                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6)?.roundToInt()
+
+                        // Min Temp
+                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0)?.roundToInt()
+                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1)?.roundToInt()
+                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2)?.roundToInt()
+                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3)?.roundToInt()
+                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4)?.roundToInt()
+                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5)?.roundToInt()
+                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6)?.roundToInt()
+
+                        // Weather Code
+                        val day1WeatherCode = response.body()?.daily?.weather_code?.get(0) ?: 0
+                        val day2WeatherCode = response.body()?.daily?.weather_code?.get(1) ?: 0
+                        val day3WeatherCode = response.body()?.daily?.weather_code?.get(2) ?: 0
+                        val day4WeatherCode = response.body()?.daily?.weather_code?.get(3) ?: 0
+                        val day5WeatherCode = response.body()?.daily?.weather_code?.get(4) ?: 0
+                        val day6WeatherCode = response.body()?.daily?.weather_code?.get(5) ?: 0
+                        val day7WeatherCode = response.body()?.daily?.weather_code?.get(6) ?: 0
+
+                        // Weather Type
+                        val day1WeatherType = WeatherType.fromWMO(day1WeatherCode)
+                        val day2WeatherType = WeatherType.fromWMO(day2WeatherCode)
+                        val day3WeatherType = WeatherType.fromWMO(day3WeatherCode)
+                        val day4WeatherType = WeatherType.fromWMO(day4WeatherCode)
+                        val day5WeatherType = WeatherType.fromWMO(day5WeatherCode)
+                        val day6WeatherType = WeatherType.fromWMO(day6WeatherCode)
+                        val day7WeatherType = WeatherType.fromWMO(day7WeatherCode)
+
+                        //Dates
+                        val day1Date = response.body()?.daily?.time?.get(0)
+                        val day2Date = response.body()?.daily?.time?.get(1)
+                        val day3Date = response.body()?.daily?.time?.get(2)
+                        val day4Date = response.body()?.daily?.time?.get(3)
+                        val day5Date = response.body()?.daily?.time?.get(4)
+                        val day6Date = response.body()?.daily?.time?.get(5)
+                        val day7Date = response.body()?.daily?.time?.get(6)
+
+                        // Parse the dates into the getDayName() function
+                        val day2Name = getDayName(day2Date)
+                        val day3Name = getDayName(day3Date)
+                        val day4Name = getDayName(day4Date)
+                        val day5Name = getDayName(day5Date)
+                        val day6Name = getDayName(day6Date)
+                        val day7Name = getDayName(day7Date)
+
+                        // Handle hourly wind data (e.g., display the first value or calculate the average)
+                        val windSpeed = response.body()?.hourly?.wind_speed_10m?.get(0) ?: 0.0
+                        val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
+                        val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
+
+                        // Taking only first 24 temperature values
+                        val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
+
+                        // Set current variables
                         // Updates the displayed temperature to whichever type the user sets within the settings page
                         val unit = sharedPreferences.getString("temperature_unit", "Celsius")
                         val temperature = if (unit == "Celsius") {
@@ -160,10 +377,55 @@ class HomePageFragment : Fragment() {
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
-                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°C" else "°F"}"
-                        feelsLikeTemperatureTextView.text = "Feels like ${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°C" else "°F"}"
+                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°" else "°"}"
+                        feelsLikeTemperatureTextView.text = "Feels like ${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°" else "°"}"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
+                        getDate(day1Date)
+
+                        // Set Weekly Forecast data
+                        // Days
+                        day2TextView.text = "${day2Name}"
+                        day3TextView.text = "${day3Name}"
+                        day4TextView.text = "${day4Name}"
+                        day5TextView.text = "${day5Name}"
+                        day6TextView.text = "${day6Name}"
+                        day7TextView.text = "${day7Name}"
+
+                        // Icons
+                        day1IconImageView.setImageResource(day1WeatherType.iconRes)
+                        day2IconImageView.setImageResource(day2WeatherType.iconRes)
+                        day3IconImageView.setImageResource(day3WeatherType.iconRes)
+                        day4IconImageView.setImageResource(day4WeatherType.iconRes)
+                        day5IconImageView.setImageResource(day5WeatherType.iconRes)
+                        day6IconImageView.setImageResource(day6WeatherType.iconRes)
+                        day7IconImageView.setImageResource(day7WeatherType.iconRes)
+
+                        // Temperature Data
+                        day1MaxTextView.text = "${day1Max}°"
+                        day2MaxTextView.text = "${day2Max}°"
+                        day3MaxTextView.text = "${day3Max}°"
+                        day4MaxTextView.text = "${day4Max}°"
+                        day5MaxTextView.text = "${day5Max}°"
+                        day6MaxTextView.text = "${day6Max}°"
+                        day7MaxTextView.text = "${day7Max}°"
+
+                        day1MinTextView.text = "${day1Min}°"
+                        day2MinTextView.text = "${day2Min}°"
+                        day3MinTextView.text = "${day3Min}°"
+                        day4MinTextView.text = "${day4Min}°"
+                        day5MinTextView.text = "${day5Min}°"
+                        day6MinTextView.text = "${day6Min}°"
+                        day7MinTextView.text = "${day7Min}°"
+
+                        // Display wind data
+                        currentWindSpeed = windSpeed
+                        currentWindDirection = windDirection
+                        currentWindGusts = windGusts
+
+                        hourlyAdapter = HourlyTemperatureAdapter(temperatures)
+                        hourlyRecyclerView.adapter = hourlyAdapter
+
                     } else {
                         // If data retrieval fails, then notify user.
                         homeTextView.text = "Failed to get data"
@@ -177,6 +439,21 @@ class HomePageFragment : Fragment() {
                     temperatureTextView.text = "Error: ${t.message}"
                 }
             })
+    }
+
+    // Function to convert date string into day name
+    fun getDayName(dateString: String?): String {
+        return try {
+            // Parse the date string (The format from the API doc is "yyyy-MM-dd")
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val date = inputFormat.parse(dateString)
+
+            // Format the date to get the day name
+            val outputFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+            outputFormat.format(date ?: Date())
+        } catch (e: Exception) {
+            "Unknown"
+        }
     }
 
     // Converts the temperature to fahrenheit
