@@ -29,7 +29,7 @@ class HourlyTemperatureAdapter(
     override fun onBindViewHolder(holder: HourlyViewHolder, position: Int) {
         // Binding the time and temperature data to the corresponding textviews.
         holder.tvHour.text = times[position]
-        holder.tvHourlyTemperature.text = "${temperatures[position]}°C"
+        holder.tvHourlyTemperature.text = "${temperatures[position]}°"
     }
 
     // Returns the total number of items to be displayed in the recyclerview.
