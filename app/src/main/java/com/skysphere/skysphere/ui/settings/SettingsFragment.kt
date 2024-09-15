@@ -38,6 +38,7 @@ class SettingsFragment : Fragment()
         // Assigning the buttons to their corresponding variables declared above
         val celsiusButton: Button = view.findViewById(R.id.Celsius)
         val fahrenheitButton: Button = view.findViewById(R.id.Fahrenheit)
+        val metersPerSecondButton: Button = view.findViewById(R.id.Mps)
         val kilometersPerHourButton: Button = view.findViewById(R.id.Km_h)
         val milesPerHourButton: Button = view.findViewById(R.id.Mph)
         val knotsButton: Button = view.findViewById(R.id.Knots)
@@ -56,11 +57,14 @@ class SettingsFragment : Fragment()
         fahrenheitButton.setOnClickListener{
             saveTemperatureUnit("Fahrenheit")
         }
+        metersPerSecondButton.setOnClickListener {
+            saveWindSpeedUnit("m/s")
+        }
         kilometersPerHourButton.setOnClickListener{
-            saveWindSpeedUnit("Kilometers/Hour")
+            saveWindSpeedUnit("Km/h")
         }
         milesPerHourButton.setOnClickListener{
-            saveWindSpeedUnit("Miles/Hour")
+            saveWindSpeedUnit("Mph")
         }
         knotsButton.setOnClickListener{
             saveWindSpeedUnit("Knots")
@@ -124,7 +128,7 @@ class SettingsFragment : Fragment()
     // Retrieving the stored preference for wind speed metric unit of the user
     private fun updateWindSpeedUnitTextView() {
         val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val unit = sharedPreferences.getString("wind_speed_unit", "Kilometers/Hour") ?: "Kilometers/Hour"
+        val unit = sharedPreferences.getString("wind_speed_unit", "m/s") ?: "m/s"
 
         // This sets the TextView for the Wind Speed Details to what it equates and displays it onto the settings page
         windspeedUnitTextView.text = "The wind speed unit is currently set to $unit"
