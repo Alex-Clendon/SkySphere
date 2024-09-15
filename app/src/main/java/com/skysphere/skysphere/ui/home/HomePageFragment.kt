@@ -178,7 +178,7 @@ class HomePageFragment : Fragment() {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URl for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m", 1) // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -193,8 +193,8 @@ class HomePageFragment : Fragment() {
                         val windSpeed = response.body()?.hourly?.wind_speed_10m?.get(0) ?: 0.0
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
-                        // Set up the hourly temperature adapter
-                        val temperatures = response.body()?.hourly?.temperature_2m ?: emptyList()
+                        // Taking only first 24 temperature values
+                        val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
 
 
                         // Sets the data retrieved from the API to the views declared at the beginning.

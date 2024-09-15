@@ -12,8 +12,8 @@ class HourlyTemperatureAdapter(
     private val temperatures: List<Double>
 ) : RecyclerView.Adapter<HourlyTemperatureAdapter.HourlyViewHolder>() {
 
-    // Generating times from 00:00 to 23:00 based on the temperature list size.
-    private val times: List<String> = List(temperatures.size) { index ->
+    // Generating times from 00:00 to 23:00
+    private val times: List<String> = List(24) { index ->
         String.format("%02d:00", index)
     }
 
