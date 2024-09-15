@@ -33,7 +33,8 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import android.app.AlertDialog
 import android.widget.FrameLayout
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
@@ -84,6 +85,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private var currentWindSpeed: Double = 0.0
     private var currentWindDirection: Double = 0.0
     private var currentWindGusts: Double = 0.0
+
+    // Declaring Recyclerview and adapter which will be used to display hourly temperatures
+    private lateinit var hourlyRecyclerView: RecyclerView
+    private lateinit var hourlyAdapter: HourlyTemperatureAdapter
   
     // Declare the GPS Manager class that uses the user's location.
     private lateinit var gpsManager: GPSManager
@@ -144,6 +149,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         upperRegion.setOnClickListener {
             showWindDetailsDialog()
         }
+
+        // Initializing the recyclerview
+        hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
+
+        // Setting a horizontal linearlayoutmanager to arrange items horizontally
+        hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         // GPS client
         gpsManager = GPSManager(requireContext())
@@ -264,7 +275,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -335,6 +346,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
 
+                        // Taking only first 24 temperature values
+                        val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
+
                         // Set current variables
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         temperatureTextView.text = "${temperature}°"
@@ -380,6 +394,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         currentWindSpeed = windSpeed
                         currentWindDirection = windDirection
                         currentWindGusts = windGusts
+
+                        hourlyAdapter = HourlyTemperatureAdapter(temperatures)
+                        hourlyRecyclerView.adapter = hourlyAdapter
 
                     } else {
                         // If data retrieval fails, then notify user.
