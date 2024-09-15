@@ -40,6 +40,7 @@ android {
 
 dependencies {
 
+    implementation(libs.play.services.location)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -55,6 +56,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation ("com.google.android.gms:play-services-location:18.0.0")
-
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
