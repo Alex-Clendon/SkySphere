@@ -18,6 +18,20 @@
     android:id="@+id/fragment_home"
     android:paddingBottom="28dp">
 
+    <FrameLayout
+        android:id="@+id/upperRegion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvWeatherState"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+
 
     <TextView
         android:id="@+id/text_home"
