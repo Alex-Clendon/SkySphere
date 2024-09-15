@@ -131,11 +131,10 @@
         android:text="@string/FeelsLikeTemperature"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvTemperature"
         app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"/>
 
     <TextView
         android:id="@+id/tvWeatherState"
@@ -144,8 +143,8 @@
         android:text="Weather State"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@id/tvTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/tvTemperature"/>
+        app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
+        app:layout_constraintTop_toBottomOf="@+id/tvFeelsLikeTemperature"/>
 
     <ImageButton
         android:id="@+id/currentLocationButton"

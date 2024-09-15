@@ -284,7 +284,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,apparent_temperature") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -360,7 +360,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Taking only first 24 temperature values
                         val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
 
-                        // Set current variables
                         // Updates the displayed temperature to whichever type the user sets within the settings page
                         val unit = sharedPreferences.getString("temperature_unit", "Celsius")
                         val temperature = if (unit == "Celsius") {
@@ -377,8 +376,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
-                        temperatureTextView.text = "${"%.2f".format(temperature)}${if (unit == "Celsius") "°" else "°"}"
-                        feelsLikeTemperatureTextView.text = "Feels like ${"%.2f".format(feelsLikeTemperature)}${if (unit == "Celsius") "°" else "°"}"
+                        temperatureTextView.text = "${"%.2f".format(temperature)}"
+                        feelsLikeTemperatureTextView.text = "Feels like ${"%.2f".format(feelsLikeTemperature)}"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                         getDate(day1Date)
