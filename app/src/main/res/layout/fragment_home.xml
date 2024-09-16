@@ -217,7 +217,7 @@
 
                 <TextView
                     android:id="@+id/day1_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -272,7 +272,7 @@
 
                     <TextView
                         android:id="@+id/day2_max"
-                        android:layout_width="40sp"
+                        android:layout_width="55sp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
                         android:text="11°"
@@ -327,7 +327,7 @@
 
                 <TextView
                     android:id="@+id/day3_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -382,7 +382,7 @@
 
                 <TextView
                     android:id="@+id/day4_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -437,7 +437,7 @@
 
                 <TextView
                     android:id="@+id/day5_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -492,7 +492,7 @@
 
                 <TextView
                     android:id="@+id/day6_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -547,7 +547,7 @@
 
                 <TextView
                     android:id="@+id/day7_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
