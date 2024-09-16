@@ -13,6 +13,5 @@ interface WeatherAPI {
         @Query("daily") daily: String,
         @Query("timezone") timezone: String,
         @Query("hourly") hourly: String
-
     ): Call<WeatherData>
 }
