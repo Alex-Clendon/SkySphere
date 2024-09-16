@@ -2,7 +2,7 @@ package com.skysphere.skysphere.ui.home
 
 import android.Manifest
 import android.content.Context
-import android.location.Geocoder
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -26,11 +26,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
-import kotlin.math.roundToInt
 import android.app.AlertDialog
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +42,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var locationTextView: TextView
     private lateinit var weatherCodeImageView: ImageView
     private lateinit var temperatureTextView: TextView
+    private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
     private lateinit var setCurrentLocationButton: ImageButton
@@ -89,9 +88,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Declaring Recyclerview and adapter which will be used to display hourly temperatures
     private lateinit var hourlyRecyclerView: RecyclerView
     private lateinit var hourlyAdapter: HourlyTemperatureAdapter
-  
+
     // Declare the GPS Manager class that uses the user's location.
     private lateinit var gpsManager: GPSManager
+
+    // Declare the shared preferences that stores the metric units
+    private lateinit var sharedPreferences: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -106,6 +108,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         locationTextView = view.findViewById(R.id.tvLocation)
         weatherCodeImageView = view.findViewById(R.id.ivWeatherIcon)
         temperatureTextView = view.findViewById(R.id.tvTemperature)
+        feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
 
@@ -153,6 +156,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Initializing the recyclerview
         hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
 
+        // Initializing the users preferences
+        sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+
         // Setting a horizontal linearlayoutmanager to arrange items horizontally
         hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
@@ -185,10 +191,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         val windSpeed = currentWindSpeed
         val windDirection = currentWindDirection
         val windGusts = currentWindGusts
+
+        //  Declared a variable to store the users preferred wind speed metric unit string value set within the settings page
+        val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s") ?: "m/s"
+
         val message = """
-        Wind Speed: $windSpeed m/s
+        Wind Speed: ${"%.2f".format(windSpeed)} $windSpeedUnit
         Wind Direction: $windDirection°
-        Wind Gusts: $windGusts m/s
+        Wind Gusts: ${"%.2f".format(windGusts)} $windSpeedUnit
     """.trimIndent()
         AlertDialog.Builder(requireContext())
             .setTitle("Wind Details")
@@ -275,7 +285,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -284,27 +294,28 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
-                        val temperature = response.body()?.current?.temperature_2m
+                        val temperatureCelsius = response.body()?.current?.temperature_2m
+                        val feelsLikeTemperatureCurrent = response.body()?.current?.apparent_temperature
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
                         // Weekly Forecast Variables
                         // Max Temp
-                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0)?.roundToInt()
-                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1)?.roundToInt()
-                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2)?.roundToInt()
-                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3)?.roundToInt()
-                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4)?.roundToInt()
-                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5)?.roundToInt()
-                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6)?.roundToInt()
+                        val day1Max = response.body()?.daily?.temperature_2m_max?.get(0)
+                        val day2Max = response.body()?.daily?.temperature_2m_max?.get(1)
+                        val day3Max = response.body()?.daily?.temperature_2m_max?.get(2)
+                        val day4Max = response.body()?.daily?.temperature_2m_max?.get(3)
+                        val day5Max = response.body()?.daily?.temperature_2m_max?.get(4)
+                        val day6Max = response.body()?.daily?.temperature_2m_max?.get(5)
+                        val day7Max = response.body()?.daily?.temperature_2m_max?.get(6)
 
                         // Min Temp
-                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0)?.roundToInt()
-                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1)?.roundToInt()
-                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2)?.roundToInt()
-                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3)?.roundToInt()
-                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4)?.roundToInt()
-                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5)?.roundToInt()
-                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6)?.roundToInt()
+                        val day1Min = response.body()?.daily?.temperature_2m_min?.get(0)
+                        val day2Min = response.body()?.daily?.temperature_2m_min?.get(1)
+                        val day3Min = response.body()?.daily?.temperature_2m_min?.get(2)
+                        val day4Min = response.body()?.daily?.temperature_2m_min?.get(3)
+                        val day5Min = response.body()?.daily?.temperature_2m_min?.get(4)
+                        val day6Min = response.body()?.daily?.temperature_2m_min?.get(5)
+                        val day7Min = response.body()?.daily?.temperature_2m_min?.get(6)
 
                         // Weather Code
                         val day1WeatherCode = response.body()?.daily?.weather_code?.get(0) ?: 0
@@ -346,12 +357,130 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
 
+                        //  Declared a variable to store the users preferred wind speed metric unit set within the settings page
+                        val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s")
+
+                        // Converts the wind speed values to whichever type the user prefers
+                        val displayWindSpeed = if (windSpeedUnit == "Km/h") {
+                            mpsToKmph(windSpeed ?: 0.0)
+                        } else if (windSpeedUnit == "Mph") {
+                            mpsToMph(windSpeed ?: 0.0)
+                        } else if(windSpeedUnit == "Knots") {
+                            mpsToKnots(windSpeed ?: 0.0)
+                        } else {
+                            windSpeed ?: 0.0
+                        }
+                        val displayWindGusts= if (windSpeedUnit == "Km/h") {
+                            mpsToKmph(windGusts ?: 0.0)
+                        } else if (windSpeedUnit == "Mph") {
+                            mpsToMph(windGusts ?: 0.0)
+                        } else if(windSpeedUnit == "Knots") {
+                            mpsToKnots(windGusts ?: 0.0)
+                        } else {
+                            windGusts ?: 0.0
+                        }
+
                         // Taking only first 24 temperature values
                         val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
 
-                        // Set current variables
+                        // Declared a variable to store the users preferred temperature metric unit set within the settings page
+                        val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius")
+
+                        // Converts the temperature to whichever type the user prefers
+                        val temperature = if (tempUnit == "Celsius") {
+                            temperatureCelsius ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(temperatureCelsius ?: 0.0)
+                        }
+                        val feelsLikeTemperature = if (tempUnit == "Celsius") {
+                            feelsLikeTemperatureCurrent ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(feelsLikeTemperatureCurrent ?: 0.0)
+                        }
+
+                        // Converts the hourly temperature for the hourly overview to whichever type the user prefers
+                        val convertedTemperatures = convertTemperatures(temperatures)
+
+                        // Converts the max and min temperatures for the weekly overview to whichever type the user prefers
+                        // Max temperature weekly overview
+                        val day1MaxTemp = if (tempUnit == "Celsius"){
+                            day1Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day1Max ?: 0.0)
+                        }
+                        val day2MaxTemp = if (tempUnit == "Celsius"){
+                            day2Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day2Max ?: 0.0)
+                        }
+                        val day3MaxTemp = if (tempUnit == "Celsius"){
+                            day3Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day3Max ?: 0.0)
+                        }
+                        val day4MaxTemp = if (tempUnit == "Celsius"){
+                            day4Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day4Max ?: 0.0)
+                        }
+                        val day5MaxTemp = if (tempUnit == "Celsius"){
+                            day5Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day5Max ?: 0.0)
+                        }
+                        val day6MaxTemp = if (tempUnit == "Celsius"){
+                            day6Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day6Max ?: 0.0)
+                        }
+                        val day7MaxTemp = if (tempUnit == "Celsius"){
+                            day7Max ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day7Max ?: 0.0)
+                        }
+                        // Min temperature weekly overview
+                        val day1MinTemp = if (tempUnit == "Celsius"){
+                           day1Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day1Min ?: 0.0)
+                        }
+                        val day2MinTemp = if (tempUnit == "Celsius"){
+                            day2Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day2Min ?: 0.0)
+                        }
+                        val day3MinTemp = if (tempUnit == "Celsius"){
+                            day3Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day3Min ?: 0.0)
+                        }
+                        val day4MinTemp = if (tempUnit == "Celsius"){
+                            day4Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day4Min ?: 0.0)
+                        }
+                        val day5MinTemp = if (tempUnit == "Celsius"){
+                            day5Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day5Min ?: 0.0)
+                        }
+                        val day6MinTemp = if (tempUnit == "Celsius"){
+                            day6Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day6Min ?: 0.0)
+                        }
+                        val day7MinTemp = if (tempUnit == "Celsius"){
+                            day7Min ?: 0.0
+                        } else {
+                            celsiusToFahrenheit(day7Min ?: 0.0)
+                        }
+
+                        // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        temperatureTextView.text = "${temperature}°"
+                        // Displays the temperatures
+                        temperatureTextView.text = "${"%.1f".format(temperature)}°"
+                        feelsLikeTemperatureTextView.text = "Feels like ${"%.0f".format(feelsLikeTemperature)}°"
+
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                         getDate(day1Date)
 
@@ -374,28 +503,28 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         day7IconImageView.setImageResource(day7WeatherType.iconRes)
 
                         // Temperature Data
-                        day1MaxTextView.text = "${day1Max}°"
-                        day2MaxTextView.text = "${day2Max}°"
-                        day3MaxTextView.text = "${day3Max}°"
-                        day4MaxTextView.text = "${day4Max}°"
-                        day5MaxTextView.text = "${day5Max}°"
-                        day6MaxTextView.text = "${day6Max}°"
-                        day7MaxTextView.text = "${day7Max}°"
+                        day1MaxTextView.text = "${"%.0f".format(day1MaxTemp)}°"
+                        day2MaxTextView.text = "${"%.0f".format(day2MaxTemp)}°"
+                        day3MaxTextView.text = "${"%.0f".format(day3MaxTemp)}°"
+                        day4MaxTextView.text = "${"%.0f".format(day4MaxTemp)}°"
+                        day5MaxTextView.text = "${"%.0f".format(day5MaxTemp)}°"
+                        day6MaxTextView.text = "${"%.0f".format(day6MaxTemp)}°"
+                        day7MaxTextView.text = "${"%.0f".format(day7MaxTemp)}°"
 
-                        day1MinTextView.text = "${day1Min}°"
-                        day2MinTextView.text = "${day2Min}°"
-                        day3MinTextView.text = "${day3Min}°"
-                        day4MinTextView.text = "${day4Min}°"
-                        day5MinTextView.text = "${day5Min}°"
-                        day6MinTextView.text = "${day6Min}°"
-                        day7MinTextView.text = "${day7Min}°"
+                        day1MinTextView.text = "${"%.0f".format(day1MinTemp)}°"
+                        day2MinTextView.text = "${"%.0f".format(day2MinTemp)}°"
+                        day3MinTextView.text = "${"%.0f".format(day3MinTemp)}°"
+                        day4MinTextView.text = "${"%.0f".format(day4MinTemp)}°"
+                        day5MinTextView.text = "${"%.0f".format(day5MinTemp)}°"
+                        day6MinTextView.text = "${"%.0f".format(day6MinTemp)}°"
+                        day7MinTextView.text = "${"%.0f".format(day7MinTemp)}°"
 
                         // Display wind data
-                        currentWindSpeed = windSpeed
+                        currentWindSpeed = displayWindSpeed
                         currentWindDirection = windDirection
-                        currentWindGusts = windGusts
+                        currentWindGusts = displayWindGusts
 
-                        hourlyAdapter = HourlyTemperatureAdapter(temperatures)
+                        hourlyAdapter = HourlyTemperatureAdapter(convertedTemperatures)
                         hourlyRecyclerView.adapter = hourlyAdapter
 
                     } else {
@@ -425,6 +554,37 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             outputFormat.format(date ?: Date())
         } catch (e: Exception) {
             "Unknown"
+        }
+    }
+
+    // Converts the temperature to fahrenheit
+    private fun celsiusToFahrenheit(celsius: Double): Double {
+        return (celsius * (9.0/5.0)) + 32
+    }
+
+    // Converts the wind speed to Kilometers per hour
+    private fun mpsToKmph(mps: Double): Double {
+        return mps * 3.6
+    }
+
+    // Converts the wind speed to Miles per hour
+    private fun mpsToMph(mps: Double): Double {
+        return mps * 2.237
+    }
+
+    // Converts the wind speed to Knots
+    private fun mpsToKnots(mps: Double): Double {
+        return mps * 1.944
+    }
+
+    // Convert temperatures based on the user's preference
+    private fun convertTemperatures(temperatures: List<Double>): List<Double> {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val unit = sharedPreferences.getString("temperature_unit", "Celsius") ?: "Celsius"
+        return if (unit == "Fahrenheit") {
+            temperatures.map { celsiusToFahrenheit(it) }
+        } else {
+            temperatures
         }
     }
 

@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.skysphere.skysphere.R
+import java.text.DecimalFormat
 
 // Adapter class for the recyclerview to display hourly temperatures
 class HourlyTemperatureAdapter(
     private val temperatures: List<Double>
 ) : RecyclerView.Adapter<HourlyTemperatureAdapter.HourlyViewHolder>() {
+
+    // Format for temperature metric unit
+    private val decimalFormat = DecimalFormat("#.#")
 
     // Generating times from 00:00 to 23:00
     private val times: List<String> = List(24) { index ->
@@ -29,7 +33,8 @@ class HourlyTemperatureAdapter(
     override fun onBindViewHolder(holder: HourlyViewHolder, position: Int) {
         // Binding the time and temperature data to the corresponding textviews.
         holder.tvHour.text = times[position]
-        holder.tvHourlyTemperature.text = "${temperatures[position]}°C"
+        val temperature = temperatures[position]
+        holder.tvHourlyTemperature.text = decimalFormat.format(temperature) + "°"
     }
 
     // Returns the total number of items to be displayed in the recyclerview.
