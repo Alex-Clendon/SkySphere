@@ -38,19 +38,40 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
         autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
                 as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG)) // Decide the variables returned on selection
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)) // Decide the variables returned on selection
         autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
             override fun onError(p0: Status) {
                 // Error handling
             }
 
-            override fun onPlaceSelected(place: Place) { // Set variables once place has been selected
+            override fun onPlaceSelected(place: Place) {
                 selectedLatLng = place.latLng
-                selectedAddress = place.address
-                zoomIn(selectedLatLng) // Zoom in to selected location
-                setLocationButton.visibility = View.VISIBLE // Make button visible only when place has been selected
-            }
 
+                // Extract address components from API response
+                val addressComponents = place.addressComponents?.asList() ?: listOf()
+
+                // Search for the most specific location, starting with sublocality
+                selectedAddress = addressComponents.firstOrNull {
+                    it.types.contains("sublocality")
+                }?.name
+                        // Fallback to locality if sublocality is not available
+                    ?: addressComponents.firstOrNull {
+                        it.types.contains("locality")
+                    }?.name
+                            // Fallback to administrative area (the broader city or region) if neither sublocality nor locality are available
+                            ?: addressComponents.firstOrNull {
+                        it.types.contains("administrative_area_level_1")
+                    }?.name
+                            // Fallback to country if none of the above are available
+                            ?: addressComponents.firstOrNull {
+                        it.types.contains("country")
+                    }?.name
+                            // Fallback to a custom string if absolutely nothing is available
+                            ?: "Unknown Location"
+
+                zoomIn(selectedLatLng)
+                setLocationButton.visibility = View.VISIBLE
+            }
         })
 
         setLocationButton = view.findViewById(R.id.btnSetLocation)
