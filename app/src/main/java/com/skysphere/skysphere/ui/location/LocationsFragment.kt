@@ -38,6 +38,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
         autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
                 as AutocompleteSupportFragment
+        autocompleteFragment.setHint("Search")
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)) // Decide the variables returned on selection
         autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
             override fun onError(p0: Status) {
