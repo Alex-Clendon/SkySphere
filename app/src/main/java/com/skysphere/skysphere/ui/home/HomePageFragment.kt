@@ -191,6 +191,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         val windSpeed = currentWindSpeed
         val windDirection = currentWindDirection
         val windGusts = currentWindGusts
+
+        //  Declared a variable to store the users preferred wind speed metric unit string value set within the settings page
         val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s") ?: "m/s"
 
         val message = """
@@ -355,8 +357,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
 
+                        //  Declared a variable to store the users preferred wind speed metric unit set within the settings page
                         val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s")
 
+                        // Converts the wind speed values to whichever type the user prefers
                         val displayWindSpeed = if (windSpeedUnit == "Km/h") {
                             mpsToKmph(windSpeed ?: 0.0)
                         } else if (windSpeedUnit == "Mph") {
@@ -382,7 +386,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Declared a variable to store the users preferred temperature metric unit set within the settings page
                         val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius")
 
-                        // Updates the displayed temperature metric unit to whichever type the user prefers
+                        // Converts the temperature to whichever type the user prefers
                         val temperature = if (tempUnit == "Celsius") {
                             temperatureCelsius ?: 0.0
                         } else {
@@ -394,10 +398,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                             celsiusToFahrenheit(feelsLikeTemperatureCurrent ?: 0.0)
                         }
 
-                        // Updates the displayed temperature metric unit for the hourly overview to whichever type the user prefers
+                        // Converts the hourly temperature for the hourly overview to whichever type the user prefers
                         val convertedTemperatures = convertTemperatures(temperatures)
 
-                        // Updates the displayed temperature metric unit for the weekly overview to whichever type the user prefers
+                        // Converts the max and min temperatures for the weekly overview to whichever type the user prefers
                         // Max temperature weekly overview
                         val day1MaxTemp = if (tempUnit == "Celsius"){
                             day1Max ?: 0.0
@@ -473,7 +477,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        // Changes the metric unit to be display corresponding to the temperature
+                        // Displays the temperatures
                         temperatureTextView.text = "${"%.1f".format(temperature)}°"
                         feelsLikeTemperatureTextView.text = "Feels like ${"%.0f".format(feelsLikeTemperature)}°"
 
