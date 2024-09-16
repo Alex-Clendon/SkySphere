@@ -14,7 +14,7 @@ class HourlyTemperatureAdapter(
 ) : RecyclerView.Adapter<HourlyTemperatureAdapter.HourlyViewHolder>() {
 
     // Format for temperature metric unit
-    private val decimalFormat = DecimalFormat("#.##")
+    private val decimalFormat = DecimalFormat("#.#")
 
     // Generating times from 00:00 to 23:00
     private val times: List<String> = List(24) { index ->

@@ -194,9 +194,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s") ?: "m/s"
 
         val message = """
-        Wind Speed: $windSpeed $windSpeedUnit
+        Wind Speed: ${"%.2f".format(windSpeed)} $windSpeedUnit
         Wind Direction: $windDirection°
-        Wind Gusts: $windGusts $windSpeedUnit
+        Wind Gusts: ${"%.2f".format(windGusts)} $windSpeedUnit
     """.trimIndent()
         AlertDialog.Builder(requireContext())
             .setTitle("Wind Details")
@@ -283,7 +283,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
         val weatherService = RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m,apparent_temperature") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+        weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
@@ -293,8 +293,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperatureCelsius = response.body()?.current?.temperature_2m
-                        val feelsLikeTemperatureList = response.body()?.hourly?.apparent_temperature
-                        val feelsLikeTemperatureCelsius = feelsLikeTemperatureList?.firstOrNull() ?: 0.0
+                        val feelsLikeTemperatureCurrent = response.body()?.current?.apparent_temperature
                         val weatherType = WeatherType.fromWMO(weatherCode)
 
                         // Weekly Forecast Variables
@@ -390,9 +389,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                             celsiusToFahrenheit(temperatureCelsius ?: 0.0)
                         }
                         val feelsLikeTemperature = if (tempUnit == "Celsius") {
-                            feelsLikeTemperatureCelsius ?: 0.0
+                            feelsLikeTemperatureCurrent ?: 0.0
                         } else {
-                            celsiusToFahrenheit(feelsLikeTemperatureCelsius ?: 0.0)
+                            celsiusToFahrenheit(feelsLikeTemperatureCurrent ?: 0.0)
                         }
 
                         // Updates the displayed temperature metric unit for the hourly overview to whichever type the user prefers
@@ -475,8 +474,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Sets the data retrieved from the API to the views declared at the beginning.
                         weatherCodeImageView.setImageResource(weatherType.iconRes)
                         // Changes the metric unit to be display corresponding to the temperature
-                        temperatureTextView.text = "${"%.2f".format(temperature)}°"
-                        feelsLikeTemperatureTextView.text = "${"%.2f".format(day1MaxTemp)}° / ${"%.2f".format(day1MinTemp)}° Feels like ${"%.2f".format(feelsLikeTemperature)}°"
+                        temperatureTextView.text = "${"%.1f".format(temperature)}°"
+                        feelsLikeTemperatureTextView.text = "Feels like ${"%.0f".format(feelsLikeTemperature)}°"
 
                         weatherStateTextView.text = "${weatherType.weatherDesc}"
                         getDate(day1Date)
@@ -500,21 +499,21 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         day7IconImageView.setImageResource(day7WeatherType.iconRes)
 
                         // Temperature Data
-                        day1MaxTextView.text = "${"%.2f".format(day1MaxTemp)}°"
-                        day2MaxTextView.text = "${"%.2f".format(day2MaxTemp)}°"
-                        day3MaxTextView.text = "${"%.2f".format(day3MaxTemp)}°"
-                        day4MaxTextView.text = "${"%.2f".format(day4MaxTemp)}°"
-                        day5MaxTextView.text = "${"%.2f".format(day5MaxTemp)}°"
-                        day6MaxTextView.text = "${"%.2f".format(day6MaxTemp)}°"
-                        day7MaxTextView.text = "${"%.2f".format(day7MaxTemp)}°"
+                        day1MaxTextView.text = "${"%.0f".format(day1MaxTemp)}°"
+                        day2MaxTextView.text = "${"%.0f".format(day2MaxTemp)}°"
+                        day3MaxTextView.text = "${"%.0f".format(day3MaxTemp)}°"
+                        day4MaxTextView.text = "${"%.0f".format(day4MaxTemp)}°"
+                        day5MaxTextView.text = "${"%.0f".format(day5MaxTemp)}°"
+                        day6MaxTextView.text = "${"%.0f".format(day6MaxTemp)}°"
+                        day7MaxTextView.text = "${"%.0f".format(day7MaxTemp)}°"
 
-                        day1MinTextView.text = "${"%.2f".format(day1MinTemp)}°"
-                        day2MinTextView.text = "${"%.2f".format(day2MinTemp)}°"
-                        day3MinTextView.text = "${"%.2f".format(day3MinTemp)}°"
-                        day4MinTextView.text = "${"%.2f".format(day4MinTemp)}°"
-                        day5MinTextView.text = "${"%.2f".format(day5MinTemp)}°"
-                        day6MinTextView.text = "${"%.2f".format(day6MinTemp)}°"
-                        day7MinTextView.text = "${"%.2f".format(day7MinTemp)}°"
+                        day1MinTextView.text = "${"%.0f".format(day1MinTemp)}°"
+                        day2MinTextView.text = "${"%.0f".format(day2MinTemp)}°"
+                        day3MinTextView.text = "${"%.0f".format(day3MinTemp)}°"
+                        day4MinTextView.text = "${"%.0f".format(day4MinTemp)}°"
+                        day5MinTextView.text = "${"%.0f".format(day5MinTemp)}°"
+                        day6MinTextView.text = "${"%.0f".format(day6MinTemp)}°"
+                        day7MinTextView.text = "${"%.0f".format(day7MinTemp)}°"
 
                         // Display wind data
                         currentWindSpeed = displayWindSpeed
