@@ -24,32 +24,35 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLocation"
         app:layout_constraintBottom_toBottomOf="@id/tvWeatherState"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/tvTemperature"
+        app:layout_constraintEnd_toEndOf="@id/ivWeatherIcon"/>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cvHourly"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="115dp"
+        android:layout_marginTop="75dp"
         app:cardBackgroundColor="@color/transparent_blue"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvWeatherState">
+        app:layout_constraintTop_toBottomOf="@id/tvFeelsLikeTemperature">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHourlyTemperatures"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:clipToPadding="false"/>
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:clipToPadding="true"/>
 
     </androidx.cardview.widget.CardView>
 
@@ -99,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDate"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="35dp"
         app:layout_constraintVertical_bias="0.087" />
 
     <ImageView
@@ -121,7 +124,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="40dp"/>
 
     <TextView
@@ -129,12 +132,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/FeelsLikeTemperature"
+        android:layout_marginStart="10dp"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="25dp"
         app:layout_constraintStart_toStartOf="@+id/tvTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"/>
 
     <TextView
         android:id="@+id/tvWeatherState"
@@ -143,8 +147,9 @@
         android:text="Weather State"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/tvFeelsLikeTemperature"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvTemperature"/>
 
     <ImageButton
         android:id="@+id/currentLocationButton"
@@ -162,7 +167,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/transparent_blue"
         app:cardCornerRadius="12dp"
@@ -170,7 +175,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvWeatherState">
+        app:layout_constraintTop_toBottomOf="@id/cvHourly">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -214,7 +219,7 @@
 
                 <TextView
                     android:id="@+id/day1_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -224,7 +229,7 @@
 
                 <TextView
                     android:id="@+id/day1_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"
@@ -269,7 +274,7 @@
 
                     <TextView
                         android:id="@+id/day2_max"
-                        android:layout_width="40sp"
+                        android:layout_width="55sp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.5"
                         android:text="11°"
@@ -279,7 +284,7 @@
 
                     <TextView
                         android:id="@+id/day2_min"
-                        android:layout_width="60sp"
+                        android:layout_width="40sp"
                         android:layout_height="wrap_content"
                         android:text="2°"
                         android:textAlignment="textEnd"
@@ -324,7 +329,7 @@
 
                 <TextView
                     android:id="@+id/day3_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -334,7 +339,7 @@
 
                 <TextView
                     android:id="@+id/day3_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"
@@ -379,7 +384,7 @@
 
                 <TextView
                     android:id="@+id/day4_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -389,7 +394,7 @@
 
                 <TextView
                     android:id="@+id/day4_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"
@@ -434,7 +439,7 @@
 
                 <TextView
                     android:id="@+id/day5_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -444,7 +449,7 @@
 
                 <TextView
                     android:id="@+id/day5_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"
@@ -489,7 +494,7 @@
 
                 <TextView
                     android:id="@+id/day6_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -499,7 +504,7 @@
 
                 <TextView
                     android:id="@+id/day6_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"
@@ -544,7 +549,7 @@
 
                 <TextView
                     android:id="@+id/day7_max"
-                    android:layout_width="40sp"
+                    android:layout_width="55sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:text="11°"
@@ -554,7 +559,7 @@
 
                 <TextView
                     android:id="@+id/day7_min"
-                    android:layout_width="60sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:text="2°"
                     android:textAlignment="textEnd"

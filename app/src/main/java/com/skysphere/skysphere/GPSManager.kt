@@ -11,20 +11,20 @@ import java.util.Locale
 
 class GPSManager(private val context: Context) {
 
-    // Initialize the FusedLocationProviderClient to get the user's location.
     private var fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
-    // Callback interface to communicate the location data back to the fragment or activity.
     interface GPSManagerCallback {
-        fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?)
+        fun onLocationRetrieved(
+            latitude: Double,
+            longitude: Double,
+            addressDetails: String?
+        )
         fun onLocationError(error: String)
     }
 
-    // Get the current location of the user, checking for necessary permissions.
     fun getCurrentLocation(callback: GPSManagerCallback) {
 
-        // Check for location permissions.
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -33,22 +33,35 @@ class GPSManager(private val context: Context) {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // If permissions are not granted, send an error
             callback.onLocationError("Location permissions are not granted.")
             return
         }
 
-        // Use geocoder to return a human readable address for display.
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                // Use Geocoder to get the locality (city/town name).
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
-                val locality = if (addresses?.isNotEmpty() == true) addresses[0].locality else null
-                callback.onLocationRetrieved(location.latitude, location.longitude, locality)
-            } else {
-                callback.onLocationError("Location Not Available.")
+                if (addresses?.isNotEmpty() == true) {
+                    val address = addresses[0]
+
+                    // Extract address components just like in the LocationsFragment
+                    val sublocality = address.subLocality // District
+                    val locality = address.locality // City / Town
+                    val adminArea = address.adminArea // State / Region
+                    val country = address.countryName // Country
+
+                        // String Falls back to the next option if the current one is unavailable.
+                    val addressDetails = sublocality ?: locality ?: adminArea ?: country ?: "Unknown Location"
+                    callback.onLocationRetrieved(location.latitude, location.longitude, addressDetails)
+                }
+                else
+                {
+                    callback.onLocationError("Unknown Location")
+                }
+            }
+            else {
+                callback.onLocationError("Unknown Location")
             }
         }.addOnFailureListener { e ->
             callback.onLocationError(e.message ?: "Error retrieving location.")

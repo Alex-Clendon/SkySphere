@@ -17,9 +17,7 @@ class HourlyTemperatureAdapter(
     private val decimalFormat = DecimalFormat("#.#")
 
     // Generating times from 00:00 to 23:00
-    private val times: List<String> = List(24) { index ->
-        String.format("%02d:00", index)
-    }
+    private val times: List<String> = generateTimes(0)
 
     // Called when recyclerview needs a new viewholder to display an item
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyViewHolder {
@@ -47,4 +45,12 @@ class HourlyTemperatureAdapter(
         val tvHour: TextView = view.findViewById(R.id.tvHour)
         val tvHourlyTemperature: TextView = view.findViewById(R.id.tvHourlyTemperature)
     }
+
+    fun generateTimes(startHour: Int): List<String> {
+        return List(24) { index ->
+            val hour = (startHour + index) % 24
+            String.format("%02d:00", hour)
+        }
+    }
+
 }
