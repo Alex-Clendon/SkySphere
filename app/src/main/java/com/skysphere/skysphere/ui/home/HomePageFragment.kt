@@ -30,6 +30,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import android.app.AlertDialog
+import android.speech.tts.TextToSpeech
+import android.widget.Button
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +48,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
     private lateinit var setCurrentLocationButton: ImageButton
+    private lateinit var textToSpeech: TextToSpeech
+    private lateinit var textToSpeechBtn: ImageButton
 
     // Weekly Forecast Variables
     private lateinit var day2TextView: TextView
@@ -182,7 +186,50 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
         }
 
+        // Text to speech button
+        textToSpeechBtn = view.findViewById(R.id.ttsBtn)
+        textToSpeech = TextToSpeech(requireContext()) { status ->
+            if(status == TextToSpeech.SUCCESS) {
+                val result = textToSpeech.setLanguage(Locale.getDefault())
+                if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(requireContext(), "Language not supported", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        // When clicked AI will speak to user
+        textToSpeechBtn.setOnClickListener {
+            textToSpeechDialog()
+        }
+
         return view
+    }
+
+    // Text for text to speech
+    private fun textToSpeechDialog(){
+        // Getting data for text to speech
+        val location = locationTextView.text.toString().trim()
+        val date = dateTextView.text.toString().trim()
+        val temperatureCelsius = temperatureTextView.text.toString().trim()
+        val weatherType = weatherStateTextView.text.toString().trim()
+        val feelsLikeTemperatureCurrent = feelsLikeTemperatureTextView.text.toString().trim()
+
+        val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius") ?: "Celsius"
+
+        if (location.isNotEmpty() && date.isNotEmpty() && temperatureCelsius.isNotEmpty() && weatherType.isNotEmpty() && feelsLikeTemperatureCurrent.isNotEmpty()) {
+            // Combining the text made above
+            val textToSpeak = "Your current location is $location. " +
+                    "The date is $date. " +
+                    "The current temperature in $location is $temperatureCelsius $tempUnit." +
+                    "But it currently $feelsLikeTemperatureCurrent $tempUnit. " +
+                    "The current weather is $weatherType. "
+
+            // Text to speech the combined text
+            textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
+        } else {
+            val textToSpeak = "No data to speak. Data currently unavailable."
+            textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
+        }
+
     }
 
     // The wind details in an AlertDialog
