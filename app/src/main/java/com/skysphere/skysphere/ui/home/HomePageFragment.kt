@@ -215,7 +215,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius") ?: "Celsius"
 
-        if (temperatureCelsius.isNotEmpty() && weatherType.isNotEmpty()) {
+        if (location.isNotEmpty() && date.isNotEmpty() && temperatureCelsius.isNotEmpty() && weatherType.isNotEmpty() && feelsLikeTemperatureCurrent.isNotEmpty()) {
             // Combining the text made above
             val textToSpeak = "Your current location is $location. " +
                     "The date is $date. " +
@@ -226,7 +226,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             // Text to speech the combined text
             textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
         } else {
-            Toast.makeText(requireContext(), "No data to speak", Toast.LENGTH_LONG).show()
+            val textToSpeak = "No data to speak. Data currently unavailable."
+            textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
     }
