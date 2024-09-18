@@ -7,19 +7,13 @@
     android:background="@drawable/gradient_background"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.SkySphere.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#2690BC"
-            app:popupTheme="@style/Theme.SkySphere.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+            android:background="@android:color/transparent"
+            app:theme="@style/Theme.SkySphere.AppBarOverlay" />
 
     <include layout="@layout/content_main" />
 

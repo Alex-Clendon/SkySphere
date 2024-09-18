@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#1a9df1</color>
+    <color name="gradient_start">#178ecf</color>
+    <color name="gradient_end">#a4def5</color>
+    <color name="transparent_blue">#1A0072d6</color>
+    <color name="transparent_white">#33f0f4f5</color>
+    <color name="search_bar">#FCFEFF</color>
 </resources>
