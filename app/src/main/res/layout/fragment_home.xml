@@ -32,7 +32,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cvHourly"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="145dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="75dp"
@@ -43,10 +43,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeelsLikeTemperature">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHourlyTemperatures"
+
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/temperatureChart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="125dp"
             android:orientation="horizontal"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -55,6 +57,7 @@
             android:clipToPadding="true"/>
 
     </androidx.cardview.widget.CardView>
+
 
 
     <TextView
