@@ -2,6 +2,7 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.skysphere.skysphere.databinding.ActivityMainBinding
+import com.skysphere.skysphere.notifications.WeatherService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        // Start the WeatherService for notifications
+        startService(Intent(this, WeatherService::class.java))
     }
 
     override fun onSupportNavigateUp(): Boolean {
