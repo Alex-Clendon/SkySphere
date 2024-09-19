@@ -30,11 +30,17 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import android.app.AlertDialog
+import android.graphics.Color
 import android.speech.tts.TextToSpeech
 import android.widget.Button
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+
 
 
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
@@ -89,9 +95,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private var currentWindDirection: Double = 0.0
     private var currentWindGusts: Double = 0.0
 
-    // Declaring Recyclerview and adapter which will be used to display hourly temperatures
-    private lateinit var hourlyRecyclerView: RecyclerView
-    private lateinit var hourlyAdapter: HourlyTemperatureAdapter
+    // Declaring chart which will be used to display hourly temperatures
+    private lateinit var temperatureChart: LineChart
+
 
     // Declare the GPS Manager class that uses the user's location.
     private lateinit var gpsManager: GPSManager
@@ -157,14 +163,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             showWindDetailsDialog()
         }
 
-        // Initializing the recyclerview
-        hourlyRecyclerView = view.findViewById(R.id.rvHourlyTemperatures)
 
         // Initializing the users preferences
         sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
-        // Setting a horizontal linearlayoutmanager to arrange items horizontally
-        hourlyRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        // Initializing the chart
+        temperatureChart = view.findViewById(R.id.temperatureChart)
 
         // GPS client
         gpsManager = GPSManager(requireContext())
@@ -252,6 +256,58 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    private fun setupTemperatureChart(temperatures: List<Double>, times: List<String>) {
+        // Creating entry points for line chart
+        val entries = temperatures.mapIndexed { index, temp ->
+            Entry(index.toFloat(), temp.toFloat())
+        }
+
+        // Dataset custom appearance
+        val dataSet = LineDataSet(entries, "Hourly Temperature")
+        dataSet.valueTextColor = Color.WHITE
+        dataSet.lineWidth = 2f
+        dataSet.setCircleColor(Color.WHITE)
+        dataSet.setDrawValues(true)
+        dataSet.valueTextSize = 10f
+        dataSet.setDrawFilled(true)
+        dataSet.fillColor = Color.BLACK
+        dataSet.fillAlpha = 50
+
+        val lineData = LineData(dataSet)
+
+        // General appearance/behaviour configuration
+        temperatureChart.data = lineData
+        temperatureChart.description.isEnabled = false
+        temperatureChart.legend.isEnabled = false
+        temperatureChart.setTouchEnabled(true)
+        temperatureChart.isDoubleTapToZoomEnabled = false
+        temperatureChart.isDragEnabled = true
+
+        // X-axis configuration
+        val xAxis = temperatureChart.xAxis
+        xAxis.valueFormatter = IndexAxisValueFormatter(times)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1f
+        xAxis.labelCount = times.size
+        xAxis.textColor = Color.WHITE
+
+        // Y-axis configuration
+        val leftAxis = temperatureChart.axisLeft
+        leftAxis.axisMinimum = temperatures.minOrNull()?.toFloat()?.minus(2f) ?: 0f
+        leftAxis.axisMaximum = temperatures.maxOrNull()?.toFloat()?.plus(2f) ?: 30f
+        temperatureChart.axisRight.isEnabled = false
+        leftAxis.textColor = Color.WHITE
+
+        // Making chart scrollable
+        temperatureChart.setVisibleXRangeMaximum(6f)
+        temperatureChart.moveViewToX(0f)
+
+        // Refreshing the chart
+        temperatureChart.invalidate()
+
+
     }
 
     private fun clearCustomLocationPreferences() { // Clears custom location preferences
@@ -430,6 +486,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         // Taking only first 24 temperature values
                         val temperatures = response.body()?.hourly?.temperature_2m?.take(24) ?: emptyList()
 
+                        // Setting the times associated with the temperature
+                        val times = List(24) { index -> String.format("%02d:00", index) }
+
                         // Declared a variable to store the users preferred temperature metric unit set within the settings page
                         val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius")
 
@@ -447,6 +506,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
                         // Converts the hourly temperature for the hourly overview to whichever type the user prefers
                         val convertedTemperatures = convertTemperatures(temperatures)
+
+                        // Setting up Temperature chart after conversion to ensure graph is also updated with conversions
+                        setupTemperatureChart(convertedTemperatures, times)
 
                         // Converts the max and min temperatures for the weekly overview to whichever type the user prefers
                         // Max temperature weekly overview
@@ -571,8 +633,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         currentWindDirection = windDirection
                         currentWindGusts = displayWindGusts
 
-                        hourlyAdapter = HourlyTemperatureAdapter(convertedTemperatures)
-                        hourlyRecyclerView.adapter = hourlyAdapter
 
                     } else {
                         // If data retrieval fails, then notify user.

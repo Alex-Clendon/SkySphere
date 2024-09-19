@@ -57,4 +57,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.mpandroidchart)
+
 }
