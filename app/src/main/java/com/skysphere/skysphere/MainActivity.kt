@@ -3,6 +3,7 @@ package com.skysphere.skysphere
 import android.content.pm.PackageManager
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -44,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Start the WeatherService for notifications
-        startService(Intent(this, WeatherService::class.java))
+        // Check for permissions and start notification service
+        checkAndRequestNotificationPermission()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -53,4 +54,50 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    //Code for getting notification permissions
+    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
+
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE
+                )
+            } else {
+                // Permission already granted, start the WeatherService
+                startWeatherService()
+            }
+        } else {
+            // For versions below Android 13, notification permission is not required
+            startWeatherService()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            NOTIFICATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, start the WeatherService
+                    startWeatherService()
+                } else {
+                    // Permission denied, handle accordingly (e.g., show a message to the user)
+                }
+            }
+        }
+    }
+
+    private fun startWeatherService() {
+        startService(Intent(this, WeatherService::class.java))
+    }
 }

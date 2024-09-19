@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
@@ -18,6 +19,7 @@ class SettingsFragment : Fragment()
     private val temperatureUnitKey = "temperature_unit"
     private val windspeedUnitKey = "wind_speed_unit"
     private val rainfallUnitKey = "rainfall_unit"
+    private val severeNotificationPreferenceKey = "severe_notification_preference"
 
     // Declared the views that have been created in the XML files
     private lateinit var temperatureUnitTextView: TextView
@@ -44,11 +46,15 @@ class SettingsFragment : Fragment()
         val knotsButton: Button = view.findViewById(R.id.Knots)
         val millimetersButton: Button = view.findViewById(R.id.Millimeter)
         val inchesButton: Button = view.findViewById(R.id.Inches)
+        var severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
 
         // Assigning the views to their corresponding variables declared above
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
         windspeedUnitTextView = view.findViewById(R.id.wind_speed_details)
         rainfallUnitTextView = view.findViewById(R.id.rainfall_details)
+
+        // Determining the checked state of the weather warnings notification preference
+        severeWeatherWarningCheckBox.isChecked = sharedPreferences.getBoolean(severeNotificationPreferenceKey, false)
 
         // Setting up the buttons in the settings fragment xml file with their corresponding metric unit
         celsiusButton.setOnClickListener {
@@ -74,6 +80,9 @@ class SettingsFragment : Fragment()
         }
         inchesButton.setOnClickListener {
             saveRainfallUnit("Inches")
+        }
+        severeWeatherWarningCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            saveNotificationPreference(isChecked)
         }
 
         // Initializing the TextView of Temperature Details with the current metric unit
@@ -141,5 +150,11 @@ class SettingsFragment : Fragment()
 
         // This sets the TextView for the rainfall Details to what it equates and displays it onto the settings page
         rainfallUnitTextView.text = "The rainfall unit is currently set to $unit"
+    }
+
+    private fun saveNotificationPreference(enabled: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(severeNotificationPreferenceKey, enabled)
+        editor.apply()
     }
 }

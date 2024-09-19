@@ -3,6 +3,7 @@ package com.skysphere.skysphere.notifications
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.skysphere.skysphere.notifications.WeatherCheckWorker
@@ -17,10 +18,15 @@ class WeatherService : Service() {
 
     private fun scheduleWeatherCheck() {
         val weatherCheckRequest = PeriodicWorkRequestBuilder<WeatherCheckWorker>(
-            6, TimeUnit.HOURS
+            15, TimeUnit.MINUTES
         ).build()
 
-        WorkManager.getInstance(applicationContext).enqueue(weatherCheckRequest)
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniquePeriodicWork(
+                "weatherCheck",
+                ExistingPeriodicWorkPolicy.UPDATE,
+                weatherCheckRequest
+            )
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
