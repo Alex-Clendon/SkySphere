@@ -30,6 +30,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import android.app.AlertDialog
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Color
 import android.speech.tts.TextToSpeech
 import android.widget.Button
@@ -40,6 +43,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.skysphere.skysphere.widgets.SkySphereWidget
 import java.time.LocalDateTime
 
 
@@ -188,6 +192,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             clearCustomLocationPreferences()
             getLocation()
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
+            updateWidget()
         }
 
         // Text to speech button
@@ -663,6 +668,18 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     temperatureTextView.text = "Error: ${t.message}"
                 }
             })
+    }
+
+    // This function will update the widget when the location is changed
+    private fun updateWidget(){
+        val applicationContext = requireContext().applicationContext
+
+        val intent = Intent(requireContext(), SkySphereWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids: IntArray = AppWidgetManager.getInstance(applicationContext)
+            .getAppWidgetIds(ComponentName(applicationContext, SkySphereWidget::class.java))
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        requireContext().sendBroadcast(intent)
     }
 
     private fun saveLocationToPrefs(latitude: Double, longitude: Double) {

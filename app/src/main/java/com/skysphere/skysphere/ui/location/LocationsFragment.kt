@@ -1,6 +1,9 @@
 package com.skysphere.skysphere.ui.location
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +22,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.widgets.SkySphereWidget
 
 class LocationsFragment : Fragment(), OnMapReadyCallback {
 
@@ -80,6 +84,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         setLocationButton.setOnClickListener {
             selectedLatLng?.let { latLng ->
                 saveLocation(latLng, selectedAddress) // Save the chosen location to preferences
+                updateWidget()
             }
         }
 
@@ -115,5 +120,17 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
         // Navigate back to the home fragment
         parentFragmentManager.popBackStack()
+    }
+
+    // This function will update the widget when the location is changed
+    private fun updateWidget(){
+        val applicationContext = requireContext().applicationContext
+
+        val intent = Intent(requireContext(), SkySphereWidget::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        val ids: IntArray = AppWidgetManager.getInstance(applicationContext)
+            .getAppWidgetIds(ComponentName(applicationContext, SkySphereWidget::class.java))
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        requireContext().sendBroadcast(intent)
     }
 }
