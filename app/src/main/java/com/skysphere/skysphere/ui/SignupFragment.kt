@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -15,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.UserData
+import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class SignupFragment : Fragment() {
 
@@ -31,30 +33,6 @@ class SignupFragment : Fragment() {
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
     }
-
-    private fun signupUser(email: String, username: String, password: String) {
-
-        databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                if(!dataSnapshot.exists()) {
-                    val id = databaseReference.push().key
-                    val userData = UserData(id, email, username, password)
-                    databaseReference.child(id!!).setValue(userData)
-                    Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack()
-                }
-                else {
-                    Toast.makeText(requireContext(), "User already exists", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
 
     override fun onCreateView(
 
@@ -83,5 +61,37 @@ class SignupFragment : Fragment() {
 
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun signupUser(email: String, username: String, password: String) {
+
+        databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if(!dataSnapshot.exists()) {
+                    val id = databaseReference.push().key
+                    val userData = UserData(id, email, username, password)
+                    databaseReference.child(id!!).setValue(userData)
+                    Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
+                    val loginFragment = LoginFragment()
+                    (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+                        "Log In"
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, loginFragment)
+                        .addToBackStack(null)
+                        .commit()
+
+                    return
+                }
+                else {
+                    Toast.makeText(requireContext(), "User already exists", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
