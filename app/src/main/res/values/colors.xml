@@ -13,4 +13,6 @@
     <color name="transparent_blue">#1A0072d6</color>
     <color name="transparent_white">#33f0f4f5</color>
     <color name="search_bar">#FCFEFF</color>
+    <color name="sunset">#fa78a1</color>
+    <color name="grey">#CCCCCC</color>
 </resources>

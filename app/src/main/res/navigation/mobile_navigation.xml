@@ -28,4 +28,10 @@
         android:name="com.skysphere.skysphere.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.skysphere.skysphere.ui.LoginFragment"
+        android:label="Log In"
+        tools:layout="@layout/fragment_login" />
 </navigation>

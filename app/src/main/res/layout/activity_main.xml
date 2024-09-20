@@ -14,6 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:id="@+id/fragment_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -26,5 +31,7 @@
         android:paddingTop="10dp"
         app:itemTextColor="@color/white"
         app:itemTextAppearance="@style/NavigationTheme"
-        android:background="@color/gradient_start"/>
+        android:background="@color/gradient_start">
+
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
