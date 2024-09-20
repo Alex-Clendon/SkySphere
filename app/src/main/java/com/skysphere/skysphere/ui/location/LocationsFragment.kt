@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -22,6 +24,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.ui.home.HomePageFragment
 import com.skysphere.skysphere.widgets.SkySphereWidget
 
 class LocationsFragment : Fragment(), OnMapReadyCallback {
@@ -117,9 +120,16 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         }
 
         Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
-
-        // Navigate back to the home fragment
-        parentFragmentManager.popBackStack()
+        // Set action bar title to Home
+        val homeFragment = HomePageFragment()
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+            "Home"
+        // Swap fragment to home fragment
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment_content_main, homeFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     // This function will update the widget when the location is changed

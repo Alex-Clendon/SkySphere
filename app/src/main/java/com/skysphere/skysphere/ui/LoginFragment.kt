@@ -78,7 +78,6 @@ class LoginFragment : Fragment() {
             // Replace current fragment with sign up fragment
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.nav_host_fragment_content_main, signUpFragment)
-                .addToBackStack(null)
                 .commit()
             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                 "Sign Up"
