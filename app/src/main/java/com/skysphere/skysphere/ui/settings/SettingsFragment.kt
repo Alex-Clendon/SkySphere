@@ -26,6 +26,7 @@ class SettingsFragment : Fragment()
     private val windspeedUnitKey = "wind_speed_unit"
     private val rainfallUnitKey = "rainfall_unit"
 
+    // Object for severe notification preference key, needed for the notification functionality
     companion object {
         const val SEVERE_NOTIFICATION_PREFERENCE_KEY = "severe_notification_preference"
     }
@@ -91,6 +92,7 @@ class SettingsFragment : Fragment()
         inchesButton.setOnClickListener {
             saveRainfallUnit("Inches")
         }
+        // Setting up the listener for the severe weather warnings checkbox
         severeWeatherWarningCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (checkNotificationPermission()) {
@@ -174,12 +176,14 @@ class SettingsFragment : Fragment()
         rainfallUnitTextView.text = "The rainfall unit is currently set to $unit"
     }
 
+    // Saving the preference for the severe weather warnings notification of the user
     private fun saveNotificationPreference(enabled: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean(SEVERE_NOTIFICATION_PREFERENCE_KEY, enabled)
         editor.apply()
     }
 
+    // Checking if the notification permission has been granted
     private fun checkNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(

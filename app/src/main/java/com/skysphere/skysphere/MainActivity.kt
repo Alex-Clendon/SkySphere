@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     //Code for getting notification permissions
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
 
+    //Checks to see if notification permissions are granted and start weather service if they are.
     private fun checkAndRequestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Handles the result of the permission request
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -96,6 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Starts the weather service if notification permissions are granted
     private fun startWeatherServiceIfEnabled() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val isNotificationEnabled = sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)

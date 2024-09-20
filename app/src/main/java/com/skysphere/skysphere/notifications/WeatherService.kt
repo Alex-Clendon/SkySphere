@@ -13,8 +13,10 @@ import java.util.concurrent.TimeUnit
 class WeatherService : Service() {
 
     companion object {
+        // Including the work name here
         private const val WEATHER_CHECK_WORK_NAME = "weatherCheck"
 
+        // Including the start and stop functions for the worker here
         fun startWeatherMonitoring(context: Context) {
             val intent = Intent(context, WeatherService::class.java)
             context.startService(intent)
@@ -26,6 +28,8 @@ class WeatherService : Service() {
         }
     }
 
+    // Including the onCreate function here, if notifications are enabled, start the worker
+    // If they are disabled, cancel the worker if it was ever running.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val isNotificationEnabled = sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
@@ -40,6 +44,8 @@ class WeatherService : Service() {
         return START_STICKY
     }
 
+    // Including the schedule and cancel functions here
+    // Creates a work request to check the weather every 15 minutes
     private fun scheduleWeatherCheck() {
         val weatherCheckRequest = PeriodicWorkRequestBuilder<WeatherCheckWorker>(
             15, TimeUnit.MINUTES
@@ -53,6 +59,7 @@ class WeatherService : Service() {
             )
     }
 
+    // Cancel the worker if it was ever running
     private fun cancelWeatherCheck() {
         WorkManager.getInstance(applicationContext).cancelUniqueWork(WEATHER_CHECK_WORK_NAME)
     }

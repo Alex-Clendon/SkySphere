@@ -16,10 +16,13 @@ class WeatherCheckWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    // Get the shared preferences to check if notifications are enabled
     private val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
+    // Fetch weather data and check if it's severe, sending a notification if it is
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
+            // Create necessary values for the weather data
             val gpsManager = GPSManager(applicationContext)
             var latitude = 0.0
             var longitude = 0.0
@@ -35,6 +38,7 @@ class WeatherCheckWorker(
                 }
             })
 
+            // Get the current weather condition and check if it's severe
             val weatherData = fetchWeatherData(latitude, longitude)
             if (isSevereWeather(weatherData) && isNotificationEnabled()) {
                 NotificationManager.showSevereWeatherNotification(applicationContext)
@@ -46,10 +50,12 @@ class WeatherCheckWorker(
         }
     }
 
+    // Make sure that the notifications are enabled from settings.
     private fun isNotificationEnabled(): Boolean {
         return sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
     }
 
+    // Call the api only requesting the weather code
     private suspend fun fetchWeatherData(latitude: Double, longitude: Double): WeatherData {
         return withContext(Dispatchers.IO) {
             RetrofitInstance.instance.getWeatherData(
@@ -58,6 +64,7 @@ class WeatherCheckWorker(
         }
     }
 
+    // Check if the weather code is one of the severe codes.
     private fun isSevereWeather(weatherData: WeatherData): Boolean {
         val severeWeatherCodes = listOf(95, 96, 99) // Thunderstorm codes
         return weatherData.current.weather_code in severeWeatherCodes
