@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
@@ -57,6 +58,21 @@ class SignupFragment : Fragment() {
             else {
                 Toast.makeText(requireContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Handle redirect text click
+        // Initialize text
+        val loginRedirect = view.findViewById<TextView>(R.id.loginRedirectText)
+        // Set on click listener
+        loginRedirect.setOnClickListener {
+            val loginFragment = LoginFragment()
+            // Replace current fragment with sign up fragment
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main, loginFragment)
+                .addToBackStack(null)
+                .commit()
+            (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+                "Log In"
         }
 
         // Inflate the layout for this fragment

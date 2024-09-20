@@ -63,48 +63,73 @@
                     android:textColor="@color/gradient_start"
                     android:textSize="36sp" />
 
-                <EditText
-                    android:id="@+id/signup_username"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signup_username_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="40dp"
-                    android:background="@drawable/edit_text_border"
-                    android:drawableStart="@drawable/user_icon"
-                    android:drawablePadding="8dp"
-                    android:hint="Username"
-                    android:textColorHint="@color/grey"
-                    android:padding="8dp"
-                    android:textColor="@color/black"/>
+                    app:hintTextColor="@color/grey"
+                    app:hintTextAppearance="@color/grey">
 
-                <EditText
-                    android:id="@+id/signup_email"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/signup_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/edit_text_border"
+                        android:drawableStart="@drawable/user_icon"
+                        android:drawablePadding="8dp"
+                        android:hint="Username"
+                        android:textColorHint="@color/grey"
+                        android:padding="8dp"
+                        android:textColor="@color/black"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signup_email_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/edit_text_border"
-                    android:drawableStart="@drawable/email_icon"
-                    android:drawableEnd="@drawable/done_24"
-                    android:drawablePadding="8dp"
-                    android:hint="Email"
-                    android:textColorHint="@color/grey"
-                    android:inputType="textEmailAddress"
-                    android:padding="8dp"
-                    android:textColor="@color/black" />
+                    app:hintTextColor="@color/grey"
+                    app:hintTextAppearance="@color/grey">
 
-                <EditText
-                    android:id="@+id/signup_password"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/signup_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/edit_text_border"
+                        android:drawableStart="@drawable/email_icon"
+                        android:drawablePadding="8dp"
+                        android:hint="Email"
+                        android:textColorHint="@color/grey"
+                        android:inputType="textEmailAddress"
+                        android:padding="8dp"
+                        android:textColor="@color/black"/>
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/signup_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/edit_text_border"
-                    android:drawableStart="@drawable/password_icon"
-                    android:drawableEnd="@drawable/eye_icon"
-                    android:drawablePadding="8dp"
-                    android:hint="Password"
-                    android:textColorHint="@color/grey"
-                    android:inputType="textPassword"
-                    android:padding="8dp"
-                    android:textColor="@color/black" />
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/grey"
+                    app:hintTextColor="@color/grey"
+                    app:hintTextAppearance="@color/grey">
+                    
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/signup_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/edit_text_border"
+                        android:drawableStart="@drawable/password_icon"
+                        android:drawablePadding="8dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:padding="8dp"
+                        android:textColor="@color/black"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/signup_button"
@@ -115,6 +140,17 @@
                     android:text="Sign up"
                     android:textSize="18sp"
                     app:cornerRadius="20dp" />
+
+                <TextView
+                    android:id="@+id/loginRedirectText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:padding="8dp"
+                    android:text="Already registerd? Log in"
+                    android:textColor="@color/gradient_start"
+                    android:textSize="16sp" />
 
 
             </LinearLayout>

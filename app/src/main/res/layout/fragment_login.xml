@@ -63,33 +63,52 @@
                     android:textColor="@color/gradient_start"
                     android:textSize="36sp" />
 
-                <EditText
-                    android:id="@+id/login_username"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/login_username_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="40dp"
-                    android:background="@drawable/edit_text_border"
-                    android:drawableStart="@drawable/user_icon"
-                    android:drawablePadding="8dp"
-                    android:hint="Username"
-                    android:textColorHint="@color/grey"
-                    android:textColor="@color/black"
-                    android:padding="8dp" />
+                    app:hintTextColor="@color/grey"
+                    app:hintTextAppearance="@color/grey">
 
-                <EditText
-                    android:id="@+id/login_password"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:hintTextColor="@color/grey"
+                        android:background="@drawable/edit_text_border"
+                        android:drawableStart="@drawable/user_icon"
+                        android:drawablePadding="8dp"
+                        android:hint="Username"
+                        android:textColorHint="@color/grey"
+                        android:textColor="@color/black"
+                        android:padding="8dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/login_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/edit_text_border"
-                    android:drawableStart="@drawable/password_icon"
-                    android:drawableEnd="@drawable/eye_icon"
-                    android:drawablePadding="8dp"
-                    android:hint="Password"
-                    android:textColorHint="@color/grey"
-                    android:inputType="textPassword"
-                    android:padding="8dp"
-                    android:textColor="@color/black"/>
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/grey"
+                    app:hintTextColor="@color/grey"
+                    app:hintTextAppearance="@color/grey">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/edit_text_border"
+                        android:drawableStart="@drawable/password_icon"
+                        android:drawablePadding="8dp"
+                        android:hint="Password"
+                        android:textColorHint="@color/grey"
+                        android:inputType="textPassword"
+                        android:padding="8dp"
+                        android:textColor="@color/black"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/login_button"

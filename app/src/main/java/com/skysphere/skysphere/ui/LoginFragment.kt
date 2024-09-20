@@ -68,6 +68,8 @@ class LoginFragment : Fragment() {
                 .replace(R.id.nav_host_fragment_content_main, signUpFragment)
                 .addToBackStack(null)
                 .commit()
+            (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+                "Sign Up"
         }
 
 
@@ -86,6 +88,7 @@ class LoginFragment : Fragment() {
                         if (userData != null && userData.password == password) {
 
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                            
                             val homeFragment = HomePageFragment()
                             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                                 "Home"
