@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.UserData
 import com.skysphere.skysphere.ui.home.HomePageFragment
@@ -95,8 +96,9 @@ class LoginFragment : Fragment() {
 
                         if (userData != null && userData.password == password) {
 
+                            (activity as? MainActivity)?.updateNavigationMenu(true)
+
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-                            activity?.window?.navigationBarColor = originalNavBarColor
 
                             val homeFragment = HomePageFragment()
                             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
@@ -107,6 +109,7 @@ class LoginFragment : Fragment() {
                                 .addToBackStack(null)
                                 .commit()
 
+                            activity?.window?.navigationBarColor = originalNavBarColor
                             return
                         }
                     }
