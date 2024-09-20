@@ -373,6 +373,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
         locationTextView.text = locality ?: "Unknown Location"
+        saveLocationToPrefs(latitude, longitude) // Save location to SharedPreferences
         getWeatherData(latitude, longitude)
     }
 
@@ -662,6 +663,15 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     temperatureTextView.text = "Error: ${t.message}"
                 }
             })
+    }
+
+    private fun saveLocationToPrefs(latitude: Double, longitude: Double) {
+        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            putFloat("latitude", latitude.toFloat())
+            putFloat("longitude", longitude.toFloat())
+            apply()
+        }
     }
 
     // Function to convert date string into day name

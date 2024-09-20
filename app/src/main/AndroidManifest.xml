@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,10 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkySphere"
         tools:targetApi="31">
+        <receiver
+            android:name=".widgets.SkySphereWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sky_sphere_widget_info"/>
+        </receiver>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_map_api_key"/>
+            android:value="@string/google_map_api_key" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -40,6 +52,5 @@
         <service android:name=".notifications.WeatherService" android:exported="false" />
 
     </application>
-
 
 </manifest>
