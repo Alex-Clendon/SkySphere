@@ -1,7 +1,10 @@
 package com.skysphere.skysphere.ui.settings
 
+import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +12,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.notifications.WeatherService
 
 class SettingsFragment : Fragment()
 {
@@ -19,7 +25,10 @@ class SettingsFragment : Fragment()
     private val temperatureUnitKey = "temperature_unit"
     private val windspeedUnitKey = "wind_speed_unit"
     private val rainfallUnitKey = "rainfall_unit"
-    private val severeNotificationPreferenceKey = "severe_notification_preference"
+
+    companion object {
+        const val SEVERE_NOTIFICATION_PREFERENCE_KEY = "severe_notification_preference"
+    }
 
     // Declared the views that have been created in the XML files
     private lateinit var temperatureUnitTextView: TextView
@@ -46,15 +55,16 @@ class SettingsFragment : Fragment()
         val knotsButton: Button = view.findViewById(R.id.Knots)
         val millimetersButton: Button = view.findViewById(R.id.Millimeter)
         val inchesButton: Button = view.findViewById(R.id.Inches)
-        var severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
+        val severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
 
         // Assigning the views to their corresponding variables declared above
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
         windspeedUnitTextView = view.findViewById(R.id.wind_speed_details)
         rainfallUnitTextView = view.findViewById(R.id.rainfall_details)
 
-        // Determining the checked state of the weather warnings notification preference
-        severeWeatherWarningCheckBox.isChecked = sharedPreferences.getBoolean(severeNotificationPreferenceKey, false)
+        // Determining the checked state of the weather warnings notification preference (off by default)
+        severeWeatherWarningCheckBox.isChecked = sharedPreferences.getBoolean(
+            SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
 
         // Setting up the buttons in the settings fragment xml file with their corresponding metric unit
         celsiusButton.setOnClickListener {
@@ -82,7 +92,19 @@ class SettingsFragment : Fragment()
             saveRainfallUnit("Inches")
         }
         severeWeatherWarningCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            saveNotificationPreference(isChecked)
+            if (isChecked) {
+                if (checkNotificationPermission()) {
+                    saveNotificationPreference(true)
+                    WeatherService.startWeatherMonitoring(requireContext())
+                } else {
+                    // Uncheck the box if permission is not granted
+                    severeWeatherWarningCheckBox.isChecked = false
+                    Toast.makeText(context, "Notification permission is required for severe weather alerts", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                saveNotificationPreference(false)
+                WeatherService.stopWeatherMonitoring(requireContext())
+            }
         }
 
         // Initializing the TextView of Temperature Details with the current metric unit
@@ -154,7 +176,18 @@ class SettingsFragment : Fragment()
 
     private fun saveNotificationPreference(enabled: Boolean) {
         val editor = sharedPreferences.edit()
-        editor.putBoolean(severeNotificationPreferenceKey, enabled)
+        editor.putBoolean(SEVERE_NOTIFICATION_PREFERENCE_KEY, enabled)
         editor.apply()
+    }
+
+    private fun checkNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
     }
 }

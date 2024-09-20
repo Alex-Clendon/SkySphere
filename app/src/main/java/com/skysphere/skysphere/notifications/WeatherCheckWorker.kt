@@ -7,6 +7,7 @@ import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.GPSManager
 import com.skysphere.skysphere.notifications.NotificationManager
+import com.skysphere.skysphere.ui.settings.SettingsFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,6 +15,8 @@ class WeatherCheckWorker(
     context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
+
+    private val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
@@ -33,7 +36,7 @@ class WeatherCheckWorker(
             })
 
             val weatherData = fetchWeatherData(latitude, longitude)
-            if (isSevereWeather(weatherData)) {
+            if (isSevereWeather(weatherData) && isNotificationEnabled()) {
                 NotificationManager.showSevereWeatherNotification(applicationContext)
             }
 
@@ -41,6 +44,10 @@ class WeatherCheckWorker(
         } catch (e: Exception) {
             Result.failure()
         }
+    }
+
+    private fun isNotificationEnabled(): Boolean {
+        return sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
     }
 
     private suspend fun fetchWeatherData(latitude: Double, longitude: Double): WeatherData {

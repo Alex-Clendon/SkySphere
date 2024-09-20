@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
+import com.skysphere.skysphere.ui.settings.SettingsFragment
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -70,12 +71,10 @@ class MainActivity : AppCompatActivity() {
                     NOTIFICATION_PERMISSION_REQUEST_CODE
                 )
             } else {
-                // Permission already granted, start the WeatherService
-                startWeatherService()
+                startWeatherServiceIfEnabled()
             }
         } else {
-            // For versions below Android 13, notification permission is not required
-            startWeatherService()
+            startWeatherServiceIfEnabled()
         }
     }
 
@@ -88,8 +87,8 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             NOTIFICATION_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted, start the WeatherService
-                    startWeatherService()
+                    // Permission Granted, start the weather service for notifications
+                    startWeatherServiceIfEnabled()
                 } else {
                     // Permission denied, handle accordingly (e.g., show a message to the user)
                 }
@@ -97,7 +96,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startWeatherService() {
-        startService(Intent(this, WeatherService::class.java))
+    private fun startWeatherServiceIfEnabled() {
+        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val isNotificationEnabled = sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+        if (isNotificationEnabled) {
+            WeatherService.startWeatherMonitoring(this)
+        }
     }
 }
