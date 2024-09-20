@@ -40,7 +40,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-
+import java.time.LocalDateTime
 
 
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
@@ -395,6 +395,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     // Checks to see if we got a response from the API
                     if (response.isSuccessful) {
 
+                        // Get the current time
+                        val currentTime = response.body()?.current?.time
+
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperatureCelsius = response.body()?.current?.temperature_2m
@@ -468,7 +471,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                             }
                             putInt("weather_code", weatherCode ?: 0)
                             putLong("last_updated", System.currentTimeMillis())
-
+                            putString("current_time", currentTime)
                             apply()
                         }
 
