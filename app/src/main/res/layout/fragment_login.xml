@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_fragment"
     android:orientation="vertical"
     android:background="@drawable/login_background"
     tools:context=".ui.LoginFragment"

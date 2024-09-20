@@ -2,7 +2,8 @@ package com.skysphere.skysphere
 
 data class UserData(
 
-    val email: String? = null,
+    val id: String? = null,
     val username: String? = null,
+    val email: String? = null,
     val password: String? = null
 )
