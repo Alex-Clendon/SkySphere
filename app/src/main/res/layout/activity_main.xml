@@ -26,5 +26,7 @@
         android:paddingTop="10dp"
         app:itemTextColor="@color/white"
         app:itemTextAppearance="@style/NavigationTheme"
-        android:background="@color/gradient_start"/>
+        android:background="@color/gradient_start">
+
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
