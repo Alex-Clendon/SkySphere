@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,6 +22,8 @@ import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class SignupFragment : Fragment() {
 
+    private var originalNavBarColor: Int = 0
+
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
     private lateinit var signUpButton: Button
@@ -33,6 +36,8 @@ class SignupFragment : Fragment() {
 
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
+
+        originalNavBarColor = activity?.window?.navigationBarColor ?: Color.BLACK
     }
 
     override fun onCreateView(
@@ -89,6 +94,7 @@ class SignupFragment : Fragment() {
                     val userData = UserData(id, email, username, password)
                     databaseReference.child(id!!).setValue(userData)
                     Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
+                    activity?.window?.navigationBarColor = originalNavBarColor
                     val loginFragment = LoginFragment()
                     (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                         "Log In"
@@ -109,5 +115,11 @@ class SignupFragment : Fragment() {
                 Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Reset the navigation bar color
+        activity?.window?.navigationBarColor = originalNavBarColor
     }
 }

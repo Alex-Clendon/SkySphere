@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -22,6 +24,8 @@ import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class LoginFragment : Fragment() {
 
+    private var originalNavBarColor: Int = 0
+
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
     private lateinit var loginButton: Button
@@ -33,6 +37,8 @@ class LoginFragment : Fragment() {
 
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
+
+        originalNavBarColor = activity?.window?.navigationBarColor ?: Color.BLACK
     }
 
     override fun onCreateView(
@@ -40,6 +46,8 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.sunset)
 
         loginButton = view.findViewById(R.id.login_button)
         usernameText = view.findViewById(R.id.login_username)
@@ -88,7 +96,8 @@ class LoginFragment : Fragment() {
                         if (userData != null && userData.password == password) {
 
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-                            
+                            activity?.window?.navigationBarColor = originalNavBarColor
+
                             val homeFragment = HomePageFragment()
                             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                                 "Home"
@@ -109,6 +118,12 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Reset the navigation bar color
+        activity?.window?.navigationBarColor = originalNavBarColor
     }
 
 }
