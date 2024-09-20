@@ -36,9 +36,10 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize firebase variables, table = "users"
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
-
+        // Store OG nav bar colour
         originalNavBarColor = activity?.window?.navigationBarColor ?: Color.BLACK
     }
 
@@ -47,18 +48,20 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-
+        // Change nav bar colour to match new theme
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.sunset)
-
+        // Initialize UI variables
         loginButton = view.findViewById(R.id.login_button)
         usernameText = view.findViewById(R.id.login_username)
         passwordText = view.findViewById(R.id.login_password)
 
         loginButton.setOnClickListener {
+            // Store data from input fields
             val username = usernameText.text.toString()
             val password = passwordText.text.toString()
-
+            // Check if data is not null
             if (username.isNotEmpty() && password.isNotEmpty()) {
+                // Call loginUser if data is valid
                 loginUser(username, password)
             }
             else {
@@ -86,24 +89,26 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser(username: String, password: String) {
+        // Order database by username and compare data
         databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // If data already exists in the table, and username and password matches, log the user in
                 if(dataSnapshot.exists()) {
 
                     for (userSnapshot in dataSnapshot.children) {
                         val userData = userSnapshot.getValue(UserData::class.java)
 
                         if (userData != null && userData.password == password) {
-
+                            // Set login flag to true
                             (activity as? MainActivity)?.updateNavigationMenu(true)
 
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-
+                            // Set action bar title to Home
                             val homeFragment = HomePageFragment()
                             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                                 "Home"
-
+                            // Swap fragment to home fragment
                             requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.nav_host_fragment_content_main, homeFragment)
                                 .addToBackStack(null)
@@ -114,9 +119,10 @@ class LoginFragment : Fragment() {
                         }
                     }
                 }
+                // If data doesn't match, pop a message
                 Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
             }
-
+            // Handle database error
             override fun onCancelled(databaseError: DatabaseError) {
                 Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }

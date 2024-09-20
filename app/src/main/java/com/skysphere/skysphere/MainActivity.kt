@@ -43,10 +43,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        // Create an on click listener for the log out item
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> {
-                    // Handle logout
+                    // Set login flag to false
                     updateNavigationMenu(false)
                     true // Indicate that the logout was handled
                 }
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
+        // Set login flag to false
         updateNavigationMenu(false)
 
     }
@@ -69,7 +70,9 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    // Function to swap the nav menu depending on if the user is logged in or not
     public fun updateNavigationMenu(isLoggedIn: Boolean) {
+
         val navView: NavigationView = binding.navView
         navView.menu.clear()
         if (!isLoggedIn) {

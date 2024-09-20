@@ -22,8 +22,6 @@ import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class SignupFragment : Fragment() {
 
-    private var originalNavBarColor: Int = 0
-
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
     private lateinit var signUpButton: Button
@@ -34,10 +32,9 @@ class SignupFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
+        // Initialize firebase variables, table = "users"
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
-
-        originalNavBarColor = activity?.window?.navigationBarColor ?: Color.BLACK
     }
 
     override fun onCreateView(
@@ -46,19 +43,21 @@ class SignupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_signup, container, false)
-
+        // Initialize UI variables
         signUpButton = view.findViewById(R.id.signup_button)
         signUpEmail = view.findViewById(R.id.signup_email)
         signUpUsername = view.findViewById(R.id.signup_username)
         signUpPassword = view.findViewById(R.id.signup_password)
 
         signUpButton.setOnClickListener {
+            // Store data from input fields
             val signUpUsername = signUpUsername.text.toString()
             val signUpPassword = signUpPassword.text.toString()
             val signUpEmail = signUpEmail.text.toString()
-
+            // Check if data is not null
             if (signUpUsername.isNotEmpty() && signUpPassword.isNotEmpty()) {
-                signupUser(signUpEmail, signUpUsername, signUpPassword)
+                // Call registerUser if data is valid
+                registerUser(signUpEmail, signUpUsername, signUpPassword)
             }
             else {
                 Toast.makeText(requireContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show()
@@ -84,21 +83,21 @@ class SignupFragment : Fragment() {
         return view
     }
 
-    private fun signupUser(email: String, username: String, password: String) {
-
+    private fun registerUser(email: String, username: String, password: String) {
+        // Order database by username and compare data
         databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
+                // If data doesn't already exist in the table, store the values
                 if(!dataSnapshot.exists()) {
                     val id = databaseReference.push().key
                     val userData = UserData(id, email, username, password)
                     databaseReference.child(id!!).setValue(userData)
                     Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
-                    activity?.window?.navigationBarColor = originalNavBarColor
                     val loginFragment = LoginFragment()
+                    // Set actionbar title to Log In
                     (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                         "Log In"
-
+                    // Swap fragment to log in fragment
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_content_main, loginFragment)
                         .addToBackStack(null)
@@ -106,20 +105,15 @@ class SignupFragment : Fragment() {
 
                     return
                 }
+                // If data already exists, pop a message instead
                 else {
                     Toast.makeText(requireContext(), "User already exists", Toast.LENGTH_SHORT).show()
                 }
             }
-
+            // Handle database error
             override fun onCancelled(databaseError: DatabaseError) {
                 Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Reset the navigation bar color
-        activity?.window?.navigationBarColor = originalNavBarColor
     }
 }
