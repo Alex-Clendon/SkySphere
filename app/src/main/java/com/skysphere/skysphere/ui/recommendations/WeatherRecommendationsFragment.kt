@@ -1,17 +1,22 @@
 package com.skysphere.skysphere.ui.recommendations
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.API.WeatherType
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 class WeatherRecommendationsFragment : Fragment() {
 
     private lateinit var recommendationsTextView: TextView
@@ -41,8 +46,9 @@ class WeatherRecommendationsFragment : Fragment() {
         val temperatureCelsius = sharedPrefs.getFloat("temperature_celsius", 0f)
         val weatherCode = sharedPrefs.getInt("weather_code", 0)
         val lastUpdated = sharedPrefs.getLong("last_updated", 0)
+        val currentTime = sharedPrefs.getString("current_time", null)
 
-        val isDay = isDaytime()
+        val isDay = isDaytime(currentTime)
         val recommendations = getRecommendations(temperatureCelsius.toDouble(), weatherCode, isDay)
         recommendationsTextView.text = recommendations
 
@@ -56,9 +62,18 @@ class WeatherRecommendationsFragment : Fragment() {
     }
 
     // Check if it's currently daytime (between 6 AM and 6 PM)
-    private fun isDaytime(): Boolean {
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        return hour in 6..17
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun isDaytime(timeString: String?): Boolean {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
+            val dateTime = LocalDateTime.parse(timeString, formatter)
+            val hour = dateTime.hour
+            hour in 6..17
+        } catch (e: Exception) {
+            // If there is an error parsing the time, default to using time of local device
+            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            hour in 6..17
+        }
     }
 
     // Gathering weather recommendations by giving the temp, weather code and isday method using the
