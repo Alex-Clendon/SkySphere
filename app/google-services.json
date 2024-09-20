@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935401974162",
+    "project_id": "skysphere-e7bc0",
+    "storage_bucket": "skysphere-e7bc0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935401974162:android:ffe8d37052ec199223b94b",
+        "android_client_info": {
+          "package_name": "com.skysphere.skysphere"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy5OR7F3NU0GG9tHAgw0ApHP5WRVq-5xk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

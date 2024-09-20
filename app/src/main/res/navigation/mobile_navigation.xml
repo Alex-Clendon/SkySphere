@@ -18,8 +18,20 @@
         tools:layout="@layout/fragment_locations" />
 
     <fragment
+        android:id="@+id/nav_recommendations"
+        android:name="com.skysphere.skysphere.ui.recommendations.WeatherRecommendationsFragment"
+        android:label="@string/menu_recommendations"
+        tools:layout="@layout/fragment_weather_recommendations" />
+
+    <fragment
         android:id="@+id/nav_settings"
         android:name="com.skysphere.skysphere.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.skysphere.skysphere.ui.LoginFragment"
+        android:label="Log In"
+        tools:layout="@layout/fragment_login" />
 </navigation>

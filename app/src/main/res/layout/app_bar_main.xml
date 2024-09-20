@@ -12,7 +12,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
+            android:background="@color/gradient_start"
             app:theme="@style/Theme.SkySphere.AppBarOverlay" />
 
     <include layout="@layout/content_main" />
