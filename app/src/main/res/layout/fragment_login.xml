@@ -44,7 +44,8 @@
             android:layout_marginEnd="49dp"
             android:layout_marginBottom="288dp"
             android:elevation="20dp"
-            app:cardCornerRadius="30dp">
+            app:cardCornerRadius="30dp"
+            app:cardBackgroundColor="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,6 +72,8 @@
                     android:drawableStart="@drawable/user_icon"
                     android:drawablePadding="8dp"
                     android:hint="Username"
+                    android:textColorHint="@color/grey"
+                    android:textColor="@color/black"
                     android:padding="8dp" />
 
                 <EditText
@@ -83,8 +86,10 @@
                     android:drawableEnd="@drawable/eye_icon"
                     android:drawablePadding="8dp"
                     android:hint="Password"
+                    android:textColorHint="@color/grey"
                     android:inputType="textPassword"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:textColor="@color/black"/>
 
                 <Button
                     android:id="@+id/login_button"
