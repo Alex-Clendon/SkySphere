@@ -670,6 +670,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             })
     }
 
+    // This function will update the widget when the location is changed
     private fun updateWidget(){
         val applicationContext = requireContext().applicationContext
 
