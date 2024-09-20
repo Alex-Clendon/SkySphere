@@ -40,7 +40,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-
+import java.time.LocalDateTime
 
 
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
@@ -395,6 +395,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     // Checks to see if we got a response from the API
                     if (response.isSuccessful) {
 
+                        // Get the current time
+                        val currentTime = response.body()?.current?.time
+
                         // Create variables to store the data retrieved from the API.
                         val weatherCode = response.body()?.current?.weather_code
                         val temperatureCelsius = response.body()?.current?.temperature_2m
@@ -459,6 +462,18 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val windSpeed = response.body()?.hourly?.wind_speed_10m?.get(0) ?: 0.0
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
+
+                        // Save current weather data for use in recommendations fragment
+                        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
+                        with(sharedPrefs.edit()) {
+                            if (temperatureCelsius != null) {
+                                putFloat("temperature_celsius", temperatureCelsius.toFloat())
+                            }
+                            putInt("weather_code", weatherCode ?: 0)
+                            putLong("last_updated", System.currentTimeMillis())
+                            putString("current_time", currentTime)
+                            apply()
+                        }
 
                         //  Declared a variable to store the users preferred wind speed metric unit set within the settings page
                         val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s")

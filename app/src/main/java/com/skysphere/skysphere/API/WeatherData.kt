@@ -8,6 +8,7 @@ data class WeatherData(
 )
 
 data class Current(
+    val time: String,
     val weather_code: Int,
     val temperature_2m: Double,
     val apparent_temperature: Double
