@@ -460,6 +460,18 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val windDirection = response.body()?.hourly?.wind_direction_10m?.get(0) ?: 0.0
                         val windGusts = response.body()?.hourly?.wind_gusts_10m?.get(0) ?: 0.0
 
+                        // Save current weather data for use in recommendations fragment
+                        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
+                        with(sharedPrefs.edit()) {
+                            if (temperatureCelsius != null) {
+                                putFloat("temperature_celsius", temperatureCelsius.toFloat())
+                            }
+                            putInt("weather_code", weatherCode ?: 0)
+                            putLong("last_updated", System.currentTimeMillis())
+
+                            apply()
+                        }
+
                         //  Declared a variable to store the users preferred wind speed metric unit set within the settings page
                         val windSpeedUnit = sharedPreferences.getString("wind_speed_unit", "m/s")
 
