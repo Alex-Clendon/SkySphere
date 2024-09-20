@@ -106,6 +106,7 @@ class LoginFragment : Fragment() {
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
                             // Set action bar title to Home
                             val homeFragment = HomePageFragment()
+                            activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
                             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                                 "Home"
                             // Swap fragment to home fragment
@@ -113,8 +114,6 @@ class LoginFragment : Fragment() {
                                 .replace(R.id.nav_host_fragment_content_main, homeFragment)
                                 .addToBackStack(null)
                                 .commit()
-
-                            activity?.window?.navigationBarColor = originalNavBarColor
                             return
                         }
                     }
