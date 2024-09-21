@@ -41,6 +41,7 @@ class SettingsFragment : Fragment()
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         // Initializing a SharedPreferences object called sharedPreferences so that the user can access the
         // shared preferences, allowing you to read and write preferences (such as user settings or application state)

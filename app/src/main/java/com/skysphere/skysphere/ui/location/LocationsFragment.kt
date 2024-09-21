@@ -41,6 +41,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_locations, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
         autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field

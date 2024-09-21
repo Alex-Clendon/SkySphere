@@ -37,6 +37,7 @@ import android.graphics.Color
 import android.speech.tts.TextToSpeech
 import android.widget.Button
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -116,6 +117,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         // Assign the views to variables declared above.
         dateTextView = view.findViewById(R.id.tvDate)

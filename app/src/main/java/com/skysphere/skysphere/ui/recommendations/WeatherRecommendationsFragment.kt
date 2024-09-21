@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.API.WeatherType
@@ -28,6 +29,7 @@ class WeatherRecommendationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_weather_recommendations, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         //Initialize TextViews for displaying recommendations and last updated.
         recommendationsTextView = view.findViewById(R.id.tvRecommendations)

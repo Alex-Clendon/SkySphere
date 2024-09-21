@@ -51,9 +51,9 @@ class SignupFragment : Fragment() {
 
         signUpButton.setOnClickListener {
             // Store data from input fields
-            val signUpUsername = signUpUsername.text.toString()
-            val signUpPassword = signUpPassword.text.toString()
-            val signUpEmail = signUpEmail.text.toString()
+            val signUpUsername = signUpUsername.text.toString().trim()
+            val signUpPassword = signUpPassword.text.toString().trim()
+            val signUpEmail = signUpEmail.text.toString().trim()
             // Check if data is not null
             if (signUpUsername.isNotEmpty() && signUpPassword.isNotEmpty()) {
                 // Call registerUser if data is valid

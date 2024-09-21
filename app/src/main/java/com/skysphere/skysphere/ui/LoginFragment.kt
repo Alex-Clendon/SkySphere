@@ -25,8 +25,6 @@ import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class LoginFragment : Fragment() {
 
-    private var originalNavBarColor: Int = 0
-
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
     private lateinit var loginButton: Button
@@ -39,8 +37,6 @@ class LoginFragment : Fragment() {
         // Initialize firebase variables, table = "users"
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
-        // Store OG nav bar colour
-        originalNavBarColor = activity?.window?.navigationBarColor ?: Color.BLACK
     }
 
     override fun onCreateView(
@@ -57,7 +53,7 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             // Store data from input fields
-            val username = usernameText.text.toString()
+            val username = usernameText.text.toString().trim()
             val password = passwordText.text.toString()
             // Check if data is not null
             if (username.isNotEmpty() && password.isNotEmpty()) {
@@ -125,12 +121,6 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Reset the navigation bar color
-        activity?.window?.navigationBarColor = originalNavBarColor
     }
 
 }
