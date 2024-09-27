@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -99,17 +100,25 @@ class LoginFragment : Fragment() {
                             (activity as? MainActivity)?.updateNavigationMenu(true)
 
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-                            // Set action bar title to Home
-                            val homeFragment = HomePageFragment()
+
+                            // Set action bar title to Home and change the navigation bar color
                             activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
-                            (activity as AppCompatActivity?)!!.supportActionBar!!.title =
-                                "Home"
+                            (activity as? AppCompatActivity)?.supportActionBar?.let { actionBar ->
+                                actionBar.title = "Home"
+                            }
+
+                            // Clear back stack to remove login page and previous fragments
+                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
                             // Swap fragment to home fragment
+                            val homeFragment = HomePageFragment()
                             requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.nav_host_fragment_content_main, homeFragment)
-                                .commit()
+                                .commitNow()
+
                             return
                         }
+
                     }
                 }
                 // If data doesn't match, pop a message
