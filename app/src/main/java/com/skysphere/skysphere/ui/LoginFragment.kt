@@ -107,7 +107,6 @@ class LoginFragment : Fragment() {
                             // Swap fragment to home fragment
                             requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(R.id.nav_host_fragment_content_main, homeFragment)
-                                .addToBackStack(null)
                                 .commit()
                             return
                         }
