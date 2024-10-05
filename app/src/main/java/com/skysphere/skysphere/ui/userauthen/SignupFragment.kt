@@ -1,6 +1,5 @@
-package com.skysphere.skysphere.ui
+package com.skysphere.skysphere.ui.userauthen
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.UserData
-import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class SignupFragment : Fragment() {
 

@@ -21,6 +21,10 @@
             android:icon="@drawable/baseline_settings_24"
             android:title="@string/menu_settings" />
         <item
+            android:id="@+id/nav_add_friend"
+            android:title="Add Friend"
+            android:icon="@drawable/baseline_person_add_24"/>
+        <item
             android:id="@+id/nav_logout"
             android:title="Log Out"
             android:icon="@drawable/user_icon"/>

@@ -1,6 +1,5 @@
-package com.skysphere.skysphere.ui
+package com.skysphere.skysphere.ui.userauthen
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

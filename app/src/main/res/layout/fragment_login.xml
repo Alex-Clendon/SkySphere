@@ -7,7 +7,7 @@
     android:id="@+id/login_fragment"
     android:orientation="vertical"
     android:background="@drawable/login_background"
-    tools:context=".ui.LoginFragment"
+    tools:context=".ui.userauthen.LoginFragment"
     android:gravity="center">
 
     <LinearLayout
