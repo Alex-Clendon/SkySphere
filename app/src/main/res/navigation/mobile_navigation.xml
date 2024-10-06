@@ -40,4 +40,9 @@
         android:name="com.skysphere.skysphere.ui.userauthen.LoginFragment"
         android:label="Log In"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/nav_signup"
+        android:name="com.skysphere.skysphere.ui.SignupFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_signup" />
 </navigation>

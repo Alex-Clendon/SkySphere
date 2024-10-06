@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -69,11 +70,10 @@ class LoginFragment : Fragment() {
         val signUpRedirect = view.findViewById<TextView>(R.id.signupRedirectText)
         // Set on click listener
         signUpRedirect.setOnClickListener {
-            val signUpFragment = SignupFragment()
-            // Replace current fragment with sign up fragment
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, signUpFragment)
-                .commit()
+            val navController = findNavController()
+            navController.popBackStack()
+            // Use NavController to navigate to HomeFragment
+            navController.navigate(R.id.nav_signup)
             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                 "Sign Up"
         }
@@ -98,18 +98,21 @@ class LoginFragment : Fragment() {
                             (activity as? MainActivity)?.updateNavigationMenu(true)
 
                             Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-                            // Set action bar title to Home
-                            val homeFragment = HomePageFragment()
+
+                            // Set action bar title to Home and change the navigation bar color
                             activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
-                            (activity as AppCompatActivity?)!!.supportActionBar!!.title =
-                                "Home"
-                            // Swap fragment to home fragment
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, homeFragment)
-                                .addToBackStack(null)
-                                .commit()
+                            (activity as? AppCompatActivity)?.supportActionBar?.let { actionBar ->
+                                actionBar.title = "Home"
+                            }
+
+                            // Clear back stack to remove login page and previous fragments
+                            val navController = findNavController()
+                            navController.popBackStack()
+                            // Use NavController to navigate to HomeFragment
+                            navController.navigate(R.id.nav_home)
                             return
                         }
+
                     }
                 }
                 // If data doesn't match, pop a message
