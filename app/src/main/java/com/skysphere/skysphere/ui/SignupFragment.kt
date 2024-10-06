@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -69,12 +70,10 @@ class SignupFragment : Fragment() {
         val loginRedirect = view.findViewById<TextView>(R.id.loginRedirectText)
         // Set on click listener
         loginRedirect.setOnClickListener {
-            val loginFragment = LoginFragment()
-            // Replace current fragment with sign up fragment
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, loginFragment)
-                .addToBackStack(null)
-                .commit()
+            val navController = findNavController()
+            navController.popBackStack()
+            // Use NavController to navigate to LoginFragment
+            navController.navigate(R.id.nav_login)
             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                 "Log In"
         }
@@ -93,16 +92,14 @@ class SignupFragment : Fragment() {
                     val userData = UserData(id, email, username, password)
                     databaseReference.child(id!!).setValue(userData)
                     Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
-                    val loginFragment = LoginFragment()
                     // Set actionbar title to Log In
                     (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                         "Log In"
                     // Swap fragment to log in fragment
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, loginFragment)
-                        .addToBackStack(null)
-                        .commit()
-
+                    val navController = findNavController()
+                    navController.popBackStack()
+                    // Use NavController to navigate to HomeFragment
+                    navController.navigate(R.id.nav_home)
                     return
                 }
                 // If data already exists, pop a message instead

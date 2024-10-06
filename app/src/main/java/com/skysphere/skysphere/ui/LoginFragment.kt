@@ -72,11 +72,10 @@ class LoginFragment : Fragment() {
         val signUpRedirect = view.findViewById<TextView>(R.id.signupRedirectText)
         // Set on click listener
         signUpRedirect.setOnClickListener {
-            val signUpFragment = SignupFragment()
-            // Replace current fragment with sign up fragment
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main, signUpFragment)
-                .commit()
+            val navController = findNavController()
+            navController.popBackStack()
+            // Use NavController to navigate to HomeFragment
+            navController.navigate(R.id.nav_signup)
             (activity as AppCompatActivity?)!!.supportActionBar!!.title =
                 "Sign Up"
         }
@@ -112,7 +111,7 @@ class LoginFragment : Fragment() {
                             val navController = findNavController()
                             navController.popBackStack()
                             // Use NavController to navigate to HomeFragment
-                            navController.navigate(R.id.nav_home)  // Navigate to the home fragment
+                            navController.navigate(R.id.nav_home)
                             return
                         }
 
