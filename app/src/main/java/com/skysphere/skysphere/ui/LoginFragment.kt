@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -108,14 +109,10 @@ class LoginFragment : Fragment() {
                             }
 
                             // Clear back stack to remove login page and previous fragments
-                            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
-                            // Swap fragment to home fragment
-                            val homeFragment = HomePageFragment()
-                            requireActivity().supportFragmentManager.beginTransaction()
-                                .replace(R.id.nav_host_fragment_content_main, homeFragment)
-                                .commitNow()
-
+                            val navController = findNavController()
+                            navController.popBackStack()
+                            // Use NavController to navigate to HomeFragment
+                            navController.navigate(R.id.nav_home)  // Navigate to the home fragment
                             return
                         }
 
