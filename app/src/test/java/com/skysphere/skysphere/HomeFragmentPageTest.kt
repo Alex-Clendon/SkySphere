@@ -1,4 +1,5 @@
-pac
+package com.skysphere.skysphere
+
 import android.os.Build
 import android.widget.TextView
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -63,4 +64,4 @@ class HomePageFragmentTest {
             assertNotEquals(initialRefreshText, updatedRefreshText)
         }
     }
-}kage com.skysphere.skysphere
+}
