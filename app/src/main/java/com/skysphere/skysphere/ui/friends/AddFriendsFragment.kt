@@ -23,10 +23,10 @@ import com.skysphere.skysphere.UserData
 class AddFriendsFragment : Fragment() {
 
     private lateinit var firebaseDatabase: FirebaseDatabase
-    private lateinit var databaseReference: DatabaseReference
+    lateinit var databaseReference: DatabaseReference
     private lateinit var searchBar: EditText
     private lateinit var searchButton: ImageButton
-    private lateinit var searchResults: RecyclerView
+    lateinit var searchResults: RecyclerView
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +68,7 @@ class AddFriendsFragment : Fragment() {
                 val users = mutableListOf<UserData>()
                 for (userSnapshot in dataSnapshot.children) {
                     val user = userSnapshot.getValue(UserData::class.java)
-                    user?.let { users.add(it as UserData) }
+                    user?.let { users.add(it) }
                 }
                 updateRecyclerView(users)
             }
@@ -78,7 +78,7 @@ class AddFriendsFragment : Fragment() {
         })
     }
 
-    private fun updateRecyclerView(users: List<UserData>) {
+    fun updateRecyclerView(users: List<UserData>) {
         userAdapter = UserAdapter(users)
         searchResults.adapter = userAdapter
     }
