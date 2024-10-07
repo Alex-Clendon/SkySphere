@@ -20,7 +20,7 @@
             tools:context=".ui.details.DetailsFragment">
 
             <TextView
-                android:id="@+id/location_id"
+                android:id="@+id/tvLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
@@ -50,7 +50,7 @@
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/location_id">
+                app:layout_constraintTop_toBottomOf="@id/tvLocation">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                         android:layout_height="110dp"
                         android:src="@drawable/ic_cloudy"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintBottom_toBottomOf="@id/tvTemperature" />
 
                     <TextView
                         android:id="@+id/tvTemperature"
@@ -79,7 +79,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tempHigh"
+                        android:id="@+id/tvTempHigh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="12°"
@@ -90,7 +90,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvTemperature" />
 
                     <TextView
-                        android:id="@+id/high_low_divider"
+                        android:id="@+id/tvTempDivider"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -98,7 +98,7 @@
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/tempHigh"
+                        app:layout_constraintStart_toEndOf="@id/tvTempHigh"
                         app:layout_constraintTop_toBottomOf="@id/tvTemperature" />
 
                     <TextView
@@ -110,7 +110,7 @@
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="italic"
-                        app:layout_constraintStart_toEndOf="@id/high_low_divider"
+                        app:layout_constraintStart_toEndOf="@id/tvTempDivider"
                         app:layout_constraintTop_toBottomOf="@id/tvTemperature" />
 
                     <TextView
@@ -123,7 +123,7 @@
                         android:textSize="18sp"
                         android:textStyle="italic"
                         app:layout_constraintStart_toStartOf="@id/tvTemperature"
-                        app:layout_constraintTop_toBottomOf="@id/tempHigh" />
+                        app:layout_constraintTop_toBottomOf="@id/tvTempHigh" />
 
 
                     <TextView
@@ -135,7 +135,8 @@
                         android:textSize="18sp"
                         android:textStyle="italic"
                         app:layout_constraintStart_toStartOf="@id/ivWeatherIcon"
-                        app:layout_constraintTop_toTopOf="@id/tempHigh" />
+                        app:layout_constraintEnd_toEndOf="@id/ivWeatherIcon"
+                        app:layout_constraintTop_toTopOf="@id/tvTempHigh"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,7 +146,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/windCard"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="155dp"
                 app:layout_constraintWidth_percent="0.43"
                 app:cardBackgroundColor="@color/transparent_blue"
                 app:cardCornerRadius="12dp"
@@ -209,7 +210,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/humidityCard"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="155dp"
                 app:layout_constraintWidth_percent="0.43"
                 app:cardBackgroundColor="@color/transparent_blue"
                 app:cardCornerRadius="12dp"
@@ -236,6 +237,7 @@
                         app:layout_constraintTop_toTopOf="parent"/>
 
                     <TextView
+                        android:id="@+id/tvHumidityTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="HUMIDITY"
@@ -251,11 +253,120 @@
                         android:text="70%"
                         android:textColor="@color/white"
                         android:textSize="50sp"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvHumidityTitle"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginTop="10dp"/>
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/uvCard"
+                android:layout_width="0dp"
+                android:layout_height="155dp"
+                app:layout_constraintWidth_percent="0.43"
+                app:cardBackgroundColor="@color/transparent_blue"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/windCard"
+                android:layout_marginStart = "20dp"
+                android:layout_marginTop="15dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:id="@+id/ivUV"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_sunny"
+                        app:tint = "@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvUVTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="UV INDEX"
+                        android:textColor="@color/grey"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivUV"
+                        android:layout_marginStart="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvUV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Low"
+                        android:textColor="@color/white"
+                        android:textSize="40sp"
+                        app:layout_constraintTop_toBottomOf="@id/tvUVTitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/visCard"
+                android:layout_width="0dp"
+                android:layout_height="155dp"
+                app:layout_constraintWidth_percent="0.43"
+                app:cardBackgroundColor="@color/transparent_blue"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/windCard"
+                android:layout_marginEnd = "20dp"
+                android:layout_marginTop="15dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:id="@+id/ivVisibility"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/eye_icon"
+                        app:tint = "@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvVisibilityTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VISIBILITY"
+                        android:textColor="@color/grey"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivVisibility"
+                        android:layout_marginStart="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvVisibility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.4km"
+                        android:textColor="@color/white"
+                        android:textSize="40sp"
+                        app:layout_constraintTop_toBottomOf="@id/tvVisibilityTitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -271,7 +382,7 @@
                 app:cardElevation="0dp"
                 app:layout_constraintStart_toStartOf="@id/windCard"
                 app:layout_constraintEnd_toEndOf="@id/humidityCard"
-                app:layout_constraintTop_toBottomOf="@id/windCard"
+                app:layout_constraintTop_toBottomOf="@id/uvCard"
                 android:layout_marginTop="15dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -394,26 +505,47 @@
                         android:id="@+id/tvSunrise"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rise: 06:49"
+                        android:text="Rise:"
                         android:textColor="@color/white"
                         android:textSize="20sp"
-                        android:textStyle="bold"
                         app:layout_constraintTop_toTopOf="@id/ivSun"
                         app:layout_constraintStart_toEndOf="@id/tvDaylight"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginStart="20dp"/>
 
                     <TextView
-                        android:id="@+id/tvSunset"
+                        android:id="@+id/tvSunriseData"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Set: 19:28"
+                        android:text="06:49"
                         android:textColor="@color/white"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="@id/ivSun"
+                        app:layout_constraintStart_toEndOf="@id/tvSunrise"
+                        android:layout_marginStart="10dp"/>
+
+                    <TextView
+                        android:id="@+id/tvSunset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Set:"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
                         app:layout_constraintTop_toBottomOf="@id/tvSunrise"
-                        app:layout_constraintEnd_toEndOf="@id/tvSunrise"
-                        android:layout_marginTop="20dp"/>
+                        app:layout_constraintStart_toStartOf="@id/tvSunrise"
+                        android:layout_marginTop="10dp"/>
+
+                    <TextView
+                        android:id="@+id/tvSunsetData"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="19:28"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="@id/tvSunset"
+                        app:layout_constraintStart_toStartOf="@id/tvSunriseData"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
