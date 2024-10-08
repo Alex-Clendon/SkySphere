@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -121,16 +122,12 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         }
 
         Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
-        // Set action bar title to Home
-        val homeFragment = HomePageFragment()
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.title =
-            "Home"
         // Swap fragment to home fragment
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_content_main, homeFragment)
-            .addToBackStack(null)
-            .commit()
+        val navController = findNavController()
+        // Use NavController to navigate to HomeFragment
+        navController.popBackStack()
+        navController.navigate(R.id.nav_home)
     }
 
     // This function will update the widget when the location is changed
