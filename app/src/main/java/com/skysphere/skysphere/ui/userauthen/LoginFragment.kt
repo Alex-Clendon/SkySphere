@@ -12,29 +12,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.UserData
-import com.skysphere.skysphere.ui.home.HomePageFragment
 
 
 class LoginFragment : Fragment() {
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
     private lateinit var loginButton: Button
-    private lateinit var usernameText: EditText
+    private lateinit var emailText: EditText
     private lateinit var passwordText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize firebase variables, table = "users"
+        auth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
     }
@@ -48,19 +46,16 @@ class LoginFragment : Fragment() {
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.sunset)
         // Initialize UI variables
         loginButton = view.findViewById(R.id.login_button)
-        usernameText = view.findViewById(R.id.login_username)
+        emailText = view.findViewById(R.id.login_email)
         passwordText = view.findViewById(R.id.login_password)
 
         loginButton.setOnClickListener {
-            // Store data from input fields
-            val username = usernameText.text.toString().trim()
+            val email = emailText.text.toString().trim()
             val password = passwordText.text.toString()
-            // Check if data is not null
-            if (username.isNotEmpty() && password.isNotEmpty()) {
-                // Call loginUser if data is valid
-                loginUser(username, password)
-            }
-            else {
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                loginUser(email, password)
+            } else {
                 Toast.makeText(requireContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show()
             }
         }
@@ -82,47 +77,27 @@ class LoginFragment : Fragment() {
         return view
     }
 
-    private fun loginUser(username: String, password: String) {
-        // Order database by username and compare data
-        databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
+    private fun loginUser(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // If data already exists in the table, and username and password matches, log the user in
-                if(dataSnapshot.exists()) {
+                    // Set login flag to true
+                    (activity as? MainActivity)?.updateNavigationMenu(true)
 
-                    for (userSnapshot in dataSnapshot.children) {
-                        val userData = userSnapshot.getValue(UserData::class.java)
+                    // Change the navigation bar color
+                    activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
-                        if (userData != null && userData.password == password) {
-                            // Set login flag to true
-                            (activity as? MainActivity)?.updateNavigationMenu(true)
-
-                            Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-
-                            // Set action bar title to Home and change the navigation bar color
-                            activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
-                            (activity as? AppCompatActivity)?.supportActionBar?.let { actionBar ->
-                                actionBar.title = "Home"
-                            }
-
-                            // Clear back stack to remove login page and previous fragments
-                            val navController = findNavController()
-                            navController.popBackStack()
-                            // Use NavController to navigate to HomeFragment
-                            navController.navigate(R.id.nav_home)
-                            return
-                        }
-
-                    }
+                    // Navigate to Home
+                    findNavController().navigate(R.id.nav_home)
+                    (activity as AppCompatActivity?)?.supportActionBar?.title = "Home"
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Toast.makeText(requireContext(), "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
-                // If data doesn't match, pop a message
-                Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show()
             }
-            // Handle database error
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
 }

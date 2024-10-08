@@ -53,6 +53,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.libraries.places:places:3.5.0")
     implementation(libs.firebase.database)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,12 +66,59 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
 
-    testImplementation("androidx.test:core:1.4.0")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
-    testImplementation("com.google.truth:truth:1.1.3")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
-    testImplementation("io.mockk:mockk:1.10.5")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.1.0-alpha04")
+//    testImplementation("androidx.test:core:1.4.0")
+//    testImplementation("junit:junit:4.13.2")
+//    testImplementation("androidx.arch.core:core-testing:2.1.0")
+//    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+//    testImplementation("com.google.truth:truth:1.1.3")
+//    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
+//    testImplementation("io.mockk:mockk:1.10.5")
+//    debugImplementation("androidx.compose.ui:ui-test-manifest:1.1.0-alpha04")
+//
+//    // AndroidX Test Core library
+//    testImplementation("androidx.test:core:1.5.0")
+//    androidTestImplementation("androidx.test:core:1.5.0")
+//
+//    // AndroidX Test Rules
+//    testImplementation("androidx.test:rules:1.5.0")
+//    androidTestImplementation("androidx.test:rules:1.5.0")
+//
+//    // AndroidX Test Runner
+//    androidTestImplementation("androidx.test:runner:1.5.2")
+//
+//    // AndroidX Junit Extension
+//    testImplementation("androidx.test.ext:junit:1.1.5")
+//    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+//
+//    // AndroidX Fragment Testing
+//    debugImplementation("androidx.fragment:fragment-testing:1.6.1")
+//
+//    // JUnit
+//    testImplementation("junit:junit:4.13.2")
+//
+//    // Mockito
+//    testImplementation("org.mockito:mockito-core:5.3.1")
+//    testImplementation("org.mockito:mockito-android:5.3.1")
+//
+//    // MockK (for Kotlin-friendly mocking)
+//    testImplementation("io.mockk:mockk:1.13.5")
+//    androidTestImplementation("io.mockk:mockk-android:1.13.5")
+//
+//    // Espresso (for UI testing)
+//    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+//
+//    // Firebase Testing
+//    testImplementation("com.google.firebase:firebase-database:20.2.2")
+//    testImplementation("org.robolectric:robolectric:4.10.3")
+
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:3.11.2")
+    testImplementation ("org.mockito:mockito-inline:3.11.2")
+    testImplementation ("androidx.test:core:1.5.0")
+    testImplementation ("androidx.test.ext:junit:1.1.5")
+    testImplementation ("androidx.fragment:fragment-testing:1.5.5")
+    testImplementation ("androidx.test:runner:1.5.2")
+    testImplementation ("org.robolectric:robolectric:4.9")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+
 }

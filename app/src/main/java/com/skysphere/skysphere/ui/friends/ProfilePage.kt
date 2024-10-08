@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.friends
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +9,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.navArgs
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -20,6 +21,7 @@ import com.skysphere.skysphere.UserData
 
 class ProfilePage : Fragment() {
 
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var databaseReference: DatabaseReference
 
@@ -30,16 +32,20 @@ class ProfilePage : Fragment() {
     private lateinit var addBtn: ImageButton
     private lateinit var declineBtn: ImageButton
 
-    private var userId: String? = null
+    private var currentUserId: String? = null
+    private var profileUserId: String? = null
+    private lateinit var CURRENT_STATE: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         databaseReference = firebaseDatabase.reference.child("users")
+        currentUserId = firebaseAuth.currentUser?.uid
 
         // Manually retrieve the argument
-        userId = arguments?.getString("userId")
+        profileUserId = arguments?.getString("userId")
     }
 
     override fun onCreateView(
@@ -57,9 +63,31 @@ class ProfilePage : Fragment() {
         addBtn = view.findViewById(R.id.addBtn)
         declineBtn = view.findViewById(R.id.declineBtn)
 
-        userId?.let { loadUserData(it) } ?: run {
+        CURRENT_STATE = "not_friends"
+
+        addBtn.visibility = View.GONE
+        declineBtn.visibility = View.GONE
+
+        // Debug log
+        Log.d("ProfilePage", "onCreateView - currentUserId: $currentUserId, profileUserId: $profileUserId")
+
+        profileUserId?.let { userId ->
+            if (!userId.equals(currentUserId)) {
+                // This is another user's profile
+                addBtn.visibility = View.VISIBLE
+                addBtn.setOnClickListener {
+                    addBtn.isEnabled = false
+                    // Add friend logic here
+                }
+            }
+            loadUserData(userId)
+        } ?: run {
             Toast.makeText(context, "User ID not provided", Toast.LENGTH_SHORT).show()
         }
+
+//        userId?.let { loadUserData(it) } ?: run {
+//            Toast.makeText(context, "User ID not provided", Toast.LENGTH_SHORT).show()
+//        }
 
         return view
     }
@@ -79,5 +107,17 @@ class ProfilePage : Fragment() {
                 Toast.makeText(context, "Failed to load user data", Toast.LENGTH_SHORT).show()
             }
         })
+
+//        declineBtn.visibility = View.INVISIBLE
+//        declineBtn.isEnabled = false
+//
+//        if(!currentUserId.equals(userId)){
+//            addBtn.setOnClickListener {
+//                addBtn.isEnabled = false
+//            }
+//        }else{
+//            declineBtn.visibility = View.INVISIBLE
+//            addBtn.visibility = View.INVISIBLE
+//        }
     }
 }

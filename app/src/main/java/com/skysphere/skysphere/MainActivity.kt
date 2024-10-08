@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMain.toolbar)
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -51,9 +56,10 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> {
-                    // Set login flag to false
+                    auth.signOut()
                     updateNavigationMenu(false)
-                    true // Indicate that the logout was handled
+                    navController.navigate(R.id.nav_login)
+                    true
                 }
                 else -> {
                     // Allow default navigation behavior for other items
@@ -65,7 +71,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Set login flag to false
-        updateNavigationMenu(false)
+        //updateNavigationMenu(false)
+        updateNavigationMenu(auth.currentUser != null)
 
         // Check for permissions and start notification service
         checkAndRequestNotificationPermission()
@@ -87,15 +94,6 @@ class MainActivity : AppCompatActivity() {
             navView.inflateMenu(R.menu.login_drawer)
         }
     }
-
-    // Will use this later -James
-
-    /*private fun checkLoginStatus(): Boolean {
-        if (UserSession.isLoggedIn) {
-            return true
-        }
-        return false // Change this to actual login status
-    }*/
 
     //Code for getting notification permissions
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
