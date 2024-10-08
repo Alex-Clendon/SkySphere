@@ -10,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -23,10 +25,12 @@ import com.skysphere.skysphere.UserData
 class AddFriendsFragment : Fragment() {
 
     private lateinit var firebaseDatabase: FirebaseDatabase
-    lateinit var databaseReference: DatabaseReference
+    private lateinit var databaseReference: DatabaseReference
+
     private lateinit var searchBar: EditText
     private lateinit var searchButton: ImageButton
-    lateinit var searchResults: RecyclerView
+    private lateinit var searchResults: RecyclerView
+
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,11 +83,17 @@ class AddFriendsFragment : Fragment() {
     }
 
     fun updateRecyclerView(users: List<UserData>) {
-        userAdapter = UserAdapter(users)
+        userAdapter = UserAdapter(users){ userId ->
+            // Navigate to ProfilePage when a user is clicked
+            val action = AddFriendsFragmentDirections.actionAddFriendsFragmentToProfilePage(userId)
+            findNavController().navigate(action)
+        }
         searchResults.adapter = userAdapter
     }
 
-    class UserAdapter(private val users: List<UserData>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    class UserAdapter(private val users: List<UserData>,
+                      private val onUserClick: (String) -> Unit
+    ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
         class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val userName: TextView = itemView.findViewById(R.id.tvUsername)
@@ -97,8 +107,28 @@ class AddFriendsFragment : Fragment() {
         override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
             val user = users[position]
             holder.userName.text = user.username
+            holder.itemView.setOnClickListener {
+                onUserClick(user.id ?: "") // Assuming UserData has an 'id' field
+            }
         }
 
         override fun getItemCount() = users.size
+    }
+
+    class AddFriendsFragmentDirections private constructor() {
+
+        companion object {
+            fun actionAddFriendsFragmentToProfilePage(userId: String): NavDirections {
+                return object : NavDirections {
+                    override val actionId: Int
+                        get() = R.id.action_addFriendsFragment_to_profilePage
+
+                    override val arguments: Bundle
+                        get() = Bundle().apply {
+                            putString("userId", userId)
+                        }
+                }
+            }
+        }
     }
 }
