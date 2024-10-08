@@ -73,7 +73,6 @@ class LoginFragment : Fragment() {
         // Set on click listener
         signUpRedirect.setOnClickListener {
             val navController = findNavController()
-            navController.popBackStack()
             // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.nav_signup)
             (activity as AppCompatActivity?)!!.supportActionBar!!.title =

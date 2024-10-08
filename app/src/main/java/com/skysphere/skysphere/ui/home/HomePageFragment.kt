@@ -37,7 +37,9 @@ import android.graphics.Color
 import android.speech.tts.TextToSpeech
 import android.widget.Button
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -210,6 +212,15 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // When clicked AI will speak to user
         textToSpeechBtn.setOnClickListener {
             textToSpeechDialog()
+        }
+
+        // Initialize textView
+        val detailsRedirect = view.findViewById<TextView>(R.id.day2_day)
+        // Set on click listener
+        detailsRedirect.setOnClickListener {
+            val navController = findNavController()
+            // Use NavController to navigate to HomeFragment
+            navController.navigate(R.id.nav_details)
         }
 
         return view
