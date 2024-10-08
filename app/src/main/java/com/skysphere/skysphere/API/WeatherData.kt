@@ -11,7 +11,11 @@ data class Current(
     val time: String,
     val weather_code: Int,
     val temperature_2m: Double,
-    val apparent_temperature: Double
+    val apparent_temperature: Double,
+    val humidity: Int,
+    val precipitation: Int,
+    val current_wind_speed: Double,
+    val current_wind_direction: Int
 )
 
 data class Daily(
