@@ -5,11 +5,10 @@ import android.content.Intent
 import android.os.Build
 import android.service.quicksettings.TileService
 import android.util.Log
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 
 class SkySphereTileService : TileService() {
 
-    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onClick() {
         super.onClick()
         Log.d("SkySphereTileService", "Tile clicked")
@@ -18,19 +17,20 @@ class SkySphereTileService : TileService() {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        // Launch the activity based on the Android version
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // Create a PendingIntent for Android 12 and above
-                val pendingIntent = PendingIntent.getActivity(
-                    this,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                startActivityAndCollapse(pendingIntent) // Directly call this method
+            val pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startActivityAndCollapse(pendingIntent)
             } else {
-                startActivity(intent) // Directly start the activity for lower versions
+                startActivity(intent)
+                // Inform the user to collapse Quick Settings manually
+                Toast.makeText(this, "Please close Quick Settings to view the app.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.e("SkySphereTileService", "Error starting activity", e)
