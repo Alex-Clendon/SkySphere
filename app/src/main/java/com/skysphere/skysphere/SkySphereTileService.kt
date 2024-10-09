@@ -6,9 +6,11 @@ import android.os.Build
 import android.service.quicksettings.TileService
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 
 class SkySphereTileService : TileService() {
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onClick() {
         super.onClick()
         Log.d("SkySphereTileService", "Tile clicked")
@@ -34,6 +36,7 @@ class SkySphereTileService : TileService() {
             }
         } catch (e: Exception) {
             Log.e("SkySphereTileService", "Error starting activity", e)
+            Toast.makeText(this, "Error can't access app right now.", Toast.LENGTH_SHORT).show()
         }
     }
 }
