@@ -29,7 +29,7 @@ class AddFriendsFragment : Fragment() {
 
     private lateinit var searchBar: EditText
     private lateinit var searchButton: ImageButton
-    private lateinit var searchResults: RecyclerView
+    lateinit var searchResults: RecyclerView
 
     private lateinit var userAdapter: UserAdapter
 
@@ -64,7 +64,7 @@ class AddFriendsFragment : Fragment() {
         return view
     }
 
-    fun searchUser(searchQuery: String) {
+    private fun searchUser(searchQuery: String) {
         val query = databaseReference.orderByChild("username").startAt(searchQuery).endAt(searchQuery + "\uf8ff")
 
         query.addListenerForSingleValueEvent(object : ValueEventListener {

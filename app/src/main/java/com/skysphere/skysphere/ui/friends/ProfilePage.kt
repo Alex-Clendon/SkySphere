@@ -71,23 +71,7 @@ class ProfilePage : Fragment() {
         // Debug log
         Log.d("ProfilePage", "onCreateView - currentUserId: $currentUserId, profileUserId: $profileUserId")
 
-        profileUserId?.let { userId ->
-            if (!userId.equals(currentUserId)) {
-                // This is another user's profile
-                addBtn.visibility = View.VISIBLE
-                addBtn.setOnClickListener {
-                    addBtn.isEnabled = false
-                    // Add friend logic here
-                }
-            }
-            loadUserData(userId)
-        } ?: run {
-            Toast.makeText(context, "User ID not provided", Toast.LENGTH_SHORT).show()
-        }
-
-//        userId?.let { loadUserData(it) } ?: run {
-//            Toast.makeText(context, "User ID not provided", Toast.LENGTH_SHORT).show()
-//        }
+        buttonMaintenance()
 
         return view
     }
@@ -119,5 +103,21 @@ class ProfilePage : Fragment() {
 //            declineBtn.visibility = View.INVISIBLE
 //            addBtn.visibility = View.INVISIBLE
 //        }
+    }
+
+    private fun buttonMaintenance() {
+        profileUserId?.let { userId ->
+            if (!userId.equals(currentUserId)) {
+                // This is another user's profile
+                addBtn.visibility = View.VISIBLE
+                addBtn.setOnClickListener {
+                    addBtn.isEnabled = false
+                    // Add friend logic here
+                }
+            }
+            loadUserData(userId)
+        } ?: run {
+            Toast.makeText(context, "User ID not provided", Toast.LENGTH_SHORT).show()
+        }
     }
 }
