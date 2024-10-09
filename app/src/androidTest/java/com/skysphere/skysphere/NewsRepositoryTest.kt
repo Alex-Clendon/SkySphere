@@ -20,6 +20,14 @@ class NewsRepositoryTest {
         assertFalse(globalNews.isEmpty())
     }
 
+    @Test
+    fun testFetchNewsFromApi_returnsNonEmptyList() {
+        val newsRepository = NewsRepository()
+        val news = newsRepository.fetchNewsFromApi()
+        assertFalse(news.isEmpty())
+    }
+
+
 
 
 }
