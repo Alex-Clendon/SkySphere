@@ -2,7 +2,6 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
@@ -20,8 +19,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +43,8 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_locations, R.id.nav_settings, R.id.nav_recommendations, R.id.nav_login, R.id.nav_logout, R.id.nav_add_friend
+                R.id.nav_home, R.id.nav_locations, R.id.nav_settings, R.id.nav_recommendations, R.id.nav_login, R.id.nav_logout
+                , R.id.nav_add_friend, R.id.nav_friends_list
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -84,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to swap the nav menu depending on if the user is logged in or not
-    public fun updateNavigationMenu(isLoggedIn: Boolean) {
+    fun updateNavigationMenu(isLoggedIn: Boolean) {
 
         val navView: NavigationView = binding.navView
         navView.menu.clear()

@@ -21,9 +21,9 @@ import com.skysphere.skysphere.R
 
 class LoginFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
-    private lateinit var databaseReference: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
     private lateinit var loginButton: Button
     private lateinit var emailText: EditText
     private lateinit var passwordText: EditText
@@ -32,9 +32,9 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Initialize firebase variables, table = "users"
-        auth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
-        databaseReference = firebaseDatabase.reference.child("users")
+        usersRef = firebaseDatabase.reference.child("users")
     }
 
     override fun onCreateView(
@@ -78,7 +78,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginUser(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
+        firebaseAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information

@@ -12,20 +12,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.UserData
 
 class SignupFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
-    private lateinit var databaseReference: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
     private lateinit var signUpButton: Button
     private lateinit var signUpEmail: EditText
     private lateinit var signUpUsername: EditText
@@ -35,9 +32,9 @@ class SignupFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Initialize firebase variables, table = "users"
-        auth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
-        databaseReference = firebaseDatabase.reference.child("users")
+        usersRef = firebaseDatabase.reference.child("users")
     }
 
     override fun onCreateView(
@@ -85,16 +82,16 @@ class SignupFragment : Fragment() {
     }
 
     private fun registerUser(username: String, email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign up success, update UI with the signed-in user's information
-                    val user = auth.currentUser
+                    val user = firebaseAuth.currentUser
                     val userId = user?.uid ?: return@addOnCompleteListener
 
                     // Save additional user info to Realtime Database
                     val userData = UserData(userId, email, username, password)
-                    databaseReference.child(userId).setValue(userData)
+                    usersRef.child(userId).setValue(userData)
 
                     Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
 

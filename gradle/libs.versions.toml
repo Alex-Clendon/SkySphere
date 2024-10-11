@@ -22,6 +22,7 @@ workRuntimeKtx = "2.9.1"
 junitKtx = "1.2.1"
 firebaseAuthKtx = "23.0.0"
 firebaseAuth = "23.0.0"
+cardview = "1.0.0"
 
 
 [libraries]
@@ -45,6 +46,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
 
 
 [plugins]

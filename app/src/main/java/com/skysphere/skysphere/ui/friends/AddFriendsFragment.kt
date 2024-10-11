@@ -25,7 +25,7 @@ import com.skysphere.skysphere.UserData
 class AddFriendsFragment : Fragment() {
 
     private lateinit var firebaseDatabase: FirebaseDatabase
-    private lateinit var databaseReference: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
 
     private lateinit var searchBar: EditText
     private lateinit var searchButton: ImageButton
@@ -38,7 +38,7 @@ class AddFriendsFragment : Fragment() {
 
         //Initialize firebase variables, table = "users"
         firebaseDatabase = FirebaseDatabase.getInstance()
-        databaseReference = firebaseDatabase.reference.child("users")
+        usersRef = firebaseDatabase.reference.child("users")
     }
 
     override fun onCreateView(
@@ -65,15 +65,19 @@ class AddFriendsFragment : Fragment() {
     }
 
     private fun searchUser(searchQuery: String) {
-        val query = databaseReference.orderByChild("username").startAt(searchQuery).endAt(searchQuery + "\uf8ff")
+        // Query firebase database for users with matching username
+        val query = usersRef.orderByChild("username").startAt(searchQuery).endAt(searchQuery + "\uf8ff")
 
+        // Listener for response from firebase
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Create and store a list of users that match the search query
                 val users = mutableListOf<UserData>()
                 for (userSnapshot in dataSnapshot.children) {
                     val user = userSnapshot.getValue(UserData::class.java)
                     user?.let { users.add(it) }
                 }
+                // Fetched users are added to the RecyclerView
                 updateRecyclerView(users)
             }
             override fun onCancelled(error: DatabaseError) {
@@ -95,20 +99,23 @@ class AddFriendsFragment : Fragment() {
                       private val onUserClick: (String) -> Unit
     ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
+        // Updates TextView to display the username
         class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val userName: TextView = itemView.findViewById(R.id.tvUsername)
         }
 
+        // Inflates the layout for each user item
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.user_item, parent, false)
             return UserViewHolder(view)
         }
 
+        // Binds the user data to the views at a specific position
         override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
             val user = users[position]
             holder.userName.text = user.username
             holder.itemView.setOnClickListener {
-                onUserClick(user.id ?: "") // Assuming UserData has an 'id' field
+                onUserClick(user.id ?: "")
             }
         }
 
@@ -118,11 +125,14 @@ class AddFriendsFragment : Fragment() {
     class AddFriendsFragmentDirections private constructor() {
 
         companion object {
+            // Navigate to the user's ProfilePage when a user is clicked
             fun actionAddFriendsFragmentToProfilePage(userId: String): NavDirections {
                 return object : NavDirections {
+                    // Get the ID of the action to navigate to
                     override val actionId: Int
                         get() = R.id.action_addFriendsFragment_to_profilePage
 
+                    // Pass the user's ID as an argument to the ProfilePage fragment
                     override val arguments: Bundle
                         get() = Bundle().apply {
                             putString("userId", userId)

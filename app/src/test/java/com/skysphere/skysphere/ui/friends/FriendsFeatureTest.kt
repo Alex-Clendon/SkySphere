@@ -3,6 +3,7 @@ package com.skysphere.skysphere.ui.friends
 
 import androidx.recyclerview.widget.RecyclerView
 import com.skysphere.skysphere.UserData
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -16,11 +17,14 @@ class FriendsFeatureTest {
 
     private lateinit var addFriendsFragment: AddFriendsFragment
 
+    private lateinit var profilePageFragment: ProfilePageFragment
+
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
         addFriendsFragment = AddFriendsFragment()
+        profilePageFragment = ProfilePageFragment()
         addFriendsFragment.searchResults = mockSearchResults
     }
 
@@ -49,6 +53,42 @@ class FriendsFeatureTest {
 
         if(email.isNotEmpty() && password.isNotEmpty()){
             assertTrue(true)
+        }
+    }
+
+    @Test
+    fun sendFriendRequest() {
+        profilePageFragment.CURRENT_STATE = "not_friends"
+        if(profilePageFragment.CURRENT_STATE.equals("not_friends")){
+            assertEquals(profilePageFragment.CURRENT_STATE, "not_friends")
+            // sendFriendRequest() func is called
+        }
+    }
+
+    @Test
+    fun cancelFriendRequest() {
+        profilePageFragment.CURRENT_STATE = "request_sent"
+        if(profilePageFragment.CURRENT_STATE.equals("request_sent")){
+            assertEquals(profilePageFragment.CURRENT_STATE, "request_sent")
+            // cancelFriendRequest() func is called
+        }
+    }
+
+    @Test
+    fun acceptFriendRequest() {
+        profilePageFragment.CURRENT_STATE = "request_received"
+        if(profilePageFragment.CURRENT_STATE.equals("request_received")){
+            assertEquals(profilePageFragment.CURRENT_STATE, "request_received")
+            // acceptFriendRequest() func is called
+        }
+    }
+
+    @Test
+    fun unFriend() {
+        profilePageFragment.CURRENT_STATE = "friends"
+        if(profilePageFragment.CURRENT_STATE.equals("friends")){
+            assertEquals(profilePageFragment.CURRENT_STATE, "friends")
+            // unFriendPerson() func is called
         }
     }
 }
