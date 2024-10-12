@@ -1,7 +1,7 @@
 package com.skysphere.skysphere.services
 
 import com.skysphere.skysphere.API.WeatherAPI
-import com.skysphere.skysphere.API.WeatherData
+import com.skysphere.skysphere.services.json.WeatherResults
 import javax.inject.Inject
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,8 +12,8 @@ class WeatherService @Inject constructor(
 ) {
 
     fun getWeather(
-        //location: Location,
-        onSuccess: (WeatherData) -> Unit,
+        // location: Location,
+        onSuccess: (WeatherResults) -> Unit, // Change the type to WeatherResults
         onFailure: (Throwable) -> Unit
     ) {
         val daily = arrayOf(
@@ -51,15 +51,15 @@ class WeatherService @Inject constructor(
 
         // Make sure the API method corresponds to the correct signature
         api.getWeatherData(
-            latitude = -36.85, //After testing, use location.latitude,
-            longitude = 174.76, //After testing, use location.longitude,
+            latitude = -36.85, // After testing, use location.latitude,
+            longitude = 174.76, // After testing, use location.longitude,
             daily = daily.joinToString(","),
             hourly = hourly.joinToString(","),
             current = current.joinToString(","),
             timezone = "auto",
             forecastDays = 7
-        ).enqueue(object : Callback<WeatherData> {
-            override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+        ).enqueue(object : Callback<WeatherResults> { // Change to WeatherResults
+            override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
                 // Provide more detailed error messages based on response code if necessary
                 if (response.isSuccessful) {
                     response.body()?.let(onSuccess) ?: onFailure(Throwable("Response body is null"))
@@ -68,10 +68,11 @@ class WeatherService @Inject constructor(
                 }
             }
 
-            override fun onFailure(call: Call<WeatherData>, t: Throwable) {
+            override fun onFailure(call: Call<WeatherResults>, t: Throwable) {
                 onFailure(t)
             }
         })
     }
 }
+
 
