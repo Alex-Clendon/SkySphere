@@ -1,5 +1,7 @@
 package com.skysphere.skysphere.services.weather
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.API.WeatherAPI
 import com.skysphere.skysphere.services.weather.json.WeatherResults
 import com.skysphere.skysphere.updaters.WeatherCache
@@ -18,11 +20,11 @@ class WeatherService @Inject constructor(
         onSuccess: (WeatherResults) -> Unit, // Change the type to WeatherResults
         onFailure: (Throwable) -> Unit
     ) {
-        if (weatherCache.isCacheValid()) {
+        /*if (weatherCache.isCacheValid()) {
         // Use cached data
         weatherCache.cachedWeatherResults?.let(onSuccess) ?: onFailure(Throwable("Cached data is null"))
         return
-    }
+    }*/
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",
@@ -58,23 +60,24 @@ class WeatherService @Inject constructor(
 
         // Make sure the API method corresponds to the correct signature
         api.getWeatherData2(
-            latitude = -36.85, // After testing, use location.latitude,
-            longitude = 174.76, // After testing, use location.longitude,
-            daily = daily.joinToString(","),
-            hourly = hourly.joinToString(","),
-            current = current.joinToString(","),
-            timezone = "auto",
-            forecastDays = 7
+             -36.85, // After testing, use location.latitude,
+             174.76, // After testing, use location.longitude,
+            "temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max",
+            "visibility",
+            "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m",
+           "auto",
+            1
         ).enqueue(object : Callback<WeatherResults> { // Change to WeatherResults
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
                 // Provide more detailed error messages based on response code if necessary
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        weatherCache.updateCache(it) // Update the weather cache
+                        //weatherCache.updateCache(it) // Update the weather cache
                         onSuccess(it)
                     } ?: onFailure(Throwable("Response body is null"))
                 } else {
-                    onFailure(Throwable("Error fetching weather data: ${response.code()}"))
+                    onFailure(Throwable("pluh: ${response.code()}"))
                 }
             }
 
