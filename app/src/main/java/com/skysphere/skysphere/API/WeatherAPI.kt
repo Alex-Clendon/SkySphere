@@ -10,19 +10,9 @@ interface WeatherAPI {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("current") current: String,
-        @Query("daily") daily: String,
-        @Query("timezone") timezone: String,
-        @Query("hourly") hourly: String
-    ): Call<WeatherData>
-
-    @GET("v1/forecast")
-    fun getDetailedWeather(
-        @Query("latitude") latitude: Double,
-        @Query("longitude") longitude: Double,
-        @Query("current") current: String,
         @Query("hourly") hourly: String,
         @Query("daily") daily: String,
         @Query("timezone") timezone: String,
-        @Query("forecast_days") forecast_days: Int
+        @Query("forecast_days") forecastDays: Int
     ): Call<WeatherData>
 }
