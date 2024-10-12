@@ -10,12 +10,17 @@ import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
 import com.skysphere.skysphere.services.weather.WeatherService
 import com.skysphere.skysphere.services.weather.json.WeatherResults
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var weatherService: WeatherService
+
+    @Inject
+    lateinit var weatherService: WeatherService
     private lateinit var weatherResults: WeatherResults
 
     override fun onCreate(savedInstanceState: Bundle?) {
