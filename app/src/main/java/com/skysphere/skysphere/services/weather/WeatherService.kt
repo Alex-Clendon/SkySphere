@@ -57,7 +57,7 @@ class WeatherService @Inject constructor(
         )
 
         // Make sure the API method corresponds to the correct signature
-        api.getWeatherData(
+        api.getWeatherData2(
             latitude = -36.85, // After testing, use location.latitude,
             longitude = 174.76, // After testing, use location.longitude,
             daily = daily.joinToString(","),
