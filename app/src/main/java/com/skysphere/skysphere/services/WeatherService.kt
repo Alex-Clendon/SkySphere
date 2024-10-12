@@ -22,7 +22,6 @@ class WeatherService @Inject constructor(
             "temperature_2m_min",
             "apparent_temperature_max",
             "apparent_temperature_min",
-            "time",
             "sunrise",
             "sunset",
             "sunshine_duration",
@@ -34,35 +33,20 @@ class WeatherService @Inject constructor(
             "apparent_temperature",
             "precipitation_probability",
             "precipitation",
-            "rain",
-            "showers",
-            "snowfall",
-            "weathercode",
-            "windspeed_10m",
-            "winddirection_10m",
-            "windgusts_10m",
-            "uv_index",
+            "weather_code",
             "is_day",
-            "relativehumidity_2m",
-            "dewpoint_2m",
-            "pressure_msl",
-            "cloudcover",
-            "visibility"
+            "relative_humidity_2m",
         )
 
         val current = arrayOf(
             "temperature_2m",
             "apparent_temperature",
-            "weathercode",
-            "windspeed_10m",
-            "winddirection_10m",
-            "windgusts_10m",
+            "weather_code",
+            "wind_speed_10m",
+            "wind_direction_10m",
             "uv_index",
-            "relativehumidity_2m",
-            "dewpoint_2m",
-            "pressure_msl",
-            "cloudcover",
-            "visibility"
+            "relative_humidity_2m",
+            "visibility",
         )
 
         // Make sure the API method corresponds to the correct signature

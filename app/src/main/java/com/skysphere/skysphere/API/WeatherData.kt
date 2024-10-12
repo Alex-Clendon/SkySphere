@@ -13,7 +13,6 @@ data class Current(
     val temperature_2m: Double,
     val apparent_temperature: Double,
     val relative_humidity_2m: Int,
-    val precipitation: Int,
     val wind_speed_10m: Double,
     val wind_direction_10m: Int
 )
@@ -23,7 +22,6 @@ data class Daily(
     val temperature_2m_max: List<Double>,
     val temperature_2m_min: List<Double>,
     val time: List<String>,
-    val visibility: List<Int>,
     val sunrise: List<String>,
     val sunset: List<String>,
     val daylight_duration: List<Double>,

@@ -62,4 +62,5 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 }
