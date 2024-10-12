@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.services.json
+package com.skysphere.skysphere.services.weather.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 

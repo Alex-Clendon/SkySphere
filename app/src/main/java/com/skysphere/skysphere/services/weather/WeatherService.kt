@@ -1,14 +1,16 @@
-package com.skysphere.skysphere.services
+package com.skysphere.skysphere.services.weather
 
 import com.skysphere.skysphere.API.WeatherAPI
-import com.skysphere.skysphere.services.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.WeatherResults
+import com.skysphere.skysphere.updaters.WeatherCache
 import javax.inject.Inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class WeatherService @Inject constructor(
-    private val api: WeatherAPI
+    private val api: WeatherAPI,
+    private val weatherCache: WeatherCache
 ) {
 
     fun getWeather(
@@ -16,6 +18,11 @@ class WeatherService @Inject constructor(
         onSuccess: (WeatherResults) -> Unit, // Change the type to WeatherResults
         onFailure: (Throwable) -> Unit
     ) {
+        if (weatherCache.isCacheValid()) {
+        // Use cached data
+        weatherCache.cachedWeatherResults?.let(onSuccess) ?: onFailure(Throwable("Cached data is null"))
+        return
+    }
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",
@@ -62,7 +69,10 @@ class WeatherService @Inject constructor(
             override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
                 // Provide more detailed error messages based on response code if necessary
                 if (response.isSuccessful) {
-                    response.body()?.let(onSuccess) ?: onFailure(Throwable("Response body is null"))
+                    response.body()?.let {
+                        weatherCache.updateCache(it) // Update the weather cache
+                        onSuccess(it)
+                    } ?: onFailure(Throwable("Response body is null"))
                 } else {
                     onFailure(Throwable("Error fetching weather data: ${response.code()}"))
                 }

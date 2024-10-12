@@ -1,6 +1,6 @@
 package com.skysphere.skysphere.API
 
-import com.skysphere.skysphere.services.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.WeatherResults
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
