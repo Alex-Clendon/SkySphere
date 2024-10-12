@@ -62,9 +62,9 @@ class WeatherService @Inject constructor(
         api.getWeatherData2(
              -36.85, // After testing, use location.latitude,
              174.76, // After testing, use location.longitude,
-            "temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max",
-            "visibility",
             "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m",
+            "visibility",
+            "temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max",
            "auto",
             1
         ).enqueue(object : Callback<WeatherResults> { // Change to WeatherResults

@@ -7,9 +7,7 @@ import kotlinx.serialization.SerialName
 data class WeatherResults(
     val current: Current? = null,
     val daily: Daily? = null,
-    val hourly: Hourly? = null,
-    val error: Boolean? = null,
-    val reason: String? = null
+    val hourly: Hourly? = null
 )
 
 

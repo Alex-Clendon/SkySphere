@@ -63,32 +63,48 @@ class DetailsFragment : Fragment() {
         })
     }
 
-    /*private fun getWeatherDetails(latitude: Double, longitude: Double) {
+   /* private fun getWeatherDetails(latitude: Double, longitude: Double) {
         val weatherService =
             RetrofitInstance.instance // Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
-        weatherService.getDetailedWeather(
-            latitude,
-            longitude,
+        weatherService.getWeatherData2(
+            -36.85, // After testing, use location.latitude,
+            174.76, // After testing, use location.longitude,
             "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m",
             "visibility",
             "temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max",
             "auto",
             1
         ) // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
-            .enqueue(object : Callback<WeatherData> {
+            .enqueue(object : Callback<WeatherResults> {
                 @RequiresApi(Build.VERSION_CODES.O)
-                override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
+                override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
                     // Checks to see if we got a response from the API
                     if (response.isSuccessful) {
-                        val weatherCode = response.body()?.current?.weather_code
-                        binding.tvTemperature.text = response.body()?.current?.temperature_2m.toString() + "°"
-                        val currentFeelsLike = response.body()?.current?.apparent_temperature
+                        //val weatherCode = response.body()?.current?.weather_code
+                        Log.d("DetailsFragment", "Response body: $weatherResults")
+
+                        weatherResults?.let {
+                            Log.d(
+                                "DetailsFragment",
+                                "Current Weather Code: ${it.current?.weatherCode}"
+                            )
+                            Log.d(
+                                "DetailsFragment",
+                                "Current Temperature: ${it.current?.temperature}"
+                            )
+                            binding.tvTemperature.text =
+                                response.body()?.current?.temperature.toString()
+                            //val currentFeelsLike = response.body()?.current?.apparent_temperature
+                        }
+                    }
+                    else {
+                        binding.tvTemperature.text = "Failed"
                     }
                 }
 
                 // If API response fails, then notify user.
-                override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                    Log.e("DetailsFragment", "API call failed: ${t.message}")
+                override fun onFailure(call: Call<WeatherResults>, t: Throwable) {
+                    Log.e("DetailsFragment", "API call really failed: ${t.message}")
                 }
             })
     }*/

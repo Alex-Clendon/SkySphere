@@ -13,5 +13,5 @@ data class Current(
     @SerialName("wind_direction_10m") val windDirection: Double?,
     @SerialName("uv_index") val uvIndex: Double?,
     val visibility: Double?,
-    val time: Long // You may want to convert this to a more usable format later
+    val time: String
 )
