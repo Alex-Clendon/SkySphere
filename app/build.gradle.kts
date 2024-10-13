@@ -68,7 +68,11 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
 
-    testImplementation ("junit:junit:4.13.2")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.3.6")
+
     testImplementation ("org.mockito:mockito-core:3.11.2")
     testImplementation ("org.mockito:mockito-inline:3.11.2")
     testImplementation ("androidx.test:core:1.5.0")

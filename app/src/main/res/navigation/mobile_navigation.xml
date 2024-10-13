@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_locations" />
 
     <fragment
+        android:id="@+id/nav_news"
+        android:name="com.skysphere.skysphere.ui.news.NewsFragment"
+        android:label="News In"
+        tools:layout="@layout/fragment_news" />
+
+    <fragment
         android:id="@+id/nav_recommendations"
         android:name="com.skysphere.skysphere.ui.recommendations.WeatherRecommendationsFragment"
         android:label="@string/menu_recommendations"
