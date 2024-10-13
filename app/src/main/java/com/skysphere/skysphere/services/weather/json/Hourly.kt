@@ -12,7 +12,6 @@ data class Hourly(
     val precipitation: List<Double>,
     @SerialName("weather_code") val weatherCode: List<Int?>?,
     @SerialName("is_day") val isDay: List<Int?>?, // 0 = Night, 1 = Day
-    val visibility: List<Int>
 )
 
 

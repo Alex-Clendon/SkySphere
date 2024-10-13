@@ -60,6 +60,7 @@ class DetailsFragment : Fragment() {
         }, { error ->
             // Handle error case
             binding.tvTemperature.text = "Error fetching weather data: ${error.message}"
+            Log.d("API Call", "Error: ${error.message}")
         })
     }
 

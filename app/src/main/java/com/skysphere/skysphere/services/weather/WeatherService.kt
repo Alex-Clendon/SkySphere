@@ -33,6 +33,8 @@ class WeatherService @Inject constructor(
             "temperature_2m_min",
             "apparent_temperature_max",
             "apparent_temperature_min",
+            "precipitation_sum",
+            "precipitation_probability_max",
             "sunrise",
             "sunset",
             "sunshine_duration",
@@ -55,7 +57,6 @@ class WeatherService @Inject constructor(
             "weather_code",
             "wind_speed_10m",
             "wind_direction_10m",
-            "uv_index",
             "relative_humidity_2m",
             "visibility",
         )
@@ -63,13 +64,13 @@ class WeatherService @Inject constructor(
         // Make sure the API method corresponds to the correct signature
         val api = RetrofitInstance.getInstance(true)
         api.getWeatherData2(
-             -36.85, // After testing, use location.latitude,
-             174.76, // After testing, use location.longitude,
-            "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m",
-            "visibility",
-            "temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,uv_index_max",
-           "auto",
-            1
+            latitude = -36.85, // After testing, use location.latitude,
+            longitude = 174.76, // After testing, use location.longitude,
+            daily = daily.joinToString(","),
+            hourly = hourly.joinToString(","),
+            current = current.joinToString(","),
+            timezone = "auto",
+            forecastDays = 7
         ).enqueue(object : Callback<WeatherResults> { // Change to WeatherResults
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
@@ -82,6 +83,7 @@ class WeatherService @Inject constructor(
                     } ?: onFailure(Throwable("Response body is null"))
                 } else {
                     onFailure(Throwable("Error: ${response.code()}"))
+                    Log.d("API Call", "Failed")
                 }
             }
 

@@ -12,7 +12,7 @@ data class Current(
     @SerialName("weather_code") val weatherCode: Int?,
     @SerialName("wind_speed_10m") val windSpeed: Double?,
     @SerialName("wind_direction_10m") val windDirection: Double?,
-    val visibility: Int?,
+    val visibility: Double?,
     val time: String
 )
 
