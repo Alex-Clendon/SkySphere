@@ -48,7 +48,7 @@ internal fun updateAppWidget(
     val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
     val longitude = sharedPrefs.getFloat("longitude", 0f).toDouble()
 
-    val weatherService = RetrofitInstance.instance
+    val weatherService = RetrofitInstance.weatherAPI
 
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
