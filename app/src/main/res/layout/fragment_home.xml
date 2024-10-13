@@ -5,248 +5,261 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
-<ScrollView
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical">
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".ui.home.HomePageFragment"
-    android:id="@+id/fragment_home"
-    android:paddingBottom="28dp">
-
-    <FrameLayout
-        android:id="@+id/upperRegion"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintTop_toBottomOf="@id/tvLocation"
-        app:layout_constraintBottom_toBottomOf="@id/tvWeatherState"
-        app:layout_constraintStart_toStartOf="@id/tvTemperature"
-        app:layout_constraintEnd_toEndOf="@id/ivWeatherIcon"/>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvHourly"
-        android:layout_width="0dp"
-        android:layout_height="145dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="75dp"
-        app:cardBackgroundColor="@color/transparent_blue"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvFeelsLikeTemperature">
-
-
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/temperatureChart"
-            android:layout_width="match_parent"
-            android:layout_height="125dp"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:clipToPadding="true"/>
-
-    </androidx.cardview.widget.CardView>
-
-
-
-    <TextView
-        android:id="@+id/text_home"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.977" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        app:layout_constraintVertical_bias="0.045" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/tvLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="270sp"
-        android:maxHeight="50sp"
-        android:autoSizeTextType="uniform"
-        android:autoSizeMinTextSize="12sp"
-        android:autoSizeMaxTextSize="24sp"
-        android:autoSizeStepGranularity="2sp"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate"
-        android:layout_marginTop="35dp"
-        app:layout_constraintVertical_bias="0.087" />
-
-    <ImageView
-        android:id="@+id/ivWeatherIcon"
-        android:layout_width="75dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintStart_toEndOf="@id/tvTemperature"
-        app:layout_constraintBottom_toBottomOf="@id/tvTemperature"
-        tools:src="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/tvTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="90sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvLocation"
-        android:layout_marginTop="50dp"
-        android:layout_marginStart="40dp"/>
-
-    <TextView
-        android:id="@+id/tvFeelsLikeTemperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="25dp"
-        app:layout_constraintStart_toStartOf="@+id/tvTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"/>
-
-    <TextView
-        android:id="@+id/tvWeatherState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
-        app:layout_constraintTop_toBottomOf="@+id/tvTemperature"/>
-
-    <ImageButton
-        android:id="@+id/currentLocationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="12dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/locations_24"
-        app:layout_constraintEnd_toStartOf="@+id/tvLocation"
-        app:layout_constraintTop_toTopOf="@+id/tvLocation"
-        app:tint="@color/white" />
-
-    <ImageButton
-        android:id="@+id/ttsBtn"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        android:background="@android:color/transparent"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintStart_toEndOf="@+id/tvLocation"
-        app:layout_constraintTop_toTopOf="@+id/tvLocation"
-        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        app:cardBackgroundColor="@color/transparent_blue"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cvHourly">
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            tools:context=".ui.home.HomePageFragment"
+            android:id="@+id/fragment_home"
+            android:paddingBottom="28dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp">
+            <FrameLayout
+                android:id="@+id/upperRegion"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintTop_toBottomOf="@id/tvLocation"
+                app:layout_constraintBottom_toBottomOf="@id/tvWeatherState"
+                app:layout_constraintStart_toStartOf="@id/tvTemperature"
+                app:layout_constraintEnd_toEndOf="@id/ivWeatherIcon"/>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvHourly"
+                android:layout_width="0dp"
+                android:layout_height="145dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="75dp"
+                app:cardBackgroundColor="@color/transparent_blue"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvFeelsLikeTemperature">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/temperatureChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:clipToPadding="true"/>
+
+            </androidx.cardview.widget.CardView>
 
             <TextView
-                android:layout_width="50sp"
+                android:id="@+id/text_home"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3.6"
-                android:textSize="16sp"
-                android:text="Today"
-                android:textColor="@color/white"/>
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.977" />
 
-                <ImageView
-                    android:id="@+id/day1_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="30dp"
+                app:layout_constraintVertical_bias="0.045" />
 
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
+            <TextView
+                android:id="@+id/lastRefreshTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp"/>
 
-                <TextView
-                    android:id="@+id/day1_max"
-                    android:layout_width="55sp"
+            <TextView
+                android:id="@+id/tvLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="270sp"
+                android:maxHeight="50sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeStepGranularity="2sp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lastRefreshTextView"
+                android:layout_marginTop="35dp"
+                app:layout_constraintVertical_bias="0.087" />
+
+            <ImageView
+                android:id="@+id/ivWeatherIcon"
+                android:layout_width="75dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="15dp"
+                app:layout_constraintStart_toEndOf="@id/tvTemperature"
+                app:layout_constraintBottom_toBottomOf="@id/tvTemperature"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/tvTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="90sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="40dp"/>
+
+            <TextView
+                android:id="@+id/tvFeelsLikeTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="25dp"
+                app:layout_constraintStart_toStartOf="@+id/tvTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"/>
+
+            <TextView
+                android:id="@+id/tvWeatherState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
+                app:layout_constraintTop_toBottomOf="@+id/tvTemperature"/>
+
+            <ImageButton
+                android:id="@+id/currentLocationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="12dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/locations_24"
+                app:layout_constraintEnd_toStartOf="@+id/tvLocation"
+                app:layout_constraintTop_toTopOf="@+id/tvLocation"
+                app:tint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/ttsBtn"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:background="@android:color/transparent"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toEndOf="@+id/tvLocation"
+                app:layout_constraintTop_toTopOf="@+id/tvLocation"
+                app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                app:cardBackgroundColor="@color/transparent_blue"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cvHourly">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/day1_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    <!-- Day 1 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:weightSum="5"
+                        android:paddingStart="22sp"
+                        android:paddingEnd="22sp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp">
 
-            </LinearLayout>
+                        <TextView
+                            android:layout_width="50sp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3.6"
+                            android:textSize="16sp"
+                            android:text="Today"
+                            android:textColor="@color/white"/>
+
+                        <ImageView
+                            android:id="@+id/day1_icon"
+                            android:layout_width="36sp"
+                            android:layout_height="33sp"
+                            android:src="@drawable/ic_cloudy"
+                            tools:src="@tools:sample/avatars" />
+
+                        <ImageView
+                            android:layout_width="36sp"
+                            android:layout_height="33sp"
+                            android:paddingStart="5sp"
+                            android:src="@drawable/night"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/day1_max"
+                            android:layout_width="55sp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:text="11°"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/day1_min"
+                            android:layout_width="40sp"
+                            android:layout_height="wrap_content"
+                            android:text="2°"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -578,10 +591,11 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+                </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

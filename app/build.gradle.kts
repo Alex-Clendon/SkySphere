@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.libraries.places:places:3.5.0")
     implementation(libs.firebase.database)
+    implementation(libs.androidx.junit.ktx)
     implementation ("com.firebaseui:firebase-ui-database:8.0.0")
     implementation(libs.androidx.junit.ktx)
     implementation(libs.firebase.auth.ktx)
@@ -67,13 +68,19 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
+    
+    implementation(libs.androidx.swiperefreshlayout)
+
+    androidTestImplementation("junit:junit:4.13.2'")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    debugImplementation("androidx.fragment:fragment-testing:1.4.1")
+    androidTestImplementation("org.mockito:mockito-core:3.12.4")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.fragment:fragment-testing:1.3.6")
 
-    testImplementation ("org.mockito:mockito-core:3.11.2")
+    testImplementation ("org.mockito:mockito-core:3.12.4")
     testImplementation ("org.mockito:mockito-inline:3.11.2")
     testImplementation ("androidx.test:core:1.5.0")
     testImplementation ("androidx.test.ext:junit:1.1.5")

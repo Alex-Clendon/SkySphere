@@ -38,6 +38,7 @@ import android.speech.tts.TextToSpeech
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -48,7 +49,7 @@ import com.skysphere.skysphere.widgets.SkySphereWidget
 import java.time.LocalDateTime
 
 
-class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefreshLayout.OnRefreshListener {
 
     // Declare the views that have been created in the XML file.
     private lateinit var dateTextView: TextView
@@ -61,6 +62,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var setCurrentLocationButton: ImageButton
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var lastRefreshTextView: TextView
 
     // Weekly Forecast Variables
     private lateinit var day2TextView: TextView
@@ -173,6 +176,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Initializing the users preferences
         sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
+        // Initializing the swipe refresh layout
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener(this)
+
+        // Initializing the last refresh text view
+        lastRefreshTextView = view.findViewById(R.id.lastRefreshTextView)
+        updateLastRefreshTime()
+
         // Initializing the chart
         temperatureChart = view.findViewById(R.id.temperatureChart)
 
@@ -211,6 +222,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         textToSpeechBtn.setOnClickListener {
             textToSpeechDialog()
         }
+
+        // Pseudo refresh which will update the weather data when fragment is switched to
+        onRefresh()
 
         return view
     }
@@ -359,12 +373,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private fun getLocation(){
         // This if statement checks if user has granted user location permissions (fine location and coarse location).
         if(ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED){
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED){
             // This statement occurs when permissions haven't been granted, and sends the request to the user.
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -572,7 +586,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         }
                         // Min temperature weekly overview
                         val day1MinTemp = if (tempUnit == "Celsius"){
-                           day1Min ?: 0.0
+                            day1Min ?: 0.0
                         } else {
                             celsiusToFahrenheit(day1Min ?: 0.0)
                         }
@@ -655,6 +669,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         currentWindSpeed = displayWindSpeed
                         currentWindDirection = windDirection
                         currentWindGusts = displayWindGusts
+
+                        with(sharedPreferences.edit()) {
+                            putLong("last_refresh_time", System.currentTimeMillis())
+                            apply()
+                        }
+                        updateLastRefreshTime()
 
 
                     } else {
@@ -757,5 +777,30 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             }
         }
     }
+
+    // Swipe to refresh function
+    override fun onRefresh() {
+        if (isCustomLocationSet()) {
+            getCustomLocationWeather()
+        } else {
+            getLocation()
+        }
+        swipeRefreshLayout.isRefreshing = false
+    }
+
+    // Update the last time the weather was refreshed by the user
+    private fun updateLastRefreshTime() {
+        val lastRefreshTime = sharedPreferences.getLong("last_refresh_time", 0)
+        val formatter = SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.getDefault())
+        val formattedTime = formatter.format(Date(lastRefreshTime))
+        lastRefreshTextView.text = "Last updated: $formattedTime"
+    }
+
+    // Make a function call when the user resumes the app from background
+    override fun onResume() {
+        super.onResume()
+        onRefresh()
+    }
+
 
 }
