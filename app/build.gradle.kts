@@ -64,9 +64,9 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.swiperefreshlayout)
-    testImplementation("junit:junit:4.13.2'")
-    testImplementation("org.robolectric:robolectric:4.7.3")
-    testImplementation ("androidx.test.ext:junit:1.1.3")
-    testImplementation ("androidx.fragment:fragment-testing:1.4.1")
-    testImplementation ("org.mockito:mockito-core:3.12.4")
+
+    androidTestImplementation("junit:junit:4.13.2'")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    debugImplementation("androidx.fragment:fragment-testing:1.4.1")
+    androidTestImplementation("org.mockito:mockito-core:3.12.4")
 }
