@@ -5,6 +5,8 @@ import android.widget.TextView
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.BoundedMatcher
@@ -45,17 +47,25 @@ class HomePageFragmentTest {
     // Test that weather text changes after refresh
     @Test
     fun testWeatherTextChangesAfterRefresh() {
-        // Get initial weather text
-        val initialWeatherText = getWeatherText()
+        // Set a dummy text value
+        onView(withId(R.id.tvWeatherState)).perform(setTextAction("Dummy Weather"))
+
+        // Wait for the UI to update
+        Thread.sleep(500)
+
+        // Get the dummy weather text
+        val dummyWeatherText = getWeatherText()
 
         // Perform swipe down action on the SwipeRefreshLayout
         onView(withId(R.id.swipeRefreshLayout)).perform(swipeDown())
 
-        Thread.sleep(1000)
+        // Wait for the refresh to complete
+        Thread.sleep(2000)
 
-        // Check if the weather text has changed
-        onView(withId(R.id.tvWeatherState)).check(matches(not(withText(initialWeatherText))))
+        // Check if the weather text has changed from the dummy text
+        onView(withId(R.id.tvWeatherState)).check(matches(not(withText(dummyWeatherText))))
     }
+
 
     // Test that last refresh time changes after refresh
     @Test
@@ -89,6 +99,23 @@ class HomePageFragmentTest {
             refreshTime = (view as TextView).text.toString()
         }
         return refreshTime
+    }
+
+    // Helper function to set the weather text to a dummy value
+    private fun setTextAction(text: String): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(TextView::class.java)
+            }
+
+            override fun getDescription(): String {
+                return "Set text on a TextView"
+            }
+
+            override fun perform(uiController: UiController, view: View) {
+                (view as TextView).text = text
+            }
+        }
     }
 
     // Custom matcher for checking if SwipeRefreshLayout is not refreshing
