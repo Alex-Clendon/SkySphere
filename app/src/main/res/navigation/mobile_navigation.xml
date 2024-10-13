@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_locations" />
 
     <fragment
+        android:id="@+id/nav_news"
+        android:name="com.skysphere.skysphere.ui.news.NewsFragment"
+        android:label="News In"
+        tools:layout="@layout/fragment_news" />
+
+    <fragment
         android:id="@+id/nav_recommendations"
         android:name="com.skysphere.skysphere.ui.recommendations.WeatherRecommendationsFragment"
         android:label="@string/menu_recommendations"
@@ -30,8 +36,41 @@
         tools:layout="@layout/fragment_settings" />
 
     <fragment
+        android:id="@+id/nav_friends_list"
+        android:name="com.skysphere.skysphere.ui.friends.FriendsListFragment"
+        android:label="Friends List"
+        tools:layout="@layout/fragment_friends_list" />
+
+    <fragment
+        android:id="@+id/nav_add_friend"
+        android:name="com.skysphere.skysphere.ui.friends.AddFriendsFragment"
+        android:label="Add Friend"
+        tools:layout="@layout/fragment_add_friend">
+    <action
+        android:id="@+id/action_addFriendsFragment_to_profilePage"
+        app:destination="@id/profilePage" />
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_login"
-        android:name="com.skysphere.skysphere.ui.LoginFragment"
+        android:name="com.skysphere.skysphere.ui.userauthen.LoginFragment"
         android:label="Log In"
         tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/nav_signup"
+        android:name="com.skysphere.skysphere.ui.userauthen.SignupFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_signup" />
+
+    <fragment
+        android:id="@+id/profilePage"
+        android:name="com.skysphere.skysphere.ui.friends.ProfilePageFragment"
+        android:label="Profile"
+        tools:layout="@layout/person_profile">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

@@ -2,7 +2,6 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
@@ -16,16 +15,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +33,9 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -41,7 +43,10 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_locations, R.id.nav_settings, R.id.nav_recommendations, R.id.nav_login, R.id.nav_logout
+              
+                R.id.nav_home, R.id.nav_locations, R.id.nav_settings, R.id.nav_recommendations, R.id.nav_login, R.id.nav_logout, R.id.nav_news
+                , R.id.nav_add_friend, R.id.nav_friends_list
+
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -51,9 +56,10 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> {
-                    // Set login flag to false
+                    auth.signOut()
                     updateNavigationMenu(false)
-                    true // Indicate that the logout was handled
+                    navController.navigate(R.id.nav_login)
+                    true
                 }
                 else -> {
                     // Allow default navigation behavior for other items
@@ -65,7 +71,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Set login flag to false
-        updateNavigationMenu(false)
+        //updateNavigationMenu(false)
+        updateNavigationMenu(auth.currentUser != null)
 
         // Check for permissions and start notification service
         checkAndRequestNotificationPermission()
@@ -77,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to swap the nav menu depending on if the user is logged in or not
-    public fun updateNavigationMenu(isLoggedIn: Boolean) {
+    fun updateNavigationMenu(isLoggedIn: Boolean) {
 
         val navView: NavigationView = binding.navView
         navView.menu.clear()
@@ -87,15 +94,6 @@ class MainActivity : AppCompatActivity() {
             navView.inflateMenu(R.menu.login_drawer)
         }
     }
-
-    // Will use this later -James
-
-    /*private fun checkLoginStatus(): Boolean {
-        if (UserSession.isLoggedIn) {
-            return true
-        }
-        return false // Change this to actual login status
-    }*/
 
     //Code for getting notification permissions
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
