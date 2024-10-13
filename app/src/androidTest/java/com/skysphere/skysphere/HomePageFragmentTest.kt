@@ -18,6 +18,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.concurrent.thread
 
 @RunWith(AndroidJUnit4::class)
 class HomePageFragmentTest {
@@ -26,6 +27,7 @@ class HomePageFragmentTest {
     @Before
     fun setup() {
         launchFragmentInContainer<HomePageFragment>()
+        Thread.sleep(2000)
     }
 
     // Test that swipe-to-refresh triggers a refresh
