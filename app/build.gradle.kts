@@ -68,6 +68,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation ("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
+    implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
 }
 
 kapt {

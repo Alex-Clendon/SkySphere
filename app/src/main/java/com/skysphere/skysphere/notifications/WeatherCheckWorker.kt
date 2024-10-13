@@ -58,7 +58,7 @@ class WeatherCheckWorker(
     // Call the api only requesting the weather code
     private suspend fun fetchWeatherData(latitude: Double, longitude: Double): WeatherData {
         return withContext(Dispatchers.IO) {
-            RetrofitInstance.instance.getWeatherData(
+            RetrofitInstance.getInstance(false).getWeatherData(
                 latitude, longitude, "weather_code", "weather_code", "auto", ""
             ).execute().body() ?: throw Exception("Failed to fetch weather data")
         }

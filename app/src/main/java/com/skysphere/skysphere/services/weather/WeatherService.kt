@@ -3,6 +3,7 @@ package com.skysphere.skysphere.services.weather
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.API.WeatherAPI
 import com.skysphere.skysphere.services.weather.json.WeatherResults
 import com.skysphere.skysphere.updaters.WeatherCache
@@ -12,7 +13,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class WeatherService @Inject constructor(
-    private val api: WeatherAPI,
     private val weatherCache: WeatherCache
 ) {
 
@@ -61,6 +61,7 @@ class WeatherService @Inject constructor(
         )
 
         // Make sure the API method corresponds to the correct signature
+        val api = RetrofitInstance.getInstance(true)
         api.getWeatherData2(
              -36.85, // After testing, use location.latitude,
              174.76, // After testing, use location.longitude,

@@ -1,17 +1,21 @@
 package com.skysphere.skysphere.API
 
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.serialization.json.Json
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import okhttp3.MediaType.Companion.toMediaType
 
 object RetrofitInstance1 {
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl("https://api.open-meteo.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+    private const val BASE_URL = "https://api.open-meteo.com/"
 
-    val weatherApi: WeatherAPI by lazy {
+    val instance: WeatherAPI by lazy {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(
+                Json.asConverterFactory(
+                    "application/json; charset=UTF8".toMediaType()))
+            .build()
+
         retrofit.create(WeatherAPI::class.java)
     }
 }
