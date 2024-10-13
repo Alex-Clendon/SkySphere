@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/login_background"
-    tools:context=".ui.SignupFragment"
+    tools:context=".ui.userauthen.SignupFragment"
     android:gravity="center">
 
     <LinearLayout
