@@ -7,7 +7,7 @@
     android:id="@+id/login_fragment"
     android:orientation="vertical"
     android:background="@drawable/login_background"
-    tools:context=".ui.LoginFragment"
+    tools:context=".ui.userauthen.LoginFragment"
     android:gravity="center">
 
     <LinearLayout
@@ -72,14 +72,14 @@
                     app:hintTextAppearance="@color/grey">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/login_username"
+                        android:id="@+id/login_email"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:hintTextColor="@color/grey"
                         android:background="@drawable/edit_text_border"
                         android:drawableStart="@drawable/user_icon"
                         android:drawablePadding="8dp"
-                        android:hint="Username"
+                        android:hint="Email"
                         android:textColorHint="@color/grey"
                         android:textColor="@color/black"
                         android:padding="8dp"/>
