@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.services.weather
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.API.WeatherAPI
 import com.skysphere.skysphere.services.weather.json.WeatherResults
@@ -20,11 +21,12 @@ class WeatherService @Inject constructor(
         onSuccess: (WeatherResults) -> Unit, // Change the type to WeatherResults
         onFailure: (Throwable) -> Unit
     ) {
-        /*if (weatherCache.isCacheValid()) {
+        if (weatherCache.isCacheValid()) {
         // Use cached data
         weatherCache.cachedWeatherResults?.let(onSuccess) ?: onFailure(Throwable("Cached data is null"))
+        Log.d("Cache", "Cache Used")
         return
-    }*/
+    }
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",
@@ -73,11 +75,12 @@ class WeatherService @Inject constructor(
                 // Provide more detailed error messages based on response code if necessary
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        //weatherCache.updateCache(it) // Update the weather cache
+                        weatherCache.updateCache(it) // Update the weather cache
+                        Log.d("API Call", "Full API Response: ${response.body()}")
                         onSuccess(it)
                     } ?: onFailure(Throwable("Response body is null"))
                 } else {
-                    onFailure(Throwable("pluh: ${response.code()}"))
+                    onFailure(Throwable("Error: ${response.code()}"))
                 }
             }
 
