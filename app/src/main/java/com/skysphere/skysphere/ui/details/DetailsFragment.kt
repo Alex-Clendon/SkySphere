@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.ViewModelProvider
+import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
 import com.skysphere.skysphere.services.weather.WeatherService
 import com.skysphere.skysphere.services.weather.json.ApiResults
@@ -19,11 +21,18 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private var weatherResults: ApiResults? = null
+    private lateinit var viewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(WeatherViewModel::class.java)
 
+        viewModel.weatherResults.observe(this) { results ->
+            weatherResults = results
+            getData()
+        }
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

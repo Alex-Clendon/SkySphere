@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.API
 
+import com.skysphere.skysphere.WeatherViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,12 +15,18 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideWeatherAPI(): WeatherAPI {
-        return RetrofitInstance.getInstance(true) // Usesexisting Retrofit instance
+        return RetrofitInstance.getInstance(true) // Uses existing Retrofit instance
     }
 
     @Provides
     @Singleton
     fun provideWeatherCache(): WeatherCache {
         return WeatherCache() // Initialize WeatherCache
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherViewModel(): WeatherViewModel {
+        return WeatherViewModel()
     }
 }

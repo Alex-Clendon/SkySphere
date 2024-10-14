@@ -18,7 +18,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.work.BackoffPolicy
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
@@ -29,6 +30,7 @@ import dagger.hilt.android.HiltAndroidApp
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -42,14 +44,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-            .setInitialDelay(Duration.ofSeconds(15))
+        val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(90, TimeUnit.MINUTES)
             .setBackoffCriteria(
                 backoffPolicy = BackoffPolicy.LINEAR,
-                duration = Duration.ofMinutes(15)
+                duration = Duration.ofSeconds(15)
             )
             .build()
-        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "WeatherUpdateWork",
+            ExistingPeriodicWorkPolicy.KEEP, // This will keep the existing work if it already exists
+            workRequest
+        )
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
