@@ -8,26 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import com.skysphere.skysphere.API.RetrofitInstance
-import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
 import com.skysphere.skysphere.services.weather.WeatherService
-import com.skysphere.skysphere.services.weather.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.ApiResults
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
-
-    @Inject
-    lateinit var weatherService: WeatherService
-    private lateinit var weatherResults: WeatherResults
+    private var weatherResults: ApiResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,21 +38,12 @@ class DetailsFragment : Fragment() {
     }
 
     private fun getData() {
-        
-        weatherService.getWeather( { weatherResults ->
-            // Check if current is not null
-            weatherResults.current?.let { currentWeather ->
-                // Now it's safe to access temperature
-                binding.tvTemperature.text = currentWeather.temperature?.toString() ?: "N/A"
-            } ?: run {
-                // Handle the case where current is null
-                binding.tvTemperature.text = "No data available"
-            }
-        }, { error ->
-            // Handle error case
-            binding.tvTemperature.text = "Error fetching weather data: ${error.message}"
-            Log.d("API Call", "Error: ${error.message}")
-        })
+        weatherResults?.let {
+            binding.tvTemperature.text = it.current?.temperature.toString()
+        } ?: run {
+            // Handle case where weatherResults is null, e.g., show a placeholder or error message
+            binding.tvTemperature.text = "No data available"
+        }
     }
 
    /* private fun getWeatherDetails(latitude: Double, longitude: Double) {

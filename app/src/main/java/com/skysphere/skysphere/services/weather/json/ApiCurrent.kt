@@ -1,11 +1,10 @@
 package com.skysphere.skysphere.services.weather.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.encodeToString
 
 
 @Serializable
-data class Current(
+data class ApiCurrent(
     @SerialName("temperature_2m") val temperature: Double?,  // Works as expected
     @SerialName("apparent_temperature") val apparentTemperature: Double?,
     @SerialName("relative_humidity_2m") val relativeHumidity: Int?,  // Matches JSON

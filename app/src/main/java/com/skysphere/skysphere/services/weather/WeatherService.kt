@@ -4,29 +4,22 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.API.RetrofitInstance
-import com.skysphere.skysphere.API.WeatherAPI
-import com.skysphere.skysphere.services.weather.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.ApiResults
 import com.skysphere.skysphere.updaters.WeatherCache
 import javax.inject.Inject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.await
 
 class WeatherService @Inject constructor(
     private val weatherCache: WeatherCache
 ) {
 
-    fun getWeather(
-        // location: Location,
-        onSuccess: (WeatherResults) -> Unit, // Change the type to WeatherResults
-        onFailure: (Throwable) -> Unit
-    ) {
-        if (weatherCache.isCacheValid()) {
+    suspend fun getWeather(): ApiResults {
+        /*if (weatherCache.isCacheValid()) {
         // Use cached data
         weatherCache.cachedWeatherResults?.let(onSuccess) ?: onFailure(Throwable("Cached data is null"))
         Log.d("Cache", "Cache Used")
         return
-    }
+    }*/
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",
@@ -63,7 +56,7 @@ class WeatherService @Inject constructor(
 
         // Make sure the API method corresponds to the correct signature
         val api = RetrofitInstance.getInstance(true)
-        api.getWeatherData2(
+        return api.getWeatherData2(
             latitude = -36.85, // After testing, use location.latitude,
             longitude = 174.76, // After testing, use location.longitude,
             daily = daily.joinToString(","),
@@ -71,26 +64,7 @@ class WeatherService @Inject constructor(
             current = current.joinToString(","),
             timezone = "auto",
             forecastDays = 7
-        ).enqueue(object : Callback<WeatherResults> { // Change to WeatherResults
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onResponse(call: Call<WeatherResults>, response: Response<WeatherResults>) {
-                // Provide more detailed error messages based on response code if necessary
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        weatherCache.updateCache(it) // Update the weather cache
-                        Log.d("API Call", "Full API Response: ${response.body()}")
-                        onSuccess(it)
-                    } ?: onFailure(Throwable("Response body is null"))
-                } else {
-                    onFailure(Throwable("Error: ${response.code()}"))
-                    Log.d("API Call", "Failed")
-                }
-            }
-
-            override fun onFailure(call: Call<WeatherResults>, t: Throwable) {
-                onFailure(t)
-            }
-        })
+        ).await()
     }
 }
 

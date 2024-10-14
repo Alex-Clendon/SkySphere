@@ -1,6 +1,6 @@
 package com.skysphere.skysphere.API
 
-import com.skysphere.skysphere.services.weather.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.ApiResults
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -25,5 +25,5 @@ interface WeatherAPI {
         @Query("daily") daily: String,
         @Query("timezone") timezone: String,
         @Query("forecast_days") forecastDays: Int
-    ): Call<WeatherResults>
+    ): Call<ApiResults>
 }

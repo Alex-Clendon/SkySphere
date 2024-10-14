@@ -14,12 +14,12 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideWeatherAPI(): WeatherAPI {
-        return RetrofitInstance.getInstance(true) // This uses your existing Retrofit instance
+        return RetrofitInstance.getInstance(true) // Usesexisting Retrofit instance
     }
 
     @Provides
     @Singleton
     fun provideWeatherCache(): WeatherCache {
-        return WeatherCache() // Initialize your WeatherCache appropriately
+        return WeatherCache() // Initialize WeatherCache
     }
 }

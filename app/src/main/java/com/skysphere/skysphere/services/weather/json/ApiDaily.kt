@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 
 
 @Serializable
-data class Daily(
+data class ApiDaily(
     val time: List<String?>?,
     @SerialName("weather_code") val weatherCode: List<Int?>?,
     @SerialName("temperature_2m_max") val temperatureMax: List<Double?>?,

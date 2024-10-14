@@ -1,11 +1,11 @@
 package com.skysphere.skysphere.updaters
 
 import java.util.concurrent.TimeUnit
-import com.skysphere.skysphere.services.weather.json.WeatherResults
+import com.skysphere.skysphere.services.weather.json.ApiResults
 
 class WeatherCache {
     private var lastFetchTime: Long = 0
-    var cachedWeatherResults: WeatherResults? = null
+    var cachedWeatherResults: ApiResults? = null
 
     fun isCacheValid(): Boolean {
         val currentTime = System.currentTimeMillis()
@@ -14,7 +14,7 @@ class WeatherCache {
         return TimeUnit.MILLISECONDS.toMinutes(timeDifference) < 15
     }
 
-    fun updateCache(weatherResults: WeatherResults) {
+    fun updateCache(weatherResults: ApiResults) {
         cachedWeatherResults = weatherResults
         lastFetchTime = System.currentTimeMillis()
     }
