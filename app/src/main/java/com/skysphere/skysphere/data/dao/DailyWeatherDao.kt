@@ -12,7 +12,7 @@ interface DailyWeatherDao {
     suspend fun insertDailyWeather(dailyWeather: List<DailyWeatherEntity>)
 
     @Query("SELECT * FROM daily_weather ORDER BY time ASC")
-    suspend fun getDailyWeather(): List<DailyWeatherEntity>?
+    fun getDailyWeather(): List<DailyWeatherEntity>?
 
     @Query("DELETE FROM daily_weather")
     suspend fun clearDailyWeather()

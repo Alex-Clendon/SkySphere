@@ -18,14 +18,13 @@ class WeatherUpdateWorker @AssistedInject constructor(
     private val api: WeatherService,
     @Assisted val context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val viewModel: WeatherViewModel,
     private val repository: WeatherRepository
 ): CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
 
         try {
             val response = api.getWeather()
-            viewModel.setWeatherResults(response)
+            repository.fetchAndStoreWeatherData()
 
             val currentTime = System.currentTimeMillis()
             saveLastExecutionTime(currentTime)

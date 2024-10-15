@@ -20,6 +20,7 @@ class WeatherService @Inject constructor(
         Log.d("Cache", "Cache Used")
         return
     }*/
+        Log.d("API Call:", "API Call Made")
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",

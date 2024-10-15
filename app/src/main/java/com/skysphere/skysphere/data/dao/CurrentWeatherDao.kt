@@ -12,7 +12,7 @@ interface CurrentWeatherDao {
     suspend fun insertCurrentWeather(currentWeather: CurrentWeatherEntity)
 
     @Query("SELECT * FROM current_weather ORDER BY timestamp DESC LIMIT 1")
-    suspend fun getLatestCurrentWeather(): CurrentWeatherEntity?
+    fun getLatestCurrentWeather(): CurrentWeatherEntity?
 
     @Query("DELETE FROM current_weather")
     suspend fun clearCurrentWeather()

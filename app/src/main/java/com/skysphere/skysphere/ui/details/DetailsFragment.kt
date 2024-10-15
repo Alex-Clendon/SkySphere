@@ -10,25 +10,32 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
 import com.skysphere.skysphere.services.weather.WeatherService
 import com.skysphere.skysphere.services.weather.json.ApiResults
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
-    private var weatherResults: ApiResults? = null
-    private lateinit var viewModel: WeatherViewModel
+
+    @Inject
+    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+
+    private var weatherResults: WeatherResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(WeatherViewModel::class.java)
+        viewModel.fetchWeatherData()
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
+            Log.d("Database Operation:", "Results Updated")
+            getData()
         }
     }
 
@@ -39,20 +46,23 @@ class DetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        val view = binding.root
-        getData()
-
-        return view
+        return binding.root
     }
 
     private fun getData() {
         weatherResults?.let {
             binding.tvTemperature.text = it.current?.temperature.toString()
         } ?: run {
-            // Handle case where weatherResults is null, e.g., show a placeholder or error message
             binding.tvTemperature.text = "No data available"
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Clear binding reference to avoid memory leaks
+    }
+}
+
 
    /* private fun getWeatherDetails(latitude: Double, longitude: Double) {
         val weatherService =
@@ -99,4 +109,3 @@ class DetailsFragment : Fragment() {
                 }
             })
     }*/
-}

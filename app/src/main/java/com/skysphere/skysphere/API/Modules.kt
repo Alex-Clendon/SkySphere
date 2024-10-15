@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.WeatherDatabase
+import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.data.dao.CurrentWeatherDao
 import com.skysphere.skysphere.data.dao.DailyWeatherDao
 import com.skysphere.skysphere.data.dao.HourlyWeatherDao
@@ -14,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import com.skysphere.skysphere.updaters.WeatherCache
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -33,8 +35,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideWeatherViewModel(): WeatherViewModel {
-        return WeatherViewModel()
+    fun provideWeatherViewModel(
+        weatherRepository: WeatherRepository
+    ): WeatherViewModel {
+        return WeatherViewModel(weatherRepository)
     }
 
     @Provides
