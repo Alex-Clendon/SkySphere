@@ -23,6 +23,7 @@ import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
@@ -33,6 +34,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -40,11 +42,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+    private var weatherResults: WeatherResults? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Log.d("Database Operation:", "Results Updated")
 
             if(shouldRunWorker(applicationContext)) {
                 Log.d("WeatherWorker", "Enqueuing worker.")
@@ -67,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                 {
                     Log.d("WeatherWorker", "Worker Ignored.")
                 }
+        viewModel.fetchWeatherData()
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout

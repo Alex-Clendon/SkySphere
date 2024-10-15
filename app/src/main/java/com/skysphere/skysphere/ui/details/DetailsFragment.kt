@@ -30,11 +30,10 @@ class DetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.fetchWeatherData()
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            Log.d("Database Operation:", "Results Updated")
+            Log.d("Database Operation:", "Fragment Updated")
             getData()
         }
     }
