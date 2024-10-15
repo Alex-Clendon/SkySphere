@@ -15,7 +15,7 @@ import dagger.assisted.AssistedInject
 @HiltWorker
 class WeatherUpdateWorker @AssistedInject constructor(
     private val api: WeatherService,
-    @Assisted context: Context,
+    @Assisted val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val viewModel: WeatherViewModel
 ): CoroutineWorker(context, workerParameters) {
@@ -24,11 +24,20 @@ class WeatherUpdateWorker @AssistedInject constructor(
         try {
             val response = api.getWeather()
             viewModel.setWeatherResults(response)
-            Log.d("WeatherWorker", "Success")
+
+            val currentTime = System.currentTimeMillis()
+            saveLastExecutionTime(currentTime)
+
+            Log.d("WeatherWorker", "Success, ${currentTime}")
             return Result.success()
         } catch (e: Exception) {
             Log.d("WeatherWorker", "Error")
             return Result.retry()
         }
+    }
+
+    private fun saveLastExecutionTime(currentTime: Long) {
+        val sharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putLong("last_execution_time", currentTime).apply()
     }
 }

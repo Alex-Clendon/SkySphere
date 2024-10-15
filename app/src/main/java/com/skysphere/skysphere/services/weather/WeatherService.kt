@@ -54,7 +54,7 @@ class WeatherService @Inject constructor(
             "visibility",
         )
 
-        // Make sure the API method corresponds to the correct signature
+
         val api = RetrofitInstance.getInstance(true)
         return api.getWeatherData2(
             latitude = -36.85, // After testing, use location.latitude,

@@ -29,7 +29,6 @@ class DetailsFragment : Fragment() {
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            getData()
         }
     }
 

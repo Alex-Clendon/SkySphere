@@ -2,9 +2,11 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -44,18 +46,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(90, TimeUnit.MINUTES)
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.LINEAR,
-                duration = Duration.ofSeconds(15)
-            )
-            .build()
+            if(shouldRunWorker(applicationContext)) {
+                Log.d("WeatherWorker", "Enqueuing worker.")
+                val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+                    repeatInterval = 90,
+                    repeatIntervalTimeUnit = TimeUnit.MINUTES,
+                ).setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    duration = Duration.ofSeconds(15)
+                )
+                    .build()
 
-        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            "WeatherUpdateWork",
-            ExistingPeriodicWorkPolicy.KEEP, // This will keep the existing work if it already exists
-            workRequest
-        )
+                WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                    "WeatherUpdateWork",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            }
+            else
+                {
+                    Log.d("WeatherWorker", "Worker Ignored.")
+                }
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
@@ -65,7 +76,12 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_locations, R.id.nav_settings, R.id.nav_recommendations, R.id.nav_login, R.id.nav_logout
+                R.id.nav_home,
+                R.id.nav_locations,
+                R.id.nav_settings,
+                R.id.nav_recommendations,
+                R.id.nav_login,
+                R.id.nav_logout
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -79,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                     updateNavigationMenu(false)
                     true // Indicate that the logout was handled
                 }
+
                 else -> {
                     // Allow default navigation behavior for other items
                     navController.navigate(menuItem.itemId)
@@ -93,6 +110,18 @@ class MainActivity : AppCompatActivity() {
 
         // Check for permissions and start notification service
         checkAndRequestNotificationPermission()
+    }
+
+    private fun shouldRunWorker(context: Context): Boolean {
+        val sharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
+        val lastExecutionTime = sharedPreferences.getLong("last_execution_time", 0L)
+        val currentTime = System.currentTimeMillis()
+        val elapsedTime = currentTime - lastExecutionTime
+
+        // Return true if more than 15 minutes have passed
+        val result = elapsedTime >= 90 * 60 * 1000
+        Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
+        return result
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -111,15 +140,6 @@ class MainActivity : AppCompatActivity() {
             navView.inflateMenu(R.menu.login_drawer)
         }
     }
-
-    // Will use this later -James
-
-    /*private fun checkLoginStatus(): Boolean {
-        if (UserSession.isLoggedIn) {
-            return true
-        }
-        return false // Change this to actual login status
-    }*/
 
     //Code for getting notification permissions
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
@@ -167,7 +187,8 @@ class MainActivity : AppCompatActivity() {
     // Starts the weather service if notification permissions are granted
     private fun startWeatherServiceIfEnabled() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val isNotificationEnabled = sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+        val isNotificationEnabled =
+            sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
         if (isNotificationEnabled) {
             WeatherService.startWeatherMonitoring(this)
         }
