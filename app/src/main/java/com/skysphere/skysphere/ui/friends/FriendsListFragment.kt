@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui.friends
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -88,6 +91,32 @@ class FriendsListFragment : Fragment() {
 
                 // Set date of when they became friends
                 holder.tvFriendsSince.text = "Friends since: ${model.date ?: "Unknown"}"
+
+                holder.itemView.setOnClickListener {
+                    val options = listOf(
+                        "Profile",
+                        "Chat"
+                    )
+                    val builder = AlertDialog.Builder(this@FriendsListFragment.requireContext())
+                    builder.setTitle("Select an option")
+
+                    builder.setItems(options.toTypedArray()){ _, which ->
+                        when (which) {
+                            0 -> {
+                                // Navigate to the user's profile
+                                val action = FriendsListFragmentDirections.actionFriendsListFragmentToProfilePage(friendId)
+                                findNavController().navigate(action)
+
+                            }
+                            1 -> {
+                                // Navigate to the chat with the user
+                                val action = FriendsListFragmentDirections.actionFriendsListFragmentToChatFragment(friendId)
+                                findNavController().navigate(action)
+                            }
+                        }
+                    }
+                    builder.show()
+                }
             }
         }
 
@@ -99,5 +128,33 @@ class FriendsListFragment : Fragment() {
         // Updates the TextView's to display username, and date of when they became friends
         val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
         val tvFriendsSince: TextView = itemView.findViewById(R.id.tvFriendsSince)
+    }
+
+    class FriendsListFragmentDirections private constructor() {
+        companion object {
+            fun actionFriendsListFragmentToProfilePage(userId: String): NavDirections {
+                return object : NavDirections {
+                    override val actionId: Int
+                        get() = R.id.action_FriendsListFragment_to_profilePage
+
+                    override val arguments: Bundle
+                        get() = Bundle().apply {
+                            putString("userId", userId)
+                        }
+                }
+            }
+
+            fun actionFriendsListFragmentToChatFragment(userId: String): NavDirections {
+                return object : NavDirections {
+                    override val actionId: Int
+                        get() = R.id.action_FriendsListFragment_to_chatFragment
+
+                    override val arguments: Bundle
+                        get() = Bundle().apply {
+                            putString("userId", userId)
+                        }
+                }
+            }
+        }
     }
 }

@@ -39,7 +39,14 @@
         android:id="@+id/nav_friends_list"
         android:name="com.skysphere.skysphere.ui.friends.FriendsListFragment"
         android:label="Friends List"
-        tools:layout="@layout/fragment_friends_list" />
+        tools:layout="@layout/fragment_friends_list">
+        <action
+        android:id="@+id/action_FriendsListFragment_to_profilePage"
+        app:destination="@id/profilePage" />
+        <action
+        android:id="@+id/action_FriendsListFragment_to_chatFragment"
+        app:destination="@id/nav_chat" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_add_friend"
@@ -71,6 +78,16 @@
         <argument
             android:name="userId"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="com.skysphere.skysphere.ui.chat.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" >
+    <argument
+        android:name="userId"
+        app:argType="string" />
     </fragment>
 
 </navigation>
