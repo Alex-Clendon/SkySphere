@@ -8,6 +8,7 @@ import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.services.weather.WeatherService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -17,7 +18,8 @@ class WeatherUpdateWorker @AssistedInject constructor(
     private val api: WeatherService,
     @Assisted val context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val viewModel: WeatherViewModel
+    private val viewModel: WeatherViewModel,
+    private val repository: WeatherRepository
 ): CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
 

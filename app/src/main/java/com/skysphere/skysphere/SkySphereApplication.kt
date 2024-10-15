@@ -12,6 +12,7 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import com.skysphere.skysphere.updaters.background.WeatherUpdateWorker
 import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.WeatherRepository
 
 @HiltAndroidApp
 class SkySphereApplication : Application(), Configuration.Provider {
@@ -27,11 +28,11 @@ class SkySphereApplication : Application(), Configuration.Provider {
 
 }
 
-class CustomWorkerFactory @Inject constructor(private val api: WeatherService, private val viewModel: WeatherViewModel): WorkerFactory() {
+class CustomWorkerFactory @Inject constructor(private val api: WeatherService, private val viewModel: WeatherViewModel, private val weatherRepo: WeatherRepository): WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker? = WeatherUpdateWorker(api, appContext, workerParameters, viewModel)
+    ): ListenableWorker? = WeatherUpdateWorker(api, appContext, workerParameters, viewModel, weatherRepo)
 
 }
