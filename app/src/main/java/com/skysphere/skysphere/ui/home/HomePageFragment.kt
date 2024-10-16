@@ -41,6 +41,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -49,6 +50,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
@@ -62,6 +64,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     lateinit var viewModel: WeatherViewModel // Hilt will provide this
 
     private var weatherResults: WeatherResults? = null
+    private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
+    private lateinit var dailyRecyclerView: RecyclerView
     // Declare the views that have been created in the XML file.
 
     //Current Weather

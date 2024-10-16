@@ -132,16 +132,17 @@ class WeatherRepository @Inject constructor(
                 time = it.map { it.time },
                 weatherCode = dailyWeatherList.map { it.weatherCode },
                 weatherText = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
-                temperatureMax = dailyWeatherList.map { it.temperatureMax },
-                temperatureMin = dailyWeatherList.map { it.temperatureMin },
+                temperatureMax = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
+                temperatureMin = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMin, settingsManager.getTemperatureUnit()) },
                 precipitationProbability = dailyWeatherList.map { it.precipitationProbability },
                 precipitationSum = dailyWeatherList.map { it.precipitationSum },
-                apparentTemperatureMax = dailyWeatherList.map { it.apparentTemperatureMax },
-                apparentTemperatureMin = dailyWeatherList.map { it.apparentTemperatureMin },
+                apparentTemperatureMax = dailyWeatherList.map { ConversionHelper.convertTemperature(it.apparentTemperatureMax, settingsManager.getTemperatureUnit()) },
+                apparentTemperatureMin = dailyWeatherList.map { ConversionHelper.convertTemperature(it.apparentTemperatureMin, settingsManager.getTemperatureUnit()) },
                 sunrise = dailyWeatherList.map { it.sunrise },
                 sunset = dailyWeatherList.map { it.sunset },
                 sunshineDuration = dailyWeatherList.map { it.sunshineDuration },
-                uvIndexMax = dailyWeatherList.map { it.uvIndexMax }
+                uvIndexMax = dailyWeatherList.map { it.uvIndexMax },
+                day = dailyWeatherList.map { ConversionHelper.convertToDay(it.time) }
             )
         }
 

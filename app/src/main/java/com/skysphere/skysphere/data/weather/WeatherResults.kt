@@ -43,14 +43,15 @@ data class WeatherDaily(
     val time: List<String?>,
     val weatherCode: List<Int?>,
     val weatherText: List<String?>,
-    val temperatureMax: List<Double?>,
-    val temperatureMin: List<Double?>,
+    val temperatureMax: List<Int?>,
+    val temperatureMin: List<Int?>,
     val precipitationProbability: List<Int?>,
     val precipitationSum: List<Double?>,
-    val apparentTemperatureMax: List<Double?>,
-    val apparentTemperatureMin: List<Double?>,
+    val apparentTemperatureMax: List<Int?>,
+    val apparentTemperatureMin: List<Int?>,
     val sunrise: List<String?>,
     val sunset: List<String?>,
     val sunshineDuration: List<Double?>,
-    val uvIndexMax: List<Double?>
+    val uvIndexMax: List<Double?>,
+    val day:  List<String?>
 )
