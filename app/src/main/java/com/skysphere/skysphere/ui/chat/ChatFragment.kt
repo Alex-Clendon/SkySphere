@@ -53,7 +53,7 @@ class ChatFragment : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         usersRef = firebaseDatabase.reference.child("users")
-        msgsRef = firebaseDatabase.reference.child("messages")
+        msgsRef = firebaseDatabase.getReference()
 
         msgReceiverId = arguments?.getString("userId") ?: ""
         currentUserId = firebaseAuth.currentUser?.uid
@@ -82,7 +82,6 @@ class ChatFragment : Fragment() {
             sendMessage()
         }
 
-        Log.d("ChatFragment", "Calling fetchMessages()")
         fetchMessages()
 
         return view
@@ -120,7 +119,7 @@ class ChatFragment : Fragment() {
             val message_sender_ref = "messages/$currentUserId/$msgReceiverId"
             val message_receiver_ref = "messages/$msgReceiverId/$currentUserId"
 
-            val user_msg_key = msgsRef.child(currentUserId.toString()).child(msgReceiverId).push()
+            val user_msg_key = msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId).push()
 
             val msg_push_id = user_msg_key.key
 
@@ -161,7 +160,7 @@ class ChatFragment : Fragment() {
     }
 
     private fun fetchMessages() {
-        msgsRef.child(currentUserId.toString()).child(msgReceiverId)
+        msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId)
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     if(snapshot.exists()){
