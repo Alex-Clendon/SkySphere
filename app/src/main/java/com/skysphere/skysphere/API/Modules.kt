@@ -13,9 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import com.skysphere.skysphere.updaters.WeatherCache
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,12 +23,6 @@ object NetworkModule {
     @Singleton
     fun provideWeatherAPI(): WeatherAPI {
         return RetrofitInstance.getInstance(true) // Uses existing Retrofit instance
-    }
-
-    @Provides
-    @Singleton
-    fun provideWeatherCache(): WeatherCache {
-        return WeatherCache() // Initialize WeatherCache
     }
 
     @Provides

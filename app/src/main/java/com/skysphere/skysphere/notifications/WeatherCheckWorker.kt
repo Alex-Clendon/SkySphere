@@ -1,19 +1,23 @@
 package com.skysphere.skysphere.notifications
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.skysphere.skysphere.API.RetrofitInstance
-import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.GPSManager
-import com.skysphere.skysphere.notifications.NotificationManager
 import com.skysphere.skysphere.ui.settings.SettingsFragment
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class WeatherCheckWorker(
-    context: Context,
-    params: WorkerParameters
+@HiltWorker
+@RequiresApi(Build.VERSION_CODES.O)
+class WeatherCheckWorker @AssistedInject constructor(
+    @Assisted val context: Context,
+    @Assisted params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
 
     // Get the shared preferences to check if notifications are enabled
@@ -39,10 +43,10 @@ class WeatherCheckWorker(
             })
 
             // Get the current weather condition and check if it's severe
-            val weatherData = fetchWeatherData(latitude, longitude)
+            /*val weatherData = fetchWeatherData(latitude, longitude)
             if (isSevereWeather(weatherData) && isNotificationEnabled()) {
                 NotificationManager.showSevereWeatherNotification(applicationContext)
-            }
+            }*/
 
             Result.success()
         } catch (e: Exception) {
@@ -55,7 +59,7 @@ class WeatherCheckWorker(
         return sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
     }
 
-    // Call the api only requesting the weather code
+    /*
     private suspend fun fetchWeatherData(latitude: Double, longitude: Double): WeatherData {
         return withContext(Dispatchers.IO) {
             RetrofitInstance.getInstance(false).getWeatherData(
@@ -68,5 +72,5 @@ class WeatherCheckWorker(
     private fun isSevereWeather(weatherData: WeatherData): Boolean {
         val severeWeatherCodes = listOf(95, 96, 99) // Thunderstorm codes
         return weatherData.current.weather_code in severeWeatherCodes
-    }
+    }*/
 }

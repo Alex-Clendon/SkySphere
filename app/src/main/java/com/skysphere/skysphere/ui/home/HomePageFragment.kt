@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -18,16 +17,12 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.GPSManager
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
-import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -98,7 +93,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            Log.d("Daily Operation", "Daily Results: ${weatherResults?.daily}")
             getData()
         }
     }
@@ -374,6 +368,11 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                 return
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getData()
     }
 
 }

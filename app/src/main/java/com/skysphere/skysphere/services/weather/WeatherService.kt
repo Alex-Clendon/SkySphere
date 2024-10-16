@@ -1,13 +1,9 @@
 package com.skysphere.skysphere.services.weather
 
 import android.content.Context
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.services.weather.json.ApiResults
-import com.skysphere.skysphere.updaters.WeatherCache
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import retrofit2.await
@@ -58,7 +54,7 @@ class WeatherService @Inject constructor(
 
 
         val api = RetrofitInstance.getInstance(true)
-        return api.getWeatherData2(
+        return api.getWeatherData(
             latitude,
             longitude,
             daily = daily.joinToString(","),

@@ -10,7 +10,6 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.API.RetrofitInstance
-import com.skysphere.skysphere.API.WeatherData
 import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
@@ -50,7 +49,7 @@ internal fun updateAppWidget(
 
     val weatherService = RetrofitInstance.getInstance(false)
 
-    // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
+    /* Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
         .enqueue(object : Callback<WeatherData> {
             @RequiresApi(Build.VERSION_CODES.O)
@@ -89,5 +88,5 @@ internal fun updateAppWidget(
             {
                 // Will finish it off later in sprint 2. Still under development
             }
-        })
+        })*/
 }

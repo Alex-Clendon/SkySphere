@@ -1,6 +1,5 @@
 package com.skysphere.skysphere.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -32,7 +31,6 @@ class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
 
     override fun onBindViewHolder(holder: DailyWeatherViewHolder, position: Int) {
 
-        Log.d("Daily Operation", "Adapter Class: ${dailyWeather}")
         val day = dailyWeather?.day?.get(position)
         val weatherCode = dailyWeather?.weatherCode?.get(position)
         val tempMax = dailyWeather?.temperatureMax?.get(position)

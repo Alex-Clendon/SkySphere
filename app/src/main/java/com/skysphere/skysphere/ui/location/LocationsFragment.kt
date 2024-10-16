@@ -14,10 +14,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,7 +29,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.ui.home.HomePageFragment
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
