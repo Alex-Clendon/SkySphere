@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.weather.WeatherResults
@@ -64,6 +65,9 @@ class DetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding reference to avoid memory leaks
+        val navController = findNavController()
+        // Use NavController to navigate to HomeFragment
+        navController.navigate(R.id.nav_home)
     }
 }
 

@@ -105,8 +105,32 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
             Log.d("Daily Operation", "Daily Results: ${weatherResults?.daily}")
-            getCustomLocationWeather()
+            getData()
         }
+    }
+
+    private fun getData() {
+
+        // Sets the data retrieved from the API to the views declared at the beginning.
+        weatherResults?.let {
+            // Current
+            temperatureTextView.text = it.current?.temperature.toString()
+            temperatureUnit.text = it.current?.tempUnit
+            weatherStateTextView.text = it.current?.weatherText
+            it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
+            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
+            dateTextView.text = it.current?.date
+
+            // Weekly
+            dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily)
+            dailyRecyclerView.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = dailyWeatherAdapter
+            }
+        } ?: run {
+
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -136,7 +160,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         // Clickable region to show wind details in an alert dialog
         upperRegion.setOnClickListener {
-            showWindDetailsDialog()
+            val navController = findNavController()
+            // Use NavController to navigate to HomeFragment
+            navController.navigate(R.id.nav_details)
         }
 
 
@@ -363,27 +389,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeatherData(latitude: Double, longitude: Double) {
-
-
-        // Sets the data retrieved from the API to the views declared at the beginning.
-        weatherResults?.let {
-            // Current
-            temperatureTextView.text = it.current?.temperature.toString()
-            temperatureUnit.text = it.current?.tempUnit
-            weatherStateTextView.text = it.current?.weatherText
-            it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
-            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
-            dateTextView.text = it.current?.date
-
-            // Weekly
-            dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily)
-            dailyRecyclerView.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = dailyWeatherAdapter
-            }
-        } ?: run {
-
-        }
 
         val weatherService = RetrofitInstance.getInstance(false)// Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
         weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
