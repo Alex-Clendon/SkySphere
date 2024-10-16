@@ -73,9 +73,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
-    private var currentWindSpeed: Double = 0.0
-    private var currentWindDirection: Double = 0.0
-    private var currentWindGusts: Double = 0.0
 
     // Declaring chart which will be used to display hourly temperatures
     private lateinit var temperatureChart: LineChart
@@ -264,11 +261,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // X-axis configuration
         val xAxis = temperatureChart.xAxis
         xAxis.valueFormatter = IndexAxisValueFormatter(times)
-        xAxis.position = XAxis.XAxisPosition.TOP
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 1f
         xAxis.labelCount = times.size
         xAxis.textColor = Color.WHITE
         xAxis.setDrawAxisLine(false)
+        xAxis.gridColor = 1
 
         // Y-axis configuration
         val leftAxis = temperatureChart.axisLeft

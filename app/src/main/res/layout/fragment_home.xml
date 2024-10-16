@@ -51,8 +51,9 @@
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/temperatureChart"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="135dp"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:layout_marginTop="4dp"
