@@ -1,8 +1,8 @@
 package com.skysphere.skysphere.ui.chat
 
-import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +30,7 @@ class ChatFragment : Fragment() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var usersRef: DatabaseReference
-    private lateinit var msgsRef: DatabaseReference
+    private lateinit var RootRef: DatabaseReference
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var msgAdapter: MessagesAdapter
@@ -53,11 +53,13 @@ class ChatFragment : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         usersRef = firebaseDatabase.reference.child("users")
-        msgsRef = firebaseDatabase.reference
+        RootRef = firebaseDatabase.getReference()
 
         msgReceiverId = arguments?.getString("userId") ?: ""
         currentUserId = firebaseAuth.currentUser?.uid
-        messagesList = mutableListOf<Messages>()
+        messagesList = mutableListOf()
+
+        Log.d("ChatFragment", "onCreate: currentUserId = $currentUserId, msgReceiverId = $msgReceiverId")
     }
 
     override fun onCreateView(
@@ -82,6 +84,7 @@ class ChatFragment : Fragment() {
             sendMessage()
         }
 
+        Log.d("ChatFragment", "Calling fetchMessages()")
         fetchMessages()
 
         return view
@@ -119,7 +122,7 @@ class ChatFragment : Fragment() {
             val message_sender_ref = "messages/ $currentUserId/$msgReceiverId"
             val message_receiver_ref = "messages/ $msgReceiverId/$currentUserId"
 
-            val user_msg_key = msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId).push()
+            val user_msg_key = RootRef.child("messages").child(currentUserId.toString()).child(msgReceiverId).push()
 
             val msg_push_id = user_msg_key.key
 
@@ -143,13 +146,19 @@ class ChatFragment : Fragment() {
             msgMap["from"] = currentUserId.toString()
 
             val msgMapDetails = HashMap<String, Any>()
-            msgMapDetails.put(message_sender_ref + "/" + msg_push_id, msgMap)
-            msgMapDetails.put(message_receiver_ref + "/" + msg_push_id, msgMap)
+//            msgMapDetails.put(message_sender_ref + "/" + msg_push_id, msgMap)
+//            msgMapDetails.put(message_receiver_ref + "/" + msg_push_id, msgMap)
+            msg_push_id?.let {
+                msgMapDetails["$message_sender_ref/$it"] = msgMap
+                msgMapDetails["$message_receiver_ref/$it"] = msgMap
+            }
 
-            msgsRef.updateChildren(msgMapDetails).addOnCompleteListener {
+            RootRef.updateChildren(msgMapDetails).addOnCompleteListener {
                 if (it.isSuccessful) {
+                    Log.d("ChatFragment", "Message sent successfully: $message")
                     Toast.makeText(context, "Message sent successfully", Toast.LENGTH_SHORT).show()
                     msgInput.text.clear()
+                    fetchMessages()
                 } else {
                     val errorMsg = it.exception?.message
                     Toast.makeText(context, "Error: "+errorMsg, Toast.LENGTH_SHORT).show()
@@ -159,35 +168,115 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun fetchMessages() {
-        msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId)
-            .addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    if(snapshot.exists()){
-                        val message : Messages
-                        message = snapshot.getValue(Messages::class.java)!!
-                        messagesList.add(message)
-                        msgAdapter.notifyDataSetChanged()
-                    }
+//    private fun fetchMessages() {
+//        Log.d("ChatFragment", "fetchMessages() function called")
+//        msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId)
+//            .addChildEventListener(object : ChildEventListener {
+//                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+//                    if(snapshot.exists()){
+//                        val message : Messages
+//                        message = snapshot.getValue(Messages::class.java)!!
+//                        messagesList.add(message)
+//                        Log.d("ChatFragment", "New message added to list: ${message.message}")
+//                        msgAdapter.notifyDataSetChanged()
+//                    }
+//                }
+//
+//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+//
+//                }
+//
+//                override fun onChildRemoved(snapshot: DataSnapshot) {
+//
+//                }
+//
+//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+//
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//
+//                }
+//
+//            })
+//    }
+private fun fetchMessages() {
+    Log.d("ChatFragment", "fetchMessages: Starting to fetch messages")
+    val messagesPath = "messages/$currentUserId/$msgReceiverId"
+    Log.d("ChatFragment", "fetchMessages: Listening to path: $messagesPath")
+
+    // Check if the reference is valid
+    if (RootRef == null) {
+        Log.e("ChatFragment", "fetchMessages: msgsRef is null")
+        return
+    }
+
+    // Check Firebase connection
+    FirebaseDatabase.getInstance().getReference(".info/connected").addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val connected = snapshot.getValue(Boolean::class.java) ?: false
+            Log.d("ChatFragment", "Firebase connection status: $connected")
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("ChatFragment", "Firebase connection check failed: ${error.message}")
+        }
+    })
+
+    // Add a ValueEventListener to check if the path exists and has data
+    RootRef.child("messages").child(currentUserId.toString()).child(msgReceiverId).addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if (snapshot.exists()) {
+                Log.d("ChatFragment", "Messages path exists and has ${snapshot.childrenCount} children")
+            } else {
+                Log.d("ChatFragment", "Messages path does not exist or is empty")
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("ChatFragment", "Error checking messages path: ${error.message}")
+        }
+    })
+
+    // Add the ChildEventListener
+    val childEventListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            Log.d("ChatFragment", "onChildAdded: New message received")
+            if (snapshot.exists()) {
+                try {
+                    val message = snapshot.getValue(Messages::class.java)
+                    message?.let {
+                        Log.d("ChatFragment", "onChildAdded: Adding message to list: ${it.message}")
+                        messagesList.add(it)
+                        msgAdapter.notifyItemInserted(messagesList.size - 1)
+                        messages.scrollToPosition(messagesList.size - 1)
+                    } ?: Log.e("ChatFragment", "onChildAdded: Message object is null")
+                } catch (e: Exception) {
+                    Log.e("ChatFragment", "onChildAdded: Error parsing message", e)
                 }
+            } else {
+                Log.d("ChatFragment", "onChildAdded: Snapshot does not exist")
+            }
+        }
 
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            Log.d("ChatFragment", "onChildChanged called")
+        }
 
-                }
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+            Log.d("ChatFragment", "onChildRemoved called")
+        }
 
-                override fun onChildRemoved(snapshot: DataSnapshot) {
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            Log.d("ChatFragment", "onChildMoved called")
+        }
 
-                }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
-            })
+        override fun onCancelled(error: DatabaseError) {
+            Log.e("ChatFragment", "onCancelled: ${error.message}")
+        }
+    }
+    RootRef.child(messagesPath).addChildEventListener(childEventListener)
+    Log.d("ChatFragment", "ChildEventListener added to messages path")
     }
 
 }
