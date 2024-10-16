@@ -62,6 +62,7 @@ class WeatherRepository @Inject constructor(
                     timestamp = System.currentTimeMillis()
                 )
             } ?: emptyList()
+            hourlyWeatherDao.clearHourlyWeather()
             hourlyWeatherDao.insertHourlyWeather(hourlyWeatherList)
 
             // Insert daily weather data
@@ -82,6 +83,7 @@ class WeatherRepository @Inject constructor(
                     timestamp = System.currentTimeMillis()
                 )
             } ?: emptyList()
+            dailyWeatherDao.clearDailyWeather()
             dailyWeatherDao.insertDailyWeather(dailyWeatherList)
         }
         Log.d("Database Operation:", "Data Stored in database")

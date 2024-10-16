@@ -41,6 +41,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -81,38 +82,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
 
-    // Weekly Forecast Variables
-    private lateinit var day2TextView: TextView
-    private lateinit var day3TextView: TextView
-    private lateinit var day4TextView: TextView
-    private lateinit var day5TextView: TextView
-    private lateinit var day6TextView: TextView
-    private lateinit var day7TextView: TextView
-
-    private lateinit var day1IconImageView: ImageView
-    private lateinit var day2IconImageView: ImageView
-    private lateinit var day3IconImageView: ImageView
-    private lateinit var day4IconImageView: ImageView
-    private lateinit var day5IconImageView: ImageView
-    private lateinit var day6IconImageView: ImageView
-    private lateinit var day7IconImageView: ImageView
-
-    private lateinit var day1MaxTextView: TextView
-    private lateinit var day2MaxTextView: TextView
-    private lateinit var day3MaxTextView: TextView
-    private lateinit var day4MaxTextView: TextView
-    private lateinit var day5MaxTextView: TextView
-    private lateinit var day6MaxTextView: TextView
-    private lateinit var day7MaxTextView: TextView
-
-    private lateinit var day1MinTextView: TextView
-    private lateinit var day2MinTextView: TextView
-    private lateinit var day3MinTextView: TextView
-    private lateinit var day4MinTextView: TextView
-    private lateinit var day5MinTextView: TextView
-    private lateinit var day6MinTextView: TextView
-    private lateinit var day7MinTextView: TextView
-
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
     private var currentWindSpeed: Double = 0.0
@@ -135,7 +104,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            Log.d("Database Operation:", "Fragment Updated")
+            Log.d("Daily Operation", "Daily Results: ${weatherResults?.daily}")
             getCustomLocationWeather()
         }
     }
@@ -149,6 +118,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
+        dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
+
         // Assign the views to variables declared above.
         dateTextView = view.findViewById(R.id.tvDate)
         locationTextView = view.findViewById(R.id.tvLocation)
@@ -158,38 +129,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
-
-        // Weekly Forecast variables
-        day2TextView = view.findViewById(R.id.day2_day)
-        day3TextView = view.findViewById(R.id.day3_day)
-        day4TextView = view.findViewById(R.id.day4_day)
-        day5TextView = view.findViewById(R.id.day5_day)
-        day6TextView = view.findViewById(R.id.day6_day)
-        day7TextView = view.findViewById(R.id.day7_day)
-
-        day1IconImageView = view.findViewById(R.id.day1_icon)
-        day2IconImageView = view.findViewById(R.id.day2_icon)
-        day3IconImageView = view.findViewById(R.id.day3_icon)
-        day4IconImageView = view.findViewById(R.id.day4_icon)
-        day5IconImageView = view.findViewById(R.id.day5_icon)
-        day6IconImageView = view.findViewById(R.id.day6_icon)
-        day7IconImageView = view.findViewById(R.id.day7_icon)
-
-        day1MaxTextView = view.findViewById(R.id.day1_max)
-        day2MaxTextView = view.findViewById(R.id.day2_max)
-        day3MaxTextView = view.findViewById(R.id.day3_max)
-        day4MaxTextView = view.findViewById(R.id.day4_max)
-        day5MaxTextView = view.findViewById(R.id.day5_max)
-        day6MaxTextView = view.findViewById(R.id.day6_max)
-        day7MaxTextView = view.findViewById(R.id.day7_max)
-
-        day1MinTextView = view.findViewById(R.id.day1_min)
-        day2MinTextView = view.findViewById(R.id.day2_min)
-        day3MinTextView = view.findViewById(R.id.day3_min)
-        day4MinTextView = view.findViewById(R.id.day4_min)
-        day5MinTextView = view.findViewById(R.id.day5_min)
-        day6MinTextView = view.findViewById(R.id.day6_min)
-        day7MinTextView = view.findViewById(R.id.day7_min)
         // End of Weekly Forecast variables
 
         // Initializing the show more details functionality
@@ -243,14 +182,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             textToSpeechDialog()
         }
 
-        // Initialize textView
+        /*
         val detailsRedirect = view.findViewById<TextView>(R.id.day2_day)
         // Set on click listener
         detailsRedirect.setOnClickListener {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.nav_details)
-        }
+        }*/
 
         return view
     }
@@ -428,12 +367,20 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         // Sets the data retrieved from the API to the views declared at the beginning.
         weatherResults?.let {
+            // Current
             temperatureTextView.text = it.current?.temperature.toString()
             temperatureUnit.text = it.current?.tempUnit
             weatherStateTextView.text = it.current?.weatherText
             it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
             feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
+
+            // Weekly
+            dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily)
+            dailyRecyclerView.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = dailyWeatherAdapter
+            }
         } ?: run {
 
         }
@@ -649,41 +596,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         } else {
                             celsiusToFahrenheit(day7Min ?: 0.0)
                         }
-
-                        // Set Weekly Forecast data
-                        // Days
-                        day2TextView.text = "${day2Name}"
-                        day3TextView.text = "${day3Name}"
-                        day4TextView.text = "${day4Name}"
-                        day5TextView.text = "${day5Name}"
-                        day6TextView.text = "${day6Name}"
-                        day7TextView.text = "${day7Name}"
-
-                        // Icons
-                        day1IconImageView.setImageResource(day1WeatherType.iconRes)
-                        day2IconImageView.setImageResource(day2WeatherType.iconRes)
-                        day3IconImageView.setImageResource(day3WeatherType.iconRes)
-                        day4IconImageView.setImageResource(day4WeatherType.iconRes)
-                        day5IconImageView.setImageResource(day5WeatherType.iconRes)
-                        day6IconImageView.setImageResource(day6WeatherType.iconRes)
-                        day7IconImageView.setImageResource(day7WeatherType.iconRes)
-
-                        // Temperature Data
-                        day1MaxTextView.text = "${"%.0f".format(day1MaxTemp)}°"
-                        day2MaxTextView.text = "${"%.0f".format(day2MaxTemp)}°"
-                        day3MaxTextView.text = "${"%.0f".format(day3MaxTemp)}°"
-                        day4MaxTextView.text = "${"%.0f".format(day4MaxTemp)}°"
-                        day5MaxTextView.text = "${"%.0f".format(day5MaxTemp)}°"
-                        day6MaxTextView.text = "${"%.0f".format(day6MaxTemp)}°"
-                        day7MaxTextView.text = "${"%.0f".format(day7MaxTemp)}°"
-
-                        day1MinTextView.text = "${"%.0f".format(day1MinTemp)}°"
-                        day2MinTextView.text = "${"%.0f".format(day2MinTemp)}°"
-                        day3MinTextView.text = "${"%.0f".format(day3MinTemp)}°"
-                        day4MinTextView.text = "${"%.0f".format(day4MinTemp)}°"
-                        day5MinTextView.text = "${"%.0f".format(day5MinTemp)}°"
-                        day6MinTextView.text = "${"%.0f".format(day6MinTemp)}°"
-                        day7MinTextView.text = "${"%.0f".format(day7MinTemp)}°"
 
                         // Display wind data
                         currentWindSpeed = displayWindSpeed
