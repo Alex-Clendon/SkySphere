@@ -19,9 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Observer
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.ActivityMainBinding
@@ -65,17 +67,26 @@ class MainActivity : AppCompatActivity() {
                 )
                     .build()
 
-                WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                val workManager = WorkManager.getInstance(applicationContext)
+
+                workManager.enqueueUniquePeriodicWork(
                     "WeatherUpdateWork",
                     ExistingPeriodicWorkPolicy.REPLACE,
                     workRequest
                 )
+
+                workManager.getWorkInfoByIdLiveData(workRequest.id).observe(this, Observer { workInfo ->
+                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        Log.d("WeatherWorker", "Worker succeeded, fetching data.")
+                        viewModel.fetchWeatherData() // Fetch the data after worker finishes
+                    }
+                })
             }
             else
                 {
                     Log.d("WeatherWorker", "Worker Ignored.")
+                    viewModel.fetchWeatherData()
                 }
-        viewModel.fetchWeatherData()
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout

@@ -127,7 +127,7 @@ class WeatherRepository @Inject constructor(
             )
         }
 
-        Log.d("Database Operation:", "{${current}")
+        Log.d("Database Operation:", "Weather retrieved from database")
         return WeatherResults(current = current, hourly = hourly, daily = daily)
     }
 }

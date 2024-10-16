@@ -23,7 +23,7 @@ private val repository: WeatherRepository
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResults = repository.getWeatherDataFromDatabase()
             _weatherResults.postValue(weatherResults) // Update LiveData on the main thread
-            Log.d("Database Operation:", "${weatherResults}")
+            Log.d("Database Operation:", "Weather Fetched From storage: ${weatherResults}")
         }
     }
 }
