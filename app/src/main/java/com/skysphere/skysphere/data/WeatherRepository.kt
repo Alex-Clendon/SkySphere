@@ -118,8 +118,8 @@ class WeatherRepository @Inject constructor(
         val hourly = hourlyWeatherList?.let {
             WeatherHourly(
                 time = it.map { it.time },
-                temperature = hourlyWeatherList.map { it.temperature },
-                apparentTemperature = hourlyWeatherList.map { it.apparentTemperature },
+                temperature = hourlyWeatherList.map { ConversionHelper.convertHourly(it.temperature, settingsManager.getTemperatureUnit()) },
+                apparentTemperature = hourlyWeatherList.map { ConversionHelper.convertHourly(it.apparentTemperature, settingsManager.getTemperatureUnit()) },
                 precipitationProbability = hourlyWeatherList.map { it.precipitationProbability },
                 precipitation = hourlyWeatherList.map { it.precipitation },
                 weatherCode = hourlyWeatherList.map { it.weatherCode },

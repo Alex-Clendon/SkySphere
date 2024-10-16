@@ -35,4 +35,16 @@ object ConversionHelper {
             }
         }
     }
+
+
+
+    fun convertHourly(temperature: Double?, unit: String): Double? {
+        return temperature?.let {
+            if (unit == "Fahrenheit") {
+                ((it * 9 / 5) + 32)
+            } else {
+                it
+            }
+        }
+    }
 }
