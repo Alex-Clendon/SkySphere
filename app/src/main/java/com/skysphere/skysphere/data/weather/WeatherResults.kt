@@ -13,6 +13,7 @@ data class WeatherCurrent(
     val apparentTemperature: Double?,
     val relativeHumidity: Int?,
     val weatherCode: Int?,
+    val weatherText: String?,
     val windSpeed: Double?,
     val windDirection: Double?,
     val visibility: Double?,
@@ -27,6 +28,7 @@ data class WeatherHourly(
     val precipitationProbability: List<Int?>,
     val precipitation: List<Double?>,
     val weatherCode: List<Int?>,
+    val weatherText: List<String?>,
     val isDay: List<Int?>,
 )
 
@@ -34,6 +36,7 @@ data class WeatherHourly(
 data class WeatherDaily(
     val time: List<String?>,
     val weatherCode: List<Int?>,
+    val weatherText: List<String?>,
     val temperatureMax: List<Double?>,
     val temperatureMin: List<Double?>,
     val precipitationProbability: List<Int?>,

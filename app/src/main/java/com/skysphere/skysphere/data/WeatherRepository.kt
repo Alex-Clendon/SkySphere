@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.data
 
 import android.util.Log
+import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.data.dao.CurrentWeatherDao
 import com.skysphere.skysphere.data.dao.DailyWeatherDao
 import com.skysphere.skysphere.data.dao.HourlyWeatherDao
@@ -89,6 +90,7 @@ class WeatherRepository @Inject constructor(
                 apparentTemperature = it.apparentTemperature,
                 relativeHumidity = it.humidity,
                 weatherCode = it.weatherCode,
+                weatherText = WeatherType.fromWMO(it.weatherCode).weatherDesc,
                 windSpeed = it.windSpeed,
                 windDirection = it.windDirection,
                 visibility = it.visibility,
@@ -105,6 +107,7 @@ class WeatherRepository @Inject constructor(
                 precipitationProbability = hourlyWeatherList.map { it.precipitationProbability },
                 precipitation = hourlyWeatherList.map { it.precipitation },
                 weatherCode = hourlyWeatherList.map { it.weatherCode },
+                weatherText = hourlyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
                 isDay = hourlyWeatherList.map { it.isDay }
             )
         }
@@ -114,6 +117,7 @@ class WeatherRepository @Inject constructor(
             WeatherDaily(
                 time = it.map { it.time },
                 weatherCode = dailyWeatherList.map { it.weatherCode },
+                weatherText = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
                 temperatureMax = dailyWeatherList.map { it.temperatureMax },
                 temperatureMin = dailyWeatherList.map { it.temperatureMin },
                 precipitationProbability = dailyWeatherList.map { it.precipitationProbability },

@@ -1,25 +1,26 @@
 package com.skysphere.skysphere.services.weather
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.skysphere.skysphere.API.RetrofitInstance
 import com.skysphere.skysphere.services.weather.json.ApiResults
 import com.skysphere.skysphere.updaters.WeatherCache
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import retrofit2.await
 
 class WeatherService @Inject constructor(
-    private val weatherCache: WeatherCache
+    @ApplicationContext private val context: Context // Injecting the application context
 ) {
 
     suspend fun getWeather(): ApiResults {
-        /*if (weatherCache.isCacheValid()) {
-        // Use cached data
-        weatherCache.cachedWeatherResults?.let(onSuccess) ?: onFailure(Throwable("Cached data is null"))
-        Log.d("Cache", "Cache Used")
-        return
-    }*/
+        val location = context.getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val latitude = location.getFloat("latitude", 0f).toDouble()
+        val longitude = location.getFloat("longitude", 0f).toDouble()
+
         Log.d("API Call:", "API Call Made")
         val daily = arrayOf(
             "weather_code",
@@ -58,8 +59,8 @@ class WeatherService @Inject constructor(
 
         val api = RetrofitInstance.getInstance(true)
         return api.getWeatherData2(
-            latitude = -36.85, // After testing, use location.latitude,
-            longitude = 174.76, // After testing, use location.longitude,
+            latitude,
+            longitude,
             daily = daily.joinToString(","),
             hourly = hourly.joinToString(","),
             current = current.joinToString(","),

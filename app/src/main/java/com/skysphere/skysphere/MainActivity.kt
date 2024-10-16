@@ -74,13 +74,6 @@ class MainActivity : AppCompatActivity() {
                     ExistingPeriodicWorkPolicy.REPLACE,
                     workRequest
                 )
-
-                workManager.getWorkInfoByIdLiveData(workRequest.id).observe(this, Observer { workInfo ->
-                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        Log.d("WeatherWorker", "Worker succeeded, fetching data.")
-                        viewModel.fetchWeatherData() // Fetch the data after worker finishes
-                    }
-                })
             }
             else
                 {
@@ -139,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         val elapsedTime = currentTime - lastExecutionTime
 
         // Return true if more than 15 minutes have passed
-        val result = elapsedTime >= 90 * 60 * 1000
+        val result = elapsedTime >= 1 * 60 * 1000
         Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
         return result
     }

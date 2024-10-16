@@ -51,6 +51,7 @@ class DetailsFragment : Fragment() {
     private fun getData() {
         weatherResults?.let {
             binding.tvTemperature.text = it.current?.temperature.toString()
+            binding.tvWeatherState.text = it.current?.weatherText
         } ?: run {
             binding.tvTemperature.text = "No data available"
         }
