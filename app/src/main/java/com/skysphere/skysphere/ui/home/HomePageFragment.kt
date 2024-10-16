@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -65,7 +66,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     //Current Weather
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
-    private lateinit var weatherCodeImageView: ImageView
+    private lateinit var weatherCodeAnimationView: LottieAnimationView
     private lateinit var temperatureTextView: TextView
     private lateinit var temperatureUnit: TextView
     private lateinit var feelsLikeTemperatureTextView: TextView
@@ -110,7 +111,13 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             temperatureTextView.text = it.current?.temperature.toString()
             temperatureUnit.text = it.current?.tempUnit
             weatherStateTextView.text = it.current?.weatherText
-            it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
+            it.current?.weatherType?.let { weatherType ->
+                weatherType.lottieAnimRes?.let { lottieFileName ->
+                    // Set the Lottie animation
+                    weatherCodeAnimationView.setAnimation(lottieFileName)
+                    weatherCodeAnimationView.playAnimation()
+                }
+            }
             feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
             locationTextView.text = settingsManager.getCustomLocation()
@@ -145,7 +152,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Assign the views to variables declared above.
         dateTextView = view.findViewById(R.id.tvDate)
         locationTextView = view.findViewById(R.id.tvLocation)
-        weatherCodeImageView = view.findViewById(R.id.ivWeatherIcon)
+        weatherCodeAnimationView = view.findViewById((R.id.weatherCodeAnimationView))
         temperatureTextView = view.findViewById(R.id.tvTemperature)
         temperatureUnit = view.findViewById(R.id.tvTemperatureUnit)
         feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)

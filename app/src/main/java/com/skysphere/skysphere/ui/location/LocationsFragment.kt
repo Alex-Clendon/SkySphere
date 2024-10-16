@@ -4,15 +4,19 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,14 +29,25 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.ui.home.HomePageFragment
 import com.skysphere.skysphere.widgets.SkySphereWidget
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.O)
 class LocationsFragment : Fragment(), OnMapReadyCallback {
 
     // Initialize necessary variables
-    private var mGoogleMap:GoogleMap? = null // Google map object from Google API
-    private lateinit var autocompleteFragment:AutocompleteSupportFragment // Autocomplete object from Google API
+    @Inject
+    lateinit var repository: WeatherRepository
+    @Inject
+    lateinit var viewModel: WeatherViewModel
+    private var mGoogleMap: GoogleMap? = null // Google map object from Google API
+    private lateinit var autocompleteFragment: AutocompleteSupportFragment // Autocomplete object from Google API
     private lateinit var setLocationButton: Button
     private lateinit var selectedLatLng: LatLng
     private lateinit var selectedAddress: String
@@ -42,14 +57,24 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_locations, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
-        Places.initialize(requireContext(), getString(R.string.google_map_api_key)) //Calling Google Places API
-        autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
-                as AutocompleteSupportFragment
+        Places.initialize(
+            requireContext(),
+            getString(R.string.google_map_api_key)
+        ) //Calling Google Places API
+        autocompleteFragment =
+            childFragmentManager.findFragmentById(R.id.autocomplete_fragment) //Implementing autocomplete into the search field
+                    as AutocompleteSupportFragment
         autocompleteFragment.setHint("Search")
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)) // Decide the variables returned on selection
-        autocompleteFragment.setOnPlaceSelectedListener(object :PlaceSelectionListener{
+        autocompleteFragment.setPlaceFields(
+            listOf(
+                Place.Field.ADDRESS_COMPONENTS,
+                Place.Field.LAT_LNG
+            )
+        ) // Decide the variables returned on selection
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onError(p0: Status) {
                 // Error handling
             }
@@ -89,12 +114,24 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         setLocationButton.setOnClickListener {
             selectedLatLng?.let { latLng ->
                 saveLocation(latLng, selectedAddress) // Save the chosen location to preferences
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        // Call the suspend function
+                        repository.fetchAndStoreWeatherData()
+                        viewModel.fetchWeatherData()
+                        // Handle the success (e.g., update UI)
+                    } catch (e: Exception) {
+                        // Handle any errors
+                        Log.d("WeatherFragment", "Error fetching weather data", e)
+                    }
+                }
                 updateWidget()
             }
         }
 
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         return view
@@ -113,7 +150,8 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
     // Use SharedPreferences to save location
     private fun saveLocation(latLng: LatLng, address: String?) {
-        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val sharedPrefs =
+            requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
         with(sharedPrefs.edit()) {
             putFloat("latitude", latLng.latitude.toFloat())
             putFloat("longitude", latLng.longitude.toFloat())
@@ -122,16 +160,12 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         }
 
         Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
-        // Swap fragment to home fragment
-        val navController = findNavController()
-        // Use NavController to navigate to HomeFragment
-        navController.popBackStack()
-        navController.navigate(R.id.nav_home)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
     }
 
     // This function will update the widget when the location is changed
-    private fun updateWidget(){
+    private fun updateWidget() {
         val applicationContext = requireContext().applicationContext
 
         val intent = Intent(requireContext(), SkySphereWidget::class.java)
