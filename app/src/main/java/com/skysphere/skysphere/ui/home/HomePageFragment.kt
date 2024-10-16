@@ -35,6 +35,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -46,17 +47,29 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.widgets.SkySphereWidget
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
+
+    @Inject
+    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+
+    private var weatherResults: WeatherResults? = null
     // Declare the views that have been created in the XML file.
+
+    //Current Weather
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
     private lateinit var weatherCodeImageView: ImageView
     private lateinit var temperatureTextView: TextView
+    private lateinit var temperatureUnit: TextView
     private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
@@ -112,6 +125,16 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Declare the shared preferences that stores the metric units
     private lateinit var sharedPreferences: SharedPreferences
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.weatherResults.observe(this) { results ->
+            weatherResults = results
+            Log.d("Database Operation:", "Fragment Updated")
+            getCustomLocationWeather()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -126,6 +149,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         locationTextView = view.findViewById(R.id.tvLocation)
         weatherCodeImageView = view.findViewById(R.id.ivWeatherIcon)
         temperatureTextView = view.findViewById(R.id.tvTemperature)
+        temperatureUnit = view.findViewById(R.id.tvTemperatureUnit)
         feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
@@ -406,6 +430,19 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
     private fun getWeatherData(latitude: Double, longitude: Double) {
+
+
+        // Sets the data retrieved from the API to the views declared at the beginning.
+        weatherResults?.let {
+            temperatureTextView.text = it.current?.temperature.toString()
+            temperatureUnit.text = it.current?.tempUnit
+            weatherStateTextView.text = it.current?.weatherText
+            it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
+            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
+        } ?: run {
+
+        }
+
         val weatherService = RetrofitInstance.getInstance(false)// Creates a new variable which is a RetrofitInstance.instance which builds the base URL for the API call.
         weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
             .enqueue(object : Callback<WeatherData> {
@@ -617,14 +654,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         } else {
                             celsiusToFahrenheit(day7Min ?: 0.0)
                         }
-
-                        // Sets the data retrieved from the API to the views declared at the beginning.
-                        weatherCodeImageView.setImageResource(weatherType.iconRes)
-                        // Displays the temperatures
-                        temperatureTextView.text = "${"%.1f".format(temperature)}°"
-                        feelsLikeTemperatureTextView.text = "Feels like ${"%.0f".format(feelsLikeTemperature)}°"
-
-                        weatherStateTextView.text = "${weatherType.weatherDesc}"
                         getDate(day1Date)
 
                         // Set Weekly Forecast data
@@ -678,7 +707,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                 // If API response fails, then notify user.
                 override fun onFailure(call: Call<WeatherData>, t: Throwable) {
                     homeTextView.text = "Error: ${t.message}"
-                    temperatureTextView.text = "Error: ${t.message}"
+                    //temperatureTextView.text = "Error: ${t.message}"
                 }
             })
     }

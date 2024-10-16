@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.notifications.WeatherService
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment()
 {
     // Initializing variables to store user preferences
@@ -25,6 +30,9 @@ class SettingsFragment : Fragment()
     private val temperatureUnitKey = "temperature_unit"
     private val windspeedUnitKey = "wind_speed_unit"
     private val rainfallUnitKey = "rainfall_unit"
+    @Inject
+    lateinit var viewModel: WeatherViewModel
+
 
     // Object for severe notification preference key, needed for the notification functionality
     companion object {
@@ -74,6 +82,7 @@ class SettingsFragment : Fragment()
         }
         fahrenheitButton.setOnClickListener{
             saveTemperatureUnit("Fahrenheit")
+
         }
         metersPerSecondButton.setOnClickListener {
             saveWindSpeedUnit("m/s")
@@ -128,6 +137,8 @@ class SettingsFragment : Fragment()
 
         // Updating the TextView Temperature Details with the chosen temperature unit
         updateTemperatureUnitTextView()
+        viewModel.fetchWeatherData()
+        Log.d("Database Operation", "Local Data Converted")
     }
 
     // Saving the preference for the wind speed metric unit of the user

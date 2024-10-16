@@ -111,8 +111,8 @@
         android:id="@+id/ivWeatherIcon"
         android:layout_width="75dp"
         android:layout_height="80dp"
-        android:layout_marginStart="15dp"
-        app:layout_constraintStart_toEndOf="@id/tvTemperature"
+        android:layout_marginStart="55dp"
+        app:layout_constraintStart_toEndOf="@id/tvTemperatureUnit"
         app:layout_constraintBottom_toBottomOf="@id/tvTemperature"
         tools:src="@tools:sample/avatars" />
 
@@ -120,6 +120,7 @@
         android:id="@+id/tvTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="20"
         android:textColor="@color/white"
         android:textSize="90sp"
         android:textStyle="bold"
@@ -127,6 +128,18 @@
         app:layout_constraintTop_toBottomOf="@+id/tvLocation"
         android:layout_marginTop="50dp"
         android:layout_marginStart="40dp"/>
+
+    <TextView
+        android:id="@+id/tvTemperatureUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="°C"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/tvTemperature"
+        app:layout_constraintTop_toTopOf="@+id/tvTemperature"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:id="@+id/tvFeelsLikeTemperature"

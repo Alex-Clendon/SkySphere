@@ -3,7 +3,6 @@ package com.skysphere.skysphere
 import android.content.pm.PackageManager
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -19,21 +18,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.Observer
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.updaters.background.WeatherUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -46,7 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: WeatherViewModel // Hilt will provide this
-    private var weatherResults: WeatherResults? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.fetchWeatherData()
         Log.d("Database Operation:", "Results Updated")
 
             if(shouldRunWorker(applicationContext)) {
@@ -78,8 +71,9 @@ class MainActivity : AppCompatActivity() {
             else
                 {
                     Log.d("WeatherWorker", "Worker Ignored.")
-                    viewModel.fetchWeatherData()
                 }
+
+
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
@@ -132,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         val elapsedTime = currentTime - lastExecutionTime
 
         // Return true if more than 15 minutes have passed
-        val result = elapsedTime >= 1 * 60 * 1000
+        val result = elapsedTime >= 90 * 60 * 1000
         Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
         return result
     }

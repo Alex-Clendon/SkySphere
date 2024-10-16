@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.data
 
+import android.content.Context
 import android.util.Log
 import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.data.dao.CurrentWeatherDao
@@ -13,13 +14,16 @@ import com.skysphere.skysphere.data.weather.WeatherDaily
 import com.skysphere.skysphere.data.weather.WeatherHourly
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.services.weather.WeatherService
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class WeatherRepository @Inject constructor(
     private val currentWeatherDao: CurrentWeatherDao,
     private val hourlyWeatherDao: HourlyWeatherDao,
     private val dailyWeatherDao: DailyWeatherDao,
-    private val weatherService: WeatherService
+    private val weatherService: WeatherService,
+    @ApplicationContext private val context: Context // Injecting the application context
 ) {
     suspend fun fetchAndStoreWeatherData() {
         val response = weatherService.getWeather()
@@ -86,10 +90,12 @@ class WeatherRepository @Inject constructor(
         // Retrieve current data
         val current = currentWeather?.let {
             WeatherCurrent(  // Change this to your actual class that holds current weather data
-                temperature = it.temperature,
-                apparentTemperature = it.apparentTemperature,
+                temperature = convertTemperature(it.temperature),
+                apparentTemperature = convertTemperature(it.apparentTemperature),
+                tempUnit = setUnit(),
                 relativeHumidity = it.humidity,
                 weatherCode = it.weatherCode,
+                weatherType = WeatherType.fromWMO(it.weatherCode),
                 weatherText = WeatherType.fromWMO(it.weatherCode).weatherDesc,
                 windSpeed = it.windSpeed,
                 windDirection = it.windDirection,
@@ -102,8 +108,8 @@ class WeatherRepository @Inject constructor(
         val hourly = hourlyWeatherList?.let {
             WeatherHourly(
                 time = it.map { it.time },
-                temperature = hourlyWeatherList.map { it.temperature },
-                apparentTemperature = hourlyWeatherList.map { it.apparentTemperature },
+                temperature = hourlyWeatherList.map { convertTemperature(it.temperature) },
+                apparentTemperature = hourlyWeatherList.map { convertTemperature(it.apparentTemperature) },
                 precipitationProbability = hourlyWeatherList.map { it.precipitationProbability },
                 precipitation = hourlyWeatherList.map { it.precipitation },
                 weatherCode = hourlyWeatherList.map { it.weatherCode },
@@ -118,12 +124,12 @@ class WeatherRepository @Inject constructor(
                 time = it.map { it.time },
                 weatherCode = dailyWeatherList.map { it.weatherCode },
                 weatherText = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
-                temperatureMax = dailyWeatherList.map { it.temperatureMax },
-                temperatureMin = dailyWeatherList.map { it.temperatureMin },
+                temperatureMax = dailyWeatherList.map { convertTemperature(it.temperatureMax) },
+                temperatureMin = dailyWeatherList.map { convertTemperature(it.temperatureMin) },
                 precipitationProbability = dailyWeatherList.map { it.precipitationProbability },
                 precipitationSum = dailyWeatherList.map { it.precipitationSum },
-                apparentTemperatureMax = dailyWeatherList.map { it.apparentTemperatureMax },
-                apparentTemperatureMin = dailyWeatherList.map { it.apparentTemperatureMin },
+                apparentTemperatureMax = dailyWeatherList.map { convertTemperature(it.apparentTemperatureMax) },
+                apparentTemperatureMin = dailyWeatherList.map { convertTemperature(it.apparentTemperatureMin) },
                 sunrise = dailyWeatherList.map { it.sunrise },
                 sunset = dailyWeatherList.map { it.sunset },
                 sunshineDuration = dailyWeatherList.map { it.sunshineDuration },
@@ -133,5 +139,29 @@ class WeatherRepository @Inject constructor(
 
         Log.d("Database Operation:", "Weather retrieved from database")
         return WeatherResults(current = current, hourly = hourly, daily = daily)
+    }
+
+    private fun convertTemperature(temperature: Double?): Int? {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius")
+
+        if(tempUnit != "Celsius")
+        {
+            if (temperature != null) {
+                return ((temperature * 9/5) + 32).roundToInt()
+            }
+        }
+        return temperature?.roundToInt()
+    }
+
+    private fun setUnit(): String {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val tempUnit = sharedPreferences.getString("temperature_unit", "Celsius")
+
+        if(tempUnit != "Celsius")
+        {
+            return "°F"
+        }
+        return "°C"
     }
 }

@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
@@ -45,12 +47,14 @@ class DetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.light_grey)
         return binding.root
     }
 
     private fun getData() {
         weatherResults?.let {
             binding.tvTemperature.text = it.current?.temperature.toString()
+            binding.tvTemperatureUnit.text = it.current?.tempUnit
             binding.tvWeatherState.text = it.current?.weatherText
         } ?: run {
             binding.tvTemperature.text = "No data available"
