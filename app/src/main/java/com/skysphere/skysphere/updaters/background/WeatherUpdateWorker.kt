@@ -1,7 +1,9 @@
 package com.skysphere.skysphere.updaters.background
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -14,6 +16,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
 @HiltWorker
+@RequiresApi(Build.VERSION_CODES.O)
 class WeatherUpdateWorker @AssistedInject constructor(
     private val api: WeatherService,
     @Assisted val context: Context,

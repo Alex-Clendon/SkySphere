@@ -125,6 +125,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     // Declare the shared preferences that stores the metric units
     private lateinit var sharedPreferences: SharedPreferences
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -366,6 +367,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     }
 
     // Get weather for the custom location
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getCustomLocationWeather() {
         val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
         val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
@@ -374,20 +376,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         locationTextView.text = placeName // Update location text with the custom place name
         getWeatherData(latitude, longitude) // Get weather data for the custom location
-    }
-
-    // Instead of taking local time, it now takes the date from the API call and reformats it
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getDate(dateString: String?) {
-        // Parse the input string (formatted as "yyyy-MM-dd" from the API) to a LocalDate object
-        val date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-
-        // Format the date
-        val format = DateTimeFormatter.ofPattern("EEE, dd MMM", Locale.ENGLISH)
-        val formattedDate = date.format(format)
-
-        // Set the formatted date to the TextView
-        dateTextView.text = formattedDate
     }
 
     // Gets the user location by making user accept location permissions
@@ -413,6 +401,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         gpsManager.getCurrentLocation(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
         locationTextView.text = locality ?: "Unknown Location"
         saveLocationToPrefs(latitude, longitude) // Save location to SharedPreferences
@@ -429,6 +418,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     }
 
     // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeatherData(latitude: Double, longitude: Double) {
 
 
@@ -439,6 +429,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             weatherStateTextView.text = it.current?.weatherText
             it.current?.weatherType?.let { it1 -> weatherCodeImageView.setImageResource(it1.iconRes) }
             feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
+            dateTextView.text = it.current?.date
         } ?: run {
 
         }
@@ -654,7 +645,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                         } else {
                             celsiusToFahrenheit(day7Min ?: 0.0)
                         }
-                        getDate(day1Date)
 
                         // Set Weekly Forecast data
                         // Days

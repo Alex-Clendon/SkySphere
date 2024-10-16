@@ -1,5 +1,7 @@
 package com.skysphere.skysphere
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +21,7 @@ private val repository: WeatherRepository
     private val _weatherResults = MutableLiveData<WeatherResults?>()
     val weatherResults: LiveData<WeatherResults?> get() = _weatherResults
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun fetchWeatherData() {
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResults = repository.getWeatherDataFromDatabase()

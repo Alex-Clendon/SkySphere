@@ -22,14 +22,15 @@ data class WeatherCurrent(
     val windSpeed: Double?,
     val windDirection: Double?,
     val visibility: Double?,
-    val time: String
+    val time: String,
+    val date: String,
 )
 
 // Class to hold hourly weather
 data class WeatherHourly(
     val time: List<String?>,
-    val temperature: List<Int?>,
-    val apparentTemperature: List<Int?>,
+    val temperature: List<Double?>,
+    val apparentTemperature: List<Double?>,
     val precipitationProbability: List<Int?>,
     val precipitation: List<Double?>,
     val weatherCode: List<Int?>,
@@ -42,12 +43,12 @@ data class WeatherDaily(
     val time: List<String?>,
     val weatherCode: List<Int?>,
     val weatherText: List<String?>,
-    val temperatureMax: List<Int?>,
-    val temperatureMin: List<Int?>,
+    val temperatureMax: List<Double?>,
+    val temperatureMin: List<Double?>,
     val precipitationProbability: List<Int?>,
     val precipitationSum: List<Double?>,
-    val apparentTemperatureMax: List<Int?>,
-    val apparentTemperatureMin: List<Int?>,
+    val apparentTemperatureMax: List<Double?>,
+    val apparentTemperatureMin: List<Double?>,
     val sunrise: List<String?>,
     val sunset: List<String?>,
     val sunshineDuration: List<Double?>,
