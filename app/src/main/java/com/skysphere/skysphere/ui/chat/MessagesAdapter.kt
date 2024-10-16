@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +19,7 @@ class MessagesAdapter(messagesList: MutableList<Messages>) : RecyclerView.Adapte
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val senderMsg = itemView.findViewById<TextView>(R.id.senderMsg)
         val receiverMsg = itemView.findViewById<TextView>(R.id.receiverMsg)
-        val msgProfileImage = itemView.findViewById<TextView>(R.id.msgProfileImage)
+        val msgProfileImage = itemView.findViewById<ImageView>(R.id.msgProfileImage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
