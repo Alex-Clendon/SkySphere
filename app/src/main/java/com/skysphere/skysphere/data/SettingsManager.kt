@@ -51,6 +51,10 @@ class SettingsManager @Inject constructor(
         return  appPreferences.getString("tts", "disabled") ?: "disabled"
     }
 
+    fun getTtsString(): String {
+        return if (getTtsStatus() == "disabled") "Disabled" else "Enabled"
+    }
+
     fun getCustomLocation() : String? {
         return locationPreferences.getString("place_name", "Custom Location")
     }

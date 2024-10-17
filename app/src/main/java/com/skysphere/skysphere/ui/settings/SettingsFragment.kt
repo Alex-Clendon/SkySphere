@@ -64,7 +64,7 @@ class SettingsFragment : Fragment()
         activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
         actionBar?.setDisplayHomeAsUpEnabled(true)
-
+        actionBar?.setTitle("")
 
         // Initializing a SharedPreferences object called sharedPreferences so that the user can access the
         // shared preferences, allowing you to read and write preferences (such as user settings or application state)
@@ -244,26 +244,26 @@ class SettingsFragment : Fragment()
     // Retrieving the stored preference for temperature metric unit of the user
     private fun updateTemperatureUnitTextView() {
         // This sets the TextView for the Temperature Details to what it equates and displays it onto the settings page
-        val unit = settingsManager.getTemperatureUnit()
-        temperatureUnitTextView.text = "The temperature unit is currently set to " + unit
+        val unit = settingsManager.getTemperatureSymbol()
+        temperatureUnitTextView.text = unit
     }
 
     // Retrieving the stored preference for wind speed metric unit of the user
     private fun updateWindSpeedUnitTextView() {
         val unit = settingsManager.getWindSpeedUnit()
-        windspeedUnitTextView.text = "The wind speed unit is currently set to " + unit
+        windspeedUnitTextView.text = unit
     }
 
     // Retrieving the stored preference for rainfall metric unit of the user
     private fun updateRainfallUnitTextView() {
-        val unit = settingsManager.getRainfallUnit()
-        rainfallUnitTextView.text = "The rainfall unit is currently set to " + unit
+        val unit = settingsManager.getRainfallSymbol()
+        rainfallUnitTextView.text = unit
     }
 
     // Retrieving the stored preference for rainfall metric unit of the user
     private fun updateTtsUnitTextView() {
-        val status = settingsManager.getTtsStatus()
-        ttsTextView.text = "Text to speech is currently " + status
+        val status = settingsManager.getTtsString()
+        ttsTextView.text = status
     }
 
     // Checking if the notification permission has been granted
