@@ -2,7 +2,6 @@ package com.skysphere.skysphere.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,11 +19,9 @@ class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
         val weatherImageView: ImageView = itemView.findViewById(R.id.imageViewWeather)
         val tempMaxTextView: TextView = itemView.findViewById(R.id.textViewTemp)
         val precipitationTextView: TextView = itemView.findViewById(R.id.textViewPrecipitation)
-        val precipitationImageView: ImageView = itemView.findViewById(R.id.imageViewPrecipitation)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyWeatherViewHolder {
-        // Inflate the layout for each row
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.daily_weather_item, parent, false)
         return DailyWeatherViewHolder(itemView)
     }

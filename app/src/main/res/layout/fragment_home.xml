@@ -29,8 +29,8 @@
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
 
     <FrameLayout
         android:id="@+id/upperRegion"
@@ -51,7 +51,7 @@
         android:layout_height="145dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="55dp"
         app:cardBackgroundColor="@color/transparent_blue"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
@@ -99,6 +99,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:fontFamily="@font/fira_sans_extralight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -115,6 +116,7 @@
         android:autoSizeMinTextSize="12sp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeStepGranularity="2sp"
+        android:fontFamily="@font/fira_sans_medium"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +144,7 @@
         android:text=""
         android:textColor="@color/white"
         android:textSize="90sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/fira_sans_extralight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocation"
         android:layout_marginTop="50dp"
@@ -154,6 +156,7 @@
         android:layout_height="wrap_content"
         android:text="°C"
         android:textColor="@color/white"
+        android:fontFamily="@font/fira_sans_medium"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/tvTemperature"
@@ -167,7 +170,7 @@
         android:layout_marginStart="10dp"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/fira_sans_medium"
         android:layout_marginTop="25dp"
         app:layout_constraintStart_toStartOf="@+id/tvTemperature"
         app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"/>
@@ -177,6 +180,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:fontFamily="@font/fira_sans_extralight"
         android:textSize="18sp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
@@ -242,13 +246,26 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/tvMeteo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/daily_card"
         app:layout_constraintStart_toStartOf="@id/daily_card"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
         android:text="Data by Open-Meteo.com"
+        android:fontFamily="@font/fira_sans_extralight"
+        android:textColor="@color/white"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvMeteo"
+        app:layout_constraintStart_toStartOf="@id/daily_card"
+        android:layout_marginStart="5dp"
+        android:text="Animated icons by basmilius"
+        android:fontFamily="@font/fira_sans_extralight"
         android:textColor="@color/white"
         />
 

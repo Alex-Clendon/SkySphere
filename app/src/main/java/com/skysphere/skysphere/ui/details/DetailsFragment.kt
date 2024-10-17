@@ -44,18 +44,11 @@ class DetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.light_grey)
         return binding.root
     }
 
     private fun getData() {
-        weatherResults?.let {
-            binding.tvTemperature.text = it.current?.temperature.toString()
-            binding.tvTemperatureUnit.text = it.current?.tempUnit
-            binding.tvWeatherState.text = it.current?.weatherText
-        } ?: run {
-            binding.tvTemperature.text = "No data available"
-        }
+
     }
 
     override fun onDestroyView() {

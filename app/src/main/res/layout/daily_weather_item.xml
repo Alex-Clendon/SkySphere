@@ -19,19 +19,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Today"
+            android:fontFamily="@font/fira_sans_medium"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/textViewPrecipitation"
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:text="10%"
             android:textColor="@color/light_grey"
+            android:fontFamily="@font/fira_sans_medium"
             android:textSize="12sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imageViewWeather"
