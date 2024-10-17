@@ -71,6 +71,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var setCurrentLocationButton: ImageButton
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
+    private lateinit var settingsButton: ImageButton
 
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
@@ -151,6 +152,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
         textToSpeechBtn = view.findViewById(R.id.ttsBtn)
+        settingsButton = view.findViewById(R.id.settingsButton)
         // End of Weekly Forecast variables
 
         // Initializing the show more details functionality
@@ -161,6 +163,11 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.nav_details)
+        }
+        settingsButton.setOnClickListener {
+            val navController = findNavController()
+            // Use NavController to navigate to HomeFragment
+            navController.navigate(R.id.nav_settings)
         }
 
 

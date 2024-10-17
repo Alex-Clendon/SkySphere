@@ -20,5 +20,7 @@
     <color name="sunset">#fa78a1</color>
     <color name="grey">#CCCCCC</color>
     <color name="light_grey">#ebeef0</color>
-    <color name="card_white">#fdfdff</color>
+    <color name="dark_grey">#787779</color>
+    <color name="card_white">#ededf5</color>
+    <color name="background_white">#faf9fe</color>
 </resources>

@@ -19,6 +19,19 @@
     android:id="@+id/fragment_home"
     android:paddingBottom="20dp">
 
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_settings_24"
+        android:scaleType="fitCenter"
+        app:tint="@color/card_white"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"/>
+
     <FrameLayout
         android:id="@+id/upperRegion"
         android:layout_width="0dp"
@@ -126,7 +139,7 @@
         android:id="@+id/tvTemperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="20"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="90sp"
         android:textStyle="bold"

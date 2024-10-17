@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -85,7 +86,6 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.nav_home,
                 R.id.nav_locations,
-                R.id.nav_settings,
                 R.id.nav_recommendations,
                 R.id.nav_login,
                 R.id.nav_logout
@@ -192,6 +192,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Starts the weather service if notification permissions are granted
+
     private fun startWeatherServiceIfEnabled() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val isNotificationEnabled =

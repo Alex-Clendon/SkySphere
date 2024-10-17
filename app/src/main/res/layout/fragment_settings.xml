@@ -1,341 +1,340 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/card_white">
-<ScrollView
+    android:background="@color/background_white">
+
+    <ScrollView
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
-
-    <androidx.cardview.widget.CardView
-        android:id = "@+id/tempCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/transparent_white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginVertical="18dp">
+            tools:context=".ui.settings.SettingsFragment">
 
-    <TextView
-        android:id="@+id/text_Temperature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/Temperature"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.074"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tvSettingsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/fira_sans_extralight"
+                android:text="Settings"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/temp_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/Temp_Details"
-        android:textColor="@color/black"
-        android:textSize="13sp"
-        app:layout_constraintHorizontal_bias="0.149"
-        app:layout_constraintStart_toStartOf="@+id/text_Temperature"
-        app:layout_constraintTop_toBottomOf="@+id/text_Temperature" />
 
-    <Button
-        android:id="@+id/Celsius"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/Celsius"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temp_details"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="70dp"/>
+            <TextView
+                android:id="@+id/tvUnitTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/fira_sans_extralight"
+                android:text="Units"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSettingsTitle" />
 
-    <Button
-        android:id="@+id/Fahrenheit"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/Fahrenheit"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temp_details"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="70dp"/>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tempCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/card_white"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvUnitTitle">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/text_Temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="@string/Temperature"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.074"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/temp_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="°C"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="15sp"
+                        app:layout_constraintHorizontal_bias="0.149"
+                        app:layout_constraintStart_toStartOf="@+id/text_Temperature"
+                        app:layout_constraintTop_toBottomOf="@+id/text_Temperature" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/windCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/card_white"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tempCard">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/text_wind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="@string/Wind_Speed"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.074"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/wind_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="km/h"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="15sp"
+                        app:layout_constraintHorizontal_bias="0.149"
+                        app:layout_constraintStart_toStartOf="@+id/text_wind"
+                        app:layout_constraintTop_toBottomOf="@+id/text_wind" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/rainfallCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/card_white"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/windCard">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/text_rain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="@string/Rainfall"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.074"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/rain_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="mm"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="15sp"
+                        app:layout_constraintHorizontal_bias="0.149"
+                        app:layout_constraintStart_toStartOf="@+id/text_rain"
+                        app:layout_constraintTop_toBottomOf="@+id/text_rain" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/accessibilityTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/fira_sans_extralight"
+                android:text="Accessibility"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rainfallCard" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ttsCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/card_white"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accessibilityTitle">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="18dp">
+
+                    <TextView
+                        android:id="@+id/text_tts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="Text To Speech"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.074"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tts_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="Disabled"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="15sp"
+                        app:layout_constraintHorizontal_bias="0.149"
+                        app:layout_constraintStart_toStartOf="@+id/text_tts"
+                        app:layout_constraintTop_toBottomOf="@+id/text_tts" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/text_Notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/Notifications"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/ttsCard"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.074"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <CheckBox
+                android:id="@+id/weather_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/Weather_Refresh"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@id/text_Notifications"
+                app:layout_constraintTop_toBottomOf="@id/text_Notifications" />
+
+            <CheckBox
+                android:id="@+id/severe_weather_warnings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Severe_Weather_Warnings"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@id/weather_refresh"
+                app:layout_constraintTop_toBottomOf="@id/weather_refresh" />
+
+            <CheckBox
+                android:id="@+id/rain_alerts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Rain_Alerts"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@id/severe_weather_warnings"
+                app:layout_constraintTop_toBottomOf="@id/severe_weather_warnings" />
+
+            <CheckBox
+                android:id="@+id/daily_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Daily_Summary"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="@id/rain_alerts"
+                app:layout_constraintTop_toBottomOf="@id/rain_alerts" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
-
-
-    <TextView
-        android:id="@+id/Wind_Speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Wind_Speed"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.098"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempCard"
-        android:layout_marginTop="30dp"/>
-
-    <TextView
-        android:id="@+id/wind_speed_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/Wind_Speed_Details"
-        android:textColor="@color/black"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/Wind_Speed"
-        app:layout_constraintTop_toBottomOf="@+id/Wind_Speed" />
-
-    <Button
-        android:id="@+id/Km_h"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/km_h"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintStart_toStartOf="@id/tempCard"
-        app:layout_constraintTop_toBottomOf="@+id/wind_speed_details"
-        android:layout_marginTop="20dp"/>
-
-    <Button
-        android:id="@+id/Mps"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/mps"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintTop_toBottomOf="@id/Km_h"
-        app:layout_constraintStart_toStartOf="@id/Km_h"/>
-
-    <Button
-        android:id="@+id/Mph"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/mph"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintStart_toStartOf="@id/Inches"
-        app:layout_constraintTop_toTopOf="@id/Km_h" />
-
-    <Button
-        android:id="@+id/Knots"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/Knots"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintTop_toBottomOf="@id/Km_h"
-        app:layout_constraintStart_toStartOf="@id/Mph"/>
-
-    <TextView
-        android:id="@+id/text_Rainfall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/Rainfall"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.064"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Mps"
-        android:layout_marginTop="30dp"/>
-
-    <TextView
-        android:id="@+id/rainfall_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Rainfall_Details"
-        android:textColor="@color/black"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/text_Rainfall"
-        app:layout_constraintTop_toBottomOf="@+id/text_Rainfall"/>
-
-    <Button
-        android:id="@+id/Millimeter"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/Millimeters"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.28"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rainfall_details"
-        android:layout_marginTop="20dp"/>
-
-    <Button
-        android:id="@+id/Inches"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="@string/Inches"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.709"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rainfall_details"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
-        android:id="@+id/text_tts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="8dp"
-        android:text="Text to speech"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.074"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Millimeter" />
-
-    <TextView
-        android:id="@+id/tts_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="Text to speech is currently disabled"
-        android:textColor="@color/black"
-        android:textSize="13sp"
-        app:layout_constraintHorizontal_bias="0.149"
-        app:layout_constraintStart_toStartOf="@+id/text_tts"
-        app:layout_constraintTop_toBottomOf="@+id/text_tts" />
-
-    <Button
-        android:id="@+id/tts_enable"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="Enable"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:backgroundTint="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.28"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tts_details"
-        android:layout_marginTop="20dp"/>
-
-    <Button
-        android:id="@+id/tts_disable"
-        android:layout_width="112dp"
-        android:layout_height="50dp"
-        android:text="Disable"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/grey"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.709"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tts_details"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
-        android:id="@+id/text_Notifications"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/Notifications"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.074"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tts_enable" />
-
-    <CheckBox
-        android:id="@+id/weather_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Weather_Refresh"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="@id/text_Notifications"
-        app:layout_constraintTop_toBottomOf="@id/text_Notifications"
-        android:layout_marginTop="10dp"/>
-
-    <CheckBox
-        android:id="@+id/severe_weather_warnings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Severe_Weather_Warnings"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/weather_refresh"
-        app:layout_constraintStart_toStartOf="@id/weather_refresh"
-        />
-
-    <CheckBox
-        android:id="@+id/rain_alerts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Rain_Alerts"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/severe_weather_warnings"
-        app:layout_constraintStart_toStartOf="@id/severe_weather_warnings"  />
-
-    <CheckBox
-        android:id="@+id/daily_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Daily_Summary"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/rain_alerts"
-        app:layout_constraintStart_toStartOf="@id/rain_alerts"  />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    </ScrollView>
 </LinearLayout>
