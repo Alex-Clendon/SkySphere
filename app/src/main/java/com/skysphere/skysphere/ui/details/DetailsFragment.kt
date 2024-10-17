@@ -44,6 +44,7 @@ class DetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.background_white)
         return binding.root
     }
 
@@ -54,5 +55,6 @@ class DetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding reference to avoid memory leaks
+        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
     }
 }
