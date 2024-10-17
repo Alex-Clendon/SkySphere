@@ -23,6 +23,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
@@ -149,6 +150,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         feelsLikeTemperatureTextView = view.findViewById(R.id.tvFeelsLikeTemperature)
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
+        textToSpeechBtn = view.findViewById(R.id.ttsBtn)
         // End of Weekly Forecast variables
 
         // Initializing the show more details functionality
@@ -180,8 +182,11 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             updateWidget()
         }
 
+        if(settingsManager.getTtsStatus() == "enabled") {
+            textToSpeechBtn.visibility = View.VISIBLE
+        }
+
         // Text to speech button
-        textToSpeechBtn = view.findViewById(R.id.ttsBtn)
         textToSpeech = TextToSpeech(requireContext()) { status ->
             if(status == TextToSpeech.SUCCESS) {
                 val result = textToSpeech.setLanguage(Locale.getDefault())

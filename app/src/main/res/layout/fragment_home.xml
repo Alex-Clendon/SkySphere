@@ -190,6 +190,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/tvLocation"
         app:layout_constraintTop_toTopOf="@+id/tvLocation"
+        android:visibility="gone"
         app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
     <androidx.cardview.widget.CardView

@@ -2,7 +2,6 @@ package com.skysphere.skysphere.ui.location
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +27,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +43,9 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     lateinit var repository: WeatherRepository
     @Inject
     lateinit var viewModel: WeatherViewModel
+    @Inject
+    lateinit var settingsManager: SettingsManager
+
     private var mGoogleMap: GoogleMap? = null // Google map object from Google API
     private lateinit var autocompleteFragment: AutocompleteSupportFragment // Autocomplete object from Google API
     private lateinit var setLocationButton: Button
@@ -100,7 +103,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                     }?.name
                             // Fallback to a custom string if absolutely nothing is available
                             ?: "Unknown Location"
-
                 zoomIn(selectedLatLng)
                 setLocationButton.visibility = View.VISIBLE
             }
@@ -110,13 +112,16 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
 
         setLocationButton.setOnClickListener {
             selectedLatLng?.let { latLng ->
-                saveLocation(latLng, selectedAddress) // Save the chosen location to preferences
+                // Updated device preferences using SettingsManager
+                settingsManager.saveLocation(selectedLatLng, selectedAddress)
+                // Initiate a Coroutine to store API data in a database
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
                         // Call the suspend function
                         repository.fetchAndStoreWeatherData()
+                        // Update SharedViewModel with new data
                         viewModel.fetchWeatherData()
-                        // Handle the success (e.g., update UI)
+                        Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
                     } catch (e: Exception) {
                         // Handle any errors
                         Log.d("WeatherFragment", "Error fetching weather data", e)
@@ -125,7 +130,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                 updateWidget()
             }
         }
-
 
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.googleMap) as SupportMapFragment
@@ -143,22 +147,6 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
 
-    }
-
-    // Use SharedPreferences to save location
-    private fun saveLocation(latLng: LatLng, address: String?) {
-        val sharedPrefs =
-            requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
-        with(sharedPrefs.edit()) {
-            putFloat("latitude", latLng.latitude.toFloat())
-            putFloat("longitude", latLng.longitude.toFloat())
-            putString("place_name", address)
-            apply() // Save data
-        }
-
-        Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
     }
 
     // This function will update the widget when the location is changed

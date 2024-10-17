@@ -44,15 +44,7 @@ class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
         } else {
             holder.dayTextView.text = day ?: ""
         }
-        if (precipitation != null && precipitation > 0)
-        {
-            holder.precipitationTextView.text = precipitation.toString() + "%"
-        }
-        else
-        {
-            holder.precipitationTextView.visibility = GONE
-            holder.precipitationImageView.visibility = GONE
-        }
+        holder.precipitationTextView.text = precipitation.toString() + "%"
         holder.weatherImageView.setImageResource(weatherImageRes)
         holder.tempMaxTextView.text = tempMax?.toString() + "° " + tempMin.toString() + "°"
     }
