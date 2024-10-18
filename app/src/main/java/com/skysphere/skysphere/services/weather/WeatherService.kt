@@ -36,7 +36,7 @@ class WeatherService @Inject constructor(
             "wind_direction_10m_dominant",
             "sunrise",
             "sunset",
-            "sunshine_duration",
+            "daylight_duration",
             "uv_index_max",
             "visibility_min"
         )
