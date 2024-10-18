@@ -27,6 +27,20 @@ object ConversionHelper {
         return dateTime.format(outputFormatter)
     }
 
+    fun convertSunHours(isoString: String?): String? {
+        return isoString?.substring(11, 16)
+    }
+
+    fun convertDuration(seconds: Double?): String {
+        if (seconds == null) return "Unknown"
+
+        val totalMinutes = (seconds / 60).toInt()
+        val hours = totalMinutes / 60
+        val minutes = totalMinutes % 60
+
+        return "$hours hrs ${minutes} mins"
+    }
+
     fun convertRoundedTemperature(temperature: Double?, unit: String): Int? {
         return temperature?.let {
             if (unit == "Fahrenheit") {

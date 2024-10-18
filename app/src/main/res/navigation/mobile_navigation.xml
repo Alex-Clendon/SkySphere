@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/nav_details"
-        android:name="com.skysphere.skysphere.ui.details.DetailsFragment"
+        android:name="com.skysphere.skysphere.ui.details.CurrentDetailsFragment"
         android:label="Details"
         tools:layout="@layout/fragment_signup" />
 

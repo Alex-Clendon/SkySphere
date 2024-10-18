@@ -149,9 +149,9 @@ class WeatherRepository @Inject constructor(
                 precipitationSum = dailyWeatherList.map { it.precipitationSum },
                 apparentTemperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.apparentTemperatureMax, settingsManager.getTemperatureUnit()) },
                 apparentTemperatureMin = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.apparentTemperatureMin, settingsManager.getTemperatureUnit()) },
-                sunrise = dailyWeatherList.map { it.sunrise },
-                sunset = dailyWeatherList.map { it.sunset },
-                sunshineDuration = dailyWeatherList.map { it.sunshineDuration },
+                sunrise = dailyWeatherList.map { ConversionHelper.convertSunHours(it.sunrise) },
+                sunset = dailyWeatherList.map { ConversionHelper.convertSunHours(it.sunset) },
+                sunshineDuration = dailyWeatherList.map { ConversionHelper.convertDuration(it.sunshineDuration) },
                 uvIndex = dailyWeatherList.map { it.uvIndexMax?.toInt() },
                 uvIndexText = dailyWeatherList.map { ConversionHelper.convertUV(it.uvIndexMax)},
                 day = dailyWeatherList.map { ConversionHelper.convertToDay(it.time) }

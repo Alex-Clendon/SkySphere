@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="28dp"
-            tools:context=".ui.details.DetailsFragment">
+            tools:context=".ui.details.CurrentDetailsFragment">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/weather_details"
@@ -27,7 +27,7 @@
                 android:paddingTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:context=".ui.details.DetailsFragment">
+                tools:context=".ui.details.CurrentDetailsFragment">
 
                 <View
                     android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     android:id="@+id/tvWeatherStateTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
+                    android:layout_marginStart="65dp"
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="Current Weather"
                     android:textColor="@color/grey"
@@ -86,7 +86,7 @@
                     android:id="@+id/tvUVTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
+                    android:layout_marginStart="65dp"
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="UV Index"
                     android:textColor="@color/grey"
@@ -111,7 +111,7 @@
                     android:id="@+id/tvHumidityTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
+                    android:layout_marginStart="65dp"
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="Humidity"
                     android:textColor="@color/grey"
@@ -136,7 +136,7 @@
                     android:id="@+id/tvVisibilityTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="35dp"
+                    android:layout_marginStart="65dp"
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="Visibility"
                     android:textColor="@color/grey"
@@ -167,7 +167,7 @@
                 android:paddingTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/weather_details"
-                tools:context=".ui.details.DetailsFragment">
+                tools:context=".ui.details.CurrentDetailsFragment">
 
                 <View
                     android:layout_width="match_parent"
@@ -306,7 +306,7 @@
                 android:paddingTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/temp_details"
-                tools:context=".ui.details.DetailsFragment">
+                tools:context=".ui.details.CurrentDetailsFragment">
 
                 <View
                     android:layout_width="match_parent"
@@ -423,7 +423,7 @@
                 android:paddingTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wind_details"
-                tools:context=".ui.details.DetailsFragment">
+                tools:context=".ui.details.CurrentDetailsFragment">
 
                 <View
                     android:layout_width="match_parent"
@@ -514,7 +514,7 @@
                 android:paddingTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/precipitation_details"
-                tools:context=".ui.details.DetailsFragment">
+                tools:context=".ui.details.CurrentDetailsFragment">
 
                 <ImageView
                     android:id="@+id/ivSunTitle"
@@ -556,7 +556,7 @@
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/ivSun"
                     app:layout_constraintTop_toTopOf="@id/ivSun"
-                    android:layout_marginStart="35dp"/>
+                    android:layout_marginStart="65dp"/>
 
                 <TextView
                     android:id="@+id/tvSunsetTitle"

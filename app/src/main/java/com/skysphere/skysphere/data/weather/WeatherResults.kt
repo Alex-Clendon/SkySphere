@@ -64,7 +64,7 @@ data class WeatherDaily(
     val apparentTemperatureMin: List<Int?>,
     val sunrise: List<String?>,
     val sunset: List<String?>,
-    val sunshineDuration: List<Double?>,
+    val sunshineDuration: List<String?>,
     val uvIndex: List<Int?>,
     val uvIndexText: List<String?>,
     val day:  List<String?>
