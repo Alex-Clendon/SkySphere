@@ -19,7 +19,7 @@ data class DailyWeatherEntity(
     val sunset: String?,
     val sunshineDuration: Double?,
     val uvIndexMax: Double?,
-    val uvVisibility: Double?,
+    val visibility: Double?,
     val time: String?,
     val timestamp: Long
 )

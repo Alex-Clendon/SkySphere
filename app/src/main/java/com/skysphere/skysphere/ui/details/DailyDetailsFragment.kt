@@ -20,13 +20,18 @@ class DailyDetailsFragment : Fragment() {
 
     private var _binding: FragmentDailyDetailsBinding? = null
     private val binding get() = _binding!!
+    private var position: Int = -1
 
     @Inject
     lateinit var viewModel: WeatherViewModel // Hilt will provide this
     private var weatherResults: WeatherResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+        arguments?.let { bundle ->
+            position = bundle.getInt("clickedPosition", -1) // Default to -1 if not found
+        }
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
@@ -51,34 +56,31 @@ class DailyDetailsFragment : Fragment() {
     private fun getData() {
         weatherResults?.let {
             // Weather
-            it.current?.weatherType?.let { weatherType ->
-                weatherType.lottieAnimRes?.let { lottieFileName ->
+            it.daily?.weatherType?.get(position).let { weatherType ->
+                weatherType?.lottieAnimRes?.let { lottieFileName ->
                     binding.ivWeatherState.setAnimation(lottieFileName)
                     binding.ivWeatherState.playAnimation()
                 }
             }
-            binding.tvWeatherState.text = it.current?.weatherText
-            binding.tvUvIndex.text = it.daily?.uvIndex?.get(0).toString() + " " + it.daily?.uvIndexText?.get(0)
-            binding.tvHumidity.text = it.current?.relativeHumidity?.toString() + "%"
-            binding.tvVisibility.text = String.format("%.1f", it.current?.visibility) + " " + it.current?.visibilityUnit
+            binding.tvWeatherState.text = it.daily?.weatherText?.get(position)
+            binding.tvUvIndex.text = it.daily?.uvIndex?.get(position).toString() + " " + it.daily?.uvIndexText?.get(position)
+            binding.tvVisibility.text = String.format("%.1f", it.daily?.visibility?.get(position)) + " " + it.current?.visibilityUnit
             // Temperature
-            binding.tvCurrentTemp.text =  String.format("%.1f", it.current?.temperature) + it.current?.tempUnit
-            binding.tvApparentTemp.text = String.format("%.1f", it.current?.apparentTemperature) + it.current?.tempUnit
-            binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(0)) + it.current?.tempUnit
-            binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(0)) + it.current?.tempUnit
+            binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(position)) + it.current?.tempUnit
+            binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(position)) + it.current?.tempUnit
             // Wind
-            binding.tvWindSpeed.text =  String.format("%.1f", it.current?.windSpeed) + it.current?.windSpeedUnit
-            binding.tvWindDegrees.text = it.current?.windDegrees.toString() + "°"
-            binding.tvWindDirection.text = it.current?.windDirection
+            binding.tvWindSpeed.text =  String.format("%.1f", it.daily?.windSpeed?.get(position)) + it.current?.windSpeedUnit
+            binding.tvWindDegrees.text = it.daily?.windDegrees?.get(position).toString() + "°"
+            binding.tvWindDirection.text = it.daily?.windDirection?.get(position)
             // Precipitation
-            binding.tvProbability.text = it.current?.precipitationProbability.toString() + "%"
-            binding.tvSum.text = it.current?.precipitation.toString() + it.current?.precipitationUnit
+            binding.tvProbability.text = it.daily?.precipitationProbability?.get(position).toString() + "%"
+            binding.tvSum.text = it.daily?.precipitationSum?.get(position).toString() + it.current?.precipitationUnit
             // Sun
             binding.ivSun.setAnimation(R.raw.clear_day)
             binding.ivSun.playAnimation()
-            binding.tvSunrise.text = it.daily?.sunrise?.get(0).toString()
-            binding.tvSunset.text = it.daily?.sunset?.get(0).toString()
-            binding.tvDuration.text = it.daily?.sunshineDuration?.get(0)
+            binding.tvSunrise.text = it.daily?.sunrise?.get(position).toString()
+            binding.tvSunset.text = it.daily?.sunset?.get(position).toString()
+            binding.tvDuration.text = it.daily?.sunshineDuration?.get(position)
         } ?: run {
 
         }

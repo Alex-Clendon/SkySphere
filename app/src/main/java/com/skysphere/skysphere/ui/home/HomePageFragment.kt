@@ -119,7 +119,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily) { position ->
                 // Handle the click here - navigate to the details page
                 val bundle = Bundle().apply {
-                    putParcelable("dailyWeatherList", weatherResults?.daily)
                     putInt("clickedPosition", position)
                 }
 

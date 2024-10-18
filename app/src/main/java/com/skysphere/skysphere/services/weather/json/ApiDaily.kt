@@ -19,7 +19,7 @@ data class ApiDaily(
     val sunset: List<String?>?,
     @SerialName("sunshine_duration") val sunshineDuration: List<Double?>?,
     @SerialName("uv_index_max") val uvIndexMax: List<Double?>?,
-    @SerialName("visibility_max") val visibility: List<Double?>?
+    @SerialName("visibility_min") val visibility: List<Double?>?
 )
 
 

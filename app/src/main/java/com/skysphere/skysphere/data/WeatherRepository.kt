@@ -82,7 +82,7 @@ class WeatherRepository @Inject constructor(
                     sunshineDuration = it.daily?.sunshineDuration?.getOrNull(index),
                     uvIndexMax = it.daily?.uvIndexMax?.getOrNull(index),
                     timestamp = System.currentTimeMillis(),
-                    uvVisibility = it.daily?.visibility?.getOrNull(index)
+                    visibility = it.daily?.visibility?.getOrNull(index)
                 )
             } ?: emptyList()
             dailyWeatherDao.clearDailyWeather()
@@ -144,6 +144,7 @@ class WeatherRepository @Inject constructor(
                 time = it.map { it.time },
                 weatherCode = dailyWeatherList.map { it.weatherCode },
                 weatherText = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
+                weatherType = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode) },
                 temperatureMax = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
                 temperatureMin = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMin, settingsManager.getTemperatureUnit()) },
                 roundedTemperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
@@ -151,7 +152,6 @@ class WeatherRepository @Inject constructor(
                 precipitationProbability = dailyWeatherList.map { it.precipitationProbability },
                 precipitationSum = dailyWeatherList.map { it.precipitationSum },
                 windSpeed = dailyWeatherList.map { ConversionHelper.convertWindSpeed(it.windSpeed, settingsManager.getWindSpeedUnit()) },
-                windSpeedUnit = settingsManager.getWindSpeedUnit(),
                 windDegrees = dailyWeatherList.map { it.windDegrees?.roundToInt() },
                 windDirection = dailyWeatherList.map { ConversionHelper.convertWindDirection(it.windDegrees) },
                 apparentTemperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.apparentTemperatureMax, settingsManager.getTemperatureUnit()) },
@@ -162,12 +162,9 @@ class WeatherRepository @Inject constructor(
                 uvIndex = dailyWeatherList.map { it.uvIndexMax?.toInt() },
                 uvIndexText = dailyWeatherList.map { ConversionHelper.convertUV(it.uvIndexMax)},
                 day = dailyWeatherList.map { ConversionHelper.convertToDay(it.time) },
-                visibility = dailyWeatherList.map { ConversionHelper.convertVisibility(it.uvVisibility, settingsManager.getVisibilityUnit()) },
-                visibilityUnit =  dailyWeatherList.map { settingsManager.getVisibilityUnit() },
+                visibility = dailyWeatherList.map { ConversionHelper.convertVisibility(it.visibility, settingsManager.getVisibilityUnit()) }
             )
         }
-
-        Log.d("Database Operation:", "Weather retrieved from database")
         return WeatherResults(current = current, hourly = hourly, daily = daily)
     }
 }

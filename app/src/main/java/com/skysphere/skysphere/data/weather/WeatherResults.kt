@@ -1,9 +1,6 @@
 package com.skysphere.skysphere.data.weather
 
-import android.os.Parcelable
-import androidx.annotation.DrawableRes
 import com.skysphere.skysphere.API.WeatherType
-import kotlinx.parcelize.Parcelize
 
 // Class to hold weather results, combining hourly and daily data
 data class WeatherResults(
@@ -52,11 +49,11 @@ data class WeatherHourly(
 )
 
 // Class to hold daily weather data
-@Parcelize
 data class WeatherDaily(
     val time: List<String?>,
     val weatherCode: List<Int?>,
     val weatherText: List<String?>,
+    val weatherType: List<WeatherType?>,
     val temperatureMax: List<Double?>,
     val temperatureMin: List<Double?>,
     val roundedTemperatureMax: List<Int?>,
@@ -64,7 +61,6 @@ data class WeatherDaily(
     val precipitationProbability: List<Int?>,
     val precipitationSum: List<Double?>,
     val windSpeed: List<Double?>,
-    val windSpeedUnit: String?,
     val windDegrees: List<Int?>,
     val windDirection: List<String?>,
     val apparentTemperatureMax: List<Int?>,
@@ -75,6 +71,5 @@ data class WeatherDaily(
     val uvIndex: List<Int?>,
     val uvIndexText: List<String?>,
     val visibility: List<Double?>,
-    val visibilityUnit: List<String?>,
     val day:  List<String?>
-) : Parcelable
+)
