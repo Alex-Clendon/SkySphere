@@ -108,8 +108,10 @@ class WeatherRepository @Inject constructor(
                 weatherCode = it.weatherCode,
                 weatherType = WeatherType.fromWMO(it.weatherCode),
                 weatherText = WeatherType.fromWMO(it.weatherCode).weatherDesc,
-                windSpeed = it.windSpeed,
-                windDirection = it.windDirection,
+                windSpeed = ConversionHelper.convertWindSpeed(it.windSpeed, settingsManager.getWindSpeedUnit()),
+                windSpeedUnit = settingsManager.getWindSpeedUnit(),
+                windDegrees = it.windDirection?.roundToInt(),
+                windDirection = ConversionHelper.convertWindDirection(it.windDirection),
                 visibility = ConversionHelper.convertVisibility(it.visibility, settingsManager.getVisibilityUnit()),
                 visibilityUnit = settingsManager.getVisibilityUnit(),
                 time = it.time,
@@ -121,8 +123,8 @@ class WeatherRepository @Inject constructor(
         val hourly = hourlyWeatherList?.let {
             WeatherHourly(
                 time = it.map { it.time },
-                temperature = hourlyWeatherList.map { ConversionHelper.convertHourly(it.temperature, settingsManager.getTemperatureUnit()) },
-                apparentTemperature = hourlyWeatherList.map { ConversionHelper.convertHourly(it.apparentTemperature, settingsManager.getTemperatureUnit()) },
+                temperature = hourlyWeatherList.map { ConversionHelper.convertTemperature(it.temperature, settingsManager.getTemperatureUnit()) },
+                apparentTemperature = hourlyWeatherList.map { ConversionHelper.convertTemperature(it.apparentTemperature, settingsManager.getTemperatureUnit()) },
                 precipitationProbability = hourlyWeatherList.map { it.precipitationProbability },
                 precipitation = hourlyWeatherList.map { it.precipitation },
                 weatherCode = hourlyWeatherList.map { it.weatherCode },

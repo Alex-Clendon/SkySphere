@@ -47,36 +47,54 @@ object ConversionHelper {
         }
     }
 
-    fun convertHourly(temperature: Double?, unit: String): Double? {
-        return temperature?.let {
-            if (unit == "Fahrenheit") {
-                ((it * 9 / 5) + 32)
+    fun convertWindSpeed(windSpeed: Double?, unit: String): Double? {
+        if (unit == "mph") {
+            return windSpeed?.div(1.609)
+        } else if (unit == "m/s") {
+            return windSpeed?.div(3.6)
+        } else if (unit == "knots") {
+            return windSpeed?.div(1.852)
+        }
+        return windSpeed
+    }
+
+    fun convertWindDirection(direction: Double?): String? {
+        if (direction != null) {
+            if (direction >= 0 && direction < 23) {
+                return "N";
+            } else if (direction >= 23 && direction < 68) {
+                return "NE";
+            } else if (direction >= 68 && direction < 113) {
+                return "E";
+            } else if (direction >= 113 && direction < 158) {
+                return "SE";
+            } else if (direction >= 158 && direction < 203) {
+                return "S";
+            } else if (direction >= 203 && direction < 248) {
+                return "SW";
+            } else if (direction >= 248 && direction < 293) {
+                return "W";
+            } else if (direction >= 293 && direction < 338) {
+                return "NW";
             } else {
-                it
+                return "N";
             }
         }
+        return "(Unknown)";
+
     }
 
     fun convertUV(uvIndex: Double?): String? {
         if (uvIndex != null) {
-            if (uvIndex >= 1 && uvIndex<= 2)
-            {
+            if (uvIndex >= 1 && uvIndex <= 2) {
                 return "(Low)"
-            }
-            else if (uvIndex >= 3 && uvIndex<= 5)
-            {
+            } else if (uvIndex >= 3 && uvIndex <= 5) {
                 return "(Moderate)"
-            }
-            else if (uvIndex >= 6 && uvIndex<= 7)
-            {
+            } else if (uvIndex >= 6 && uvIndex <= 7) {
                 return "(High)"
-            }
-            else if (uvIndex >= 8 && uvIndex<=10)
-            {
+            } else if (uvIndex >= 8 && uvIndex <= 10) {
                 return "(Very High)"
-            }
-            else
-            {
+            } else {
                 return "(Extreme)"
             }
         }
@@ -89,7 +107,7 @@ object ConversionHelper {
             if (unit == "mi.") {
                 return visibilityKm?.div(1.609)
             } else {
-               return visibilityKm
+                return visibilityKm
             }
         }
     }

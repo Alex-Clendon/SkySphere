@@ -69,6 +69,10 @@ class DetailsFragment : Fragment() {
             binding.tvApparentTemp.text = String.format("%.1f", it.current?.apparentTemperature) + it.current?.tempUnit
             binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(0)) + it.current?.tempUnit
             binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(0)) + it.current?.tempUnit
+            // Wind
+            binding.tvWindSpeed.text =  String.format("%.1f", it.current?.windSpeed) + it.current?.windSpeedUnit
+            binding.tvWindDegrees.text = it.current?.windDegrees.toString() + "°"
+            binding.tvWindDirection.text = it.current?.windDirection
         } ?: run {
 
         }
