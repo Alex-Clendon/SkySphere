@@ -16,4 +16,12 @@ interface WeatherAPI {
         @Query("timezone") timezone: String,
         @Query("forecast_days") forecastDays: Int
     ): Call<ApiResults>
+
+    @GET("v1/forecast")
+    fun getWeatherDataWidget(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("current") current: String,
+        @Query("timezone") timezone: String
+    ): Call<WeatherData>
 }

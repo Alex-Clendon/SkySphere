@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to swap the nav menu depending on if the user is logged in or not
-    public fun updateNavigationMenu(isLoggedIn: Boolean) {
+     fun updateNavigationMenu(isLoggedIn: Boolean) {
 
         val navView: NavigationView = binding.navView
         navView.menu.clear()
