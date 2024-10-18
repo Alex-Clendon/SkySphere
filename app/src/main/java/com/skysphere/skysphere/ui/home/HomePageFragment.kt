@@ -116,7 +116,21 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             locationTextView.text = settingsManager.getCustomLocation()
 
             // Weekly
-            dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily)
+            dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily) { position ->
+                // Handle the click here - navigate to the details page
+                val bundle = Bundle().apply {
+                    putParcelable("dailyWeatherList", weatherResults?.daily)
+                    putInt("clickedPosition", position)
+                }
+
+                // Navigate to the DailyDetailsFragment
+                val navController = findNavController()
+                // Use NavController to navigate to HomeFragment
+                navController.navigate(R.id.nav_daily_details, bundle)
+                Log.d("DailyDetails", "Clicked")
+
+            }
+
             dailyRecyclerView.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = dailyWeatherAdapter
@@ -162,7 +176,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         upperRegion.setOnClickListener {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
-            navController.navigate(R.id.nav_details)
+            navController.navigate(R.id.nav_current_details)
         }
         settingsButton.setOnClickListener {
             val navController = findNavController()

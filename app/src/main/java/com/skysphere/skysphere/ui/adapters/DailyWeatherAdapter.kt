@@ -10,7 +10,10 @@ import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.data.weather.WeatherDaily
 
-class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
+class DailyWeatherAdapter
+    (private var dailyWeather: WeatherDaily?,
+     private val onItemClicked: (Int) -> Unit
+) :
     RecyclerView.Adapter<DailyWeatherAdapter.DailyWeatherViewHolder>() {
 
     // ViewHolder to hold the views for each row
@@ -19,6 +22,12 @@ class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
         val weatherImageView: ImageView = itemView.findViewById(R.id.imageViewWeather)
         val tempMaxTextView: TextView = itemView.findViewById(R.id.textViewTemp)
         val precipitationTextView: TextView = itemView.findViewById(R.id.textViewPrecipitation)
+
+        init {
+            itemView.setOnClickListener {
+                onItemClicked(adapterPosition)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyWeatherViewHolder {

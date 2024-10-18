@@ -42,8 +42,14 @@
         tools:layout="@layout/fragment_signup" />
 
     <fragment
-        android:id="@+id/nav_details"
+        android:id="@+id/nav_current_details"
         android:name="com.skysphere.skysphere.ui.details.CurrentDetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_signup" />
+
+    <fragment
+        android:id="@+id/nav_daily_details"
+        android:name="com.skysphere.skysphere.ui.details.DailyDetailsFragment"
         android:label="Details"
         tools:layout="@layout/fragment_signup" />
 

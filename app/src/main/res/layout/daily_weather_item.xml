@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:foreground="@drawable/selectable_background_ripple">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
