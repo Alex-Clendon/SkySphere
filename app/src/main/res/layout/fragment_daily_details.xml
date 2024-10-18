@@ -200,77 +200,29 @@
                     android:layout_marginStart="10dp"/>
 
                 <TextView
-                    android:id="@+id/tvCurrentTitle"
+                    android:id="@+id/tvMaxTempTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/fira_sans_medium"
-                    android:text="Actual"
+                    android:text="Maximum"
                     android:textColor="@color/grey"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/ivTempTitle"
                     app:layout_constraintTop_toBottomOf="@id/ivTempTitle" />
 
                 <TextView
-                    android:id="@+id/tvApparentTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/fira_sans_medium"
-                    android:text="Apparent"
-                    android:textColor="@color/grey"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="@id/tvApparentTemp"
-                    app:layout_constraintTop_toTopOf="@id/tvCurrentTitle"/>
-
-                <TextView
-                    android:id="@+id/tvMaxTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/fira_sans_medium"
-                    android:text="Maximum"
-                    android:textColor="@color/grey"
-                    android:textSize="16sp"
-                    app:layout_constraintTop_toTopOf="@id/tvCurrentTitle"
-                    app:layout_constraintStart_toEndOf="@id/tvApparentTitle"
-                    android:layout_marginStart="25dp"/>
-
-                <TextView
-                    android:id="@+id/tvMinTitle"
+                    android:id="@+id/tvMinTempTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="Minimum"
                     android:textColor="@color/grey"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/tvMaxTitle"
-                    app:layout_constraintTop_toTopOf="@id/tvCurrentTitle"
-                    android:layout_marginStart="25dp"/>
-
-                <TextView
-                    android:id="@+id/tvCurrentTemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:fontFamily="@font/fira_sans_medium"
-                    android:text="12.5°C"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@id/tvCurrentTitle"
-                    app:layout_constraintTop_toTopOf="@id/tvCurrentTitle" />
-
-                <TextView
-                    android:id="@+id/tvApparentTemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:fontFamily="@font/fira_sans_medium"
-                    android:text="11.6°C"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toEndOf="@id/tvCurrentTemp"
-                    app:layout_constraintTop_toTopOf="@id/tvApparentTitle"
-                    android:layout_marginStart="25dp"/>
+                    app:layout_constraintStart_toEndOf="@id/tvMaxTempTitle"
+                    app:layout_constraintTop_toTopOf="@id/tvMaxTempTitle"
+                    android:layout_marginStart="36dp"/>
 
                 <TextView
                     android:id="@+id/tvMaxTemp"
@@ -278,11 +230,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:fontFamily="@font/fira_sans_medium"
-                    android:text="14.2°C"
+                    android:text="12.5°C"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@id/tvMaxTitle"
-                    app:layout_constraintTop_toTopOf="@id/tvMaxTitle" />
+                    app:layout_constraintStart_toStartOf="@id/tvMaxTempTitle"
+                    app:layout_constraintTop_toTopOf="@id/tvMaxTempTitle" />
 
                 <TextView
                     android:id="@+id/tvMinTemp"
@@ -290,11 +242,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:fontFamily="@font/fira_sans_medium"
-                    android:text="9.0°C"
+                    android:text="11.6°C"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@id/tvMinTitle"
-                    app:layout_constraintTop_toTopOf="@id/tvMinTitle" />
+                    app:layout_constraintStart_toStartOf="@id/tvMinTempTitle"
+                    app:layout_constraintTop_toTopOf="@id/tvMinTempTitle"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

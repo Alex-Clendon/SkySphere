@@ -13,6 +13,8 @@ data class DailyWeatherEntity(
     val precipitationSum: Double?,
     val apparentTemperatureMax: Double?,
     val apparentTemperatureMin: Double?,
+    val windSpeed: Double?,
+    val windDegrees: Double?,
     val sunrise: String?,
     val sunset: String?,
     val sunshineDuration: Double?,

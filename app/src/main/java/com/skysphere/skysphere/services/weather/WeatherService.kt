@@ -26,6 +26,8 @@ class WeatherService @Inject constructor(
             "apparent_temperature_min",
             "precipitation_sum",
             "precipitation_probability_max",
+            "wind_speed_10m_max",
+            "wind_direction_10m_dominant",
             "sunrise",
             "sunset",
             "sunshine_duration",

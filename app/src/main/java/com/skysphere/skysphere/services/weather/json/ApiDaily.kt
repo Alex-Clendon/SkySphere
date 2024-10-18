@@ -11,6 +11,8 @@ data class ApiDaily(
     @SerialName("temperature_2m_min") val temperatureMin: List<Double?>?,
     @SerialName("precipitation_probability_max") val precipitationProbability: List<Int?>?,
     @SerialName("precipitation_sum") val precipitationSum: List<Double?>?,
+    @SerialName("wind_speed_10m_max") val windSpeed: List<Double?>?,
+    @SerialName("wind_direction_10m_dominant") val windDirection: List<Double?>?,
     @SerialName("apparent_temperature_max") val apparentTemperatureMax: List<Double?>?,
     @SerialName("apparent_temperature_min") val apparentTemperatureMin: List<Double?>?,
     val sunrise: List<String?>?,
