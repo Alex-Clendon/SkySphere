@@ -73,6 +73,9 @@ class DetailsFragment : Fragment() {
             binding.tvWindSpeed.text =  String.format("%.1f", it.current?.windSpeed) + it.current?.windSpeedUnit
             binding.tvWindDegrees.text = it.current?.windDegrees.toString() + "°"
             binding.tvWindDirection.text = it.current?.windDirection
+            // Precipitation
+            binding.tvProbability.text = it.current?.precipitationProbability.toString() + "%"
+            binding.tvSum.text = it.current?.precipitation.toString() + it.current?.precipitationUnit
         } ?: run {
 
         }

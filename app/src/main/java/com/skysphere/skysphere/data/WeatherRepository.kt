@@ -17,9 +17,6 @@ import com.skysphere.skysphere.data.weather.WeatherHourly
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.services.weather.WeatherService
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -44,6 +41,8 @@ class WeatherRepository @Inject constructor(
                 windSpeed = it.current?.windSpeed,
                 windDirection = it.current?.windDirection,
                 visibility = it.current?.visibility,
+                precipitationProbability = it.current?.precipitationProbability,
+                precipitationSum = it.current?.precipitation,
                 time = it.current?.time ?: "",
                 timestamp = System.currentTimeMillis()
             )
@@ -112,6 +111,9 @@ class WeatherRepository @Inject constructor(
                 windSpeedUnit = settingsManager.getWindSpeedUnit(),
                 windDegrees = it.windDirection?.roundToInt(),
                 windDirection = ConversionHelper.convertWindDirection(it.windDirection),
+                precipitationProbability = it.precipitationProbability,
+                precipitation = ConversionHelper.convertPrecipitation(it.precipitationSum, settingsManager.getPrecipitationUnit()),
+                precipitationUnit = settingsManager.getPrecipitationUnit(),
                 visibility = ConversionHelper.convertVisibility(it.visibility, settingsManager.getVisibilityUnit()),
                 visibilityUnit = settingsManager.getVisibilityUnit(),
                 time = it.time,

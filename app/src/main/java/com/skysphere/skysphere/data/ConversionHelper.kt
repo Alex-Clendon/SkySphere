@@ -58,6 +58,16 @@ object ConversionHelper {
         return windSpeed
     }
 
+    fun convertPrecipitation(precipitation: Double?, unit: String): Int? {
+        return precipitation?.let {
+            if (unit == "in.") {
+                (it / 25.4).roundToInt()
+            } else {
+                it.roundToInt()
+            }
+        }
+    }
+
     fun convertWindDirection(direction: Double?): String? {
         if (direction != null) {
             if (direction >= 0 && direction < 23) {

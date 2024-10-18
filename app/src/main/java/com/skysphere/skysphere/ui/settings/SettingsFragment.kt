@@ -1,17 +1,13 @@
 package com.skysphere.skysphere.ui.settings
 
 import android.Manifest
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
@@ -24,7 +20,6 @@ import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
-import com.skysphere.skysphere.databinding.FragmentDetailsBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -173,13 +168,13 @@ class SettingsFragment : Fragment() {
         rainCard.setOnClickListener {
             val rainfallUnits = arrayOf("mm", "in.")
 
-            val currentUnit = settingsManager.getRainfallUnit()
+            val currentUnit = settingsManager.getPrecipitationUnit()
             val selectedIndex =
                 if (currentUnit == "mm") 0 else 1
 
             val builder = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
 
-            builder.setTitle("Rainfall Unit")
+            builder.setTitle("Precipitation Unit")
                 .setSingleChoiceItems(rainfallUnits, selectedIndex) { dialog, which ->
                     when (which) {
                         0 -> {
@@ -312,7 +307,7 @@ class SettingsFragment : Fragment() {
 
     // Retrieving the stored preference for rainfall metric unit of the user
     private fun updateRainfallUnitTextView() {
-        val unit = settingsManager.getRainfallSymbol()
+        val unit = settingsManager.getPrecipitationUnit()
         rainfallUnitTextView.text = unit
     }
 

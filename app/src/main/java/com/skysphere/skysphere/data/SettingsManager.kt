@@ -39,12 +39,8 @@ class SettingsManager @Inject constructor(
         }
     }
 
-    fun getRainfallUnit(): String {
-        return appPreferences.getString("rainfall_unit", "millimeters") ?: "millimeters"
-    }
-
-    fun getRainfallSymbol(): String {
-        return if (getRainfallUnit() == "millimeters") "mm" else "in."
+    fun getPrecipitationUnit(): String {
+        return appPreferences.getString("rainfall_unit", "mm") ?: "mm"
     }
 
     fun getVisibilityUnit(): String {

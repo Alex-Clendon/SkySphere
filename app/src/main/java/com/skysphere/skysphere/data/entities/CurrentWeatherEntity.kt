@@ -12,6 +12,8 @@ data class CurrentWeatherEntity(
     val weatherCode: Int?,
     val windSpeed: Double?,
     val windDirection: Double?,
+    val precipitationProbability: Int?,
+    val precipitationSum: Double?,
     val visibility: Double?,
     val time: String,
     val timestamp: Long
