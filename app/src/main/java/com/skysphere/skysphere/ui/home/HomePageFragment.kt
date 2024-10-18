@@ -271,7 +271,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     Log.d("WeatherFragment", "Error fetching weather data", e)
                 }
             }
-            viewModel.fetchWeatherData()
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
         }
 
