@@ -29,7 +29,8 @@ class WeatherService @Inject constructor(
             "sunrise",
             "sunset",
             "sunshine_duration",
-            "uv_index_max"
+            "uv_index_max",
+            "visibility_max"
         )
 
         val hourly = arrayOf(

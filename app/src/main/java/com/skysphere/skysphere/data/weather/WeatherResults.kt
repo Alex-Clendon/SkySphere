@@ -70,5 +70,7 @@ data class WeatherDaily(
     val sunshineDuration: List<String?>,
     val uvIndex: List<Int?>,
     val uvIndexText: List<String?>,
+    val visibility: List<Double?>,
+    val visibilityUnit: List<String?>,
     val day:  List<String?>
 ) : Parcelable

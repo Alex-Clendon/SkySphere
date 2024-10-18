@@ -79,7 +79,8 @@ class WeatherRepository @Inject constructor(
                     sunset = it.daily?.sunset?.getOrNull(index),
                     sunshineDuration = it.daily?.sunshineDuration?.getOrNull(index),
                     uvIndexMax = it.daily?.uvIndexMax?.getOrNull(index),
-                    timestamp = System.currentTimeMillis()
+                    timestamp = System.currentTimeMillis(),
+                    uvVisibility = it.daily?.visibility?.getOrNull(index)
                 )
             } ?: emptyList()
             dailyWeatherDao.clearDailyWeather()
@@ -154,7 +155,9 @@ class WeatherRepository @Inject constructor(
                 sunshineDuration = dailyWeatherList.map { ConversionHelper.convertDuration(it.sunshineDuration) },
                 uvIndex = dailyWeatherList.map { it.uvIndexMax?.toInt() },
                 uvIndexText = dailyWeatherList.map { ConversionHelper.convertUV(it.uvIndexMax)},
-                day = dailyWeatherList.map { ConversionHelper.convertToDay(it.time) }
+                day = dailyWeatherList.map { ConversionHelper.convertToDay(it.time) },
+                visibility = dailyWeatherList.map { ConversionHelper.convertVisibility(it.uvVisibility, settingsManager.getVisibilityUnit()) },
+                visibilityUnit =  dailyWeatherList.map { settingsManager.getVisibilityUnit() },
             )
         }
 

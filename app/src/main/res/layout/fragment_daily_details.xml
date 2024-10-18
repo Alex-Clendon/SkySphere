@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="65dp"
                     android:fontFamily="@font/fira_sans_medium"
-                    android:text="Current Weather"
+                    android:text="Weather"
                     android:textColor="@color/grey"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/ivWeatherState"
