@@ -68,6 +68,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
+    private lateinit var lastUpdatedText: TextView
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
     private lateinit var settingsButton: ImageButton
@@ -113,7 +114,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             feelsLikeTemperatureTextView.text = "Feels like " + it.current?.roundedApparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
             locationTextView.text = settingsManager.getCustomLocation()
-            Log.d("Updated Time", "${it.current?.updatedTime}")
+            lastUpdatedText.text = it.current?.updatedTime
 
             // Weekly
             dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily) { position ->
@@ -166,6 +167,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         homeTextView = view.findViewById(R.id.text_home)
         textToSpeechBtn = view.findViewById(R.id.ttsBtn)
         settingsButton = view.findViewById(R.id.settingsButton)
+        lastUpdatedText = view.findViewById(R.id.tvLastUpdated)
         // End of Weekly Forecast variables
 
         // Initializing the show more details functionality

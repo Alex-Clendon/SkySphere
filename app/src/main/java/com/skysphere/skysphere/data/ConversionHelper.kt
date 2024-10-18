@@ -153,13 +153,13 @@ object ConversionHelper {
 
         return when {
             seconds < 60 -> "Just now"
-            minutes < 60 -> "Last updated $minutes m ago"
-            hours < 24 -> "Last updated $hours h ago"
-            days < 7 -> "Last updated $days d ago"
-            weeks < 4 -> "Last updated $weeks w ago"
-            months < 12 -> "Last updated $months m ago"
-            years > 1 -> "Last updated $years y ago"
-            else -> "Last updated 1y ago"
+            minutes < 60 -> "${minutes}m ago"
+            hours < 24 -> "${hours}h ago"
+            days < 7 -> "${days}d ago"
+            weeks < 4 -> "${weeks}w ago"
+            months < 12 -> "${months}m ago"
+            years > 1 -> "${years}y ago"
+            else -> "Unknown"
         }
     }
 

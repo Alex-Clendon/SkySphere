@@ -88,6 +88,9 @@ class WeatherRepository @Inject constructor(
             dailyWeatherDao.clearDailyWeather()
             dailyWeatherDao.insertDailyWeather(dailyWeatherList)
         }
+        val sharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
+        val currentTime = System.currentTimeMillis()
+        sharedPreferences.edit().putLong("last_execution_time", currentTime).apply()
         Log.d("Database Operation:", "Data Stored in database")
     }
 
