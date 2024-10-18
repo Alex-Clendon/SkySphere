@@ -78,4 +78,16 @@ class SettingsManager @Inject constructor(
     {
         return appPreferences.getBoolean(key, preference)
     }
+
+    fun isFirstOpened(): Boolean
+    {
+        return appPreferences.getBoolean("isFirstOpen", false)
+    }
+
+    fun saveFirstOpened(boolean: Boolean)
+    {
+        val editor = appPreferences.edit()
+        editor.putBoolean("isFirstOpen", boolean)
+        editor.apply()
+    }
 }

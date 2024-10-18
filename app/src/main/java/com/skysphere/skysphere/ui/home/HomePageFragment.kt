@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.home
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -25,6 +26,7 @@ import android.graphics.Color
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.FrameLayout
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,6 +74,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
     private lateinit var settingsButton: ImageButton
+    private lateinit var hourlyCardView: CardView
+    private lateinit var dailyCardView: CardView
 
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
@@ -89,7 +93,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        settingsManager.saveFirstOpened(false)
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
             getData()
@@ -101,7 +105,16 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Sets the data retrieved from the API to the views declared at the beginning.
         weatherResults?.let {
             // Current
-            temperatureTextView.text = it.current?.roundedTemperature.toString()
+            var isFirstOpen = settingsManager.isFirstOpened()
+            Log.d("FirstOpened", "${isFirstOpen}")
+            if(!isFirstOpen) {
+                animateTemperature(0, it.current?.roundedTemperature)
+                settingsManager.saveFirstOpened(true)
+            }
+            else
+            {
+                temperatureTextView.text = it.current?.roundedTemperature.toString()
+            }
             temperatureUnit.text = it.current?.tempUnit
             weatherStateTextView.text = it.current?.weatherText
             it.current?.weatherType?.let { weatherType ->
@@ -168,6 +181,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         textToSpeechBtn = view.findViewById(R.id.ttsBtn)
         settingsButton = view.findViewById(R.id.settingsButton)
         lastUpdatedText = view.findViewById(R.id.tvLastUpdated)
+        hourlyCardView = view.findViewById(R.id.cvHourly)
+        dailyCardView = view.findViewById(R.id.daily_card)
         // End of Weekly Forecast variables
 
         // Initializing the show more details functionality
@@ -183,6 +198,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.nav_settings)
+        }
+
+        var isFirstOpen = settingsManager.isFirstOpened()
+        Log.d("FirstOpened", "${isFirstOpen}")
+        if(!isFirstOpen) {
+            fadeInCardViews(listOf(hourlyCardView,dailyCardView))
         }
 
 
@@ -383,6 +404,45 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                 }
                 return
             }
+        }
+    }
+
+    private fun animateTemperature(startValue: Int, endValue: Int?) {
+        // Check if endValue is null before proceeding
+        if (endValue == null) return
+
+        // Calculate the difference between start and end values
+        val difference = Math.abs(endValue - startValue)
+
+        // Set the duration based on the difference
+        val duration = if (difference < 20) 1000L else 2000L // 1 second for small differences, 2 seconds for larger
+
+        // Create a ValueAnimator
+        val animator = ValueAnimator.ofInt(startValue, endValue)
+        animator.duration = duration // Use the calculated duration
+
+        // Add an update listener to update the TextView
+        animator.addUpdateListener { animation ->
+            val animatedValue = animation.animatedValue as Int
+            temperatureTextView.text = "$animatedValue" // Update the TextView with the animated value
+        }
+
+        // Start the animation
+        animator.start()
+    }
+
+    private fun fadeInCardViews(cardViews: List<CardView>) {
+        for ((index, cardView) in cardViews.withIndex()) {
+            // Set the initial alpha to 0 (completely transparent)
+            cardView.alpha = 0f
+            cardView.visibility = View.VISIBLE // Make sure the CardView is visible
+
+            // Animate the fade-in with a delay based on the index
+            cardView.animate()
+                .alpha(1f)
+                .setDuration(1500) // Duration for the fade-in
+                .setStartDelay(index * 800L) // Staggered delay (300ms for each CardView)
+                .start()
         }
     }
 
