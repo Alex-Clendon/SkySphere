@@ -92,7 +92,9 @@ class FriendsListFragment : Fragment() {
                 // Set date of when they became friends
                 holder.tvFriendsSince.text = "Friends since: ${model.date ?: "Unknown"}"
 
+                // Creates an on click listener for each friend item
                 holder.itemView.setOnClickListener {
+                    // Options for the alert dialog
                     val options = listOf(
                         "Profile",
                         "Chat"
@@ -100,6 +102,7 @@ class FriendsListFragment : Fragment() {
                     val builder = AlertDialog.Builder(this@FriendsListFragment.requireContext())
                     builder.setTitle("Select an option")
 
+                    // Handles the user's choice
                     builder.setItems(options.toTypedArray()){ _, which ->
                         when (which) {
                             0 -> {
@@ -115,6 +118,7 @@ class FriendsListFragment : Fragment() {
                             }
                         }
                     }
+                    // Displays the dialog in the alert message
                     builder.show()
                 }
             }
@@ -130,8 +134,10 @@ class FriendsListFragment : Fragment() {
         val tvFriendsSince: TextView = itemView.findViewById(R.id.tvFriendsSince)
     }
 
+    // Function that navigates the users to the respective pages
     class FriendsListFragmentDirections private constructor() {
         companion object {
+            // Navigates to the profile page
             fun actionFriendsListFragmentToProfilePage(userId: String): NavDirections {
                 return object : NavDirections {
                     override val actionId: Int
@@ -144,6 +150,7 @@ class FriendsListFragment : Fragment() {
                 }
             }
 
+            // Navigates to the chat page
             fun actionFriendsListFragmentToChatFragment(userId: String): NavDirections {
                 return object : NavDirections {
                     override val actionId: Int

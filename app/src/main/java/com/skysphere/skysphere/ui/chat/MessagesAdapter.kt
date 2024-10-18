@@ -16,6 +16,7 @@ class MessagesAdapter(messagesList: MutableList<Messages>) : RecyclerView.Adapte
     private val messagesList = messagesList
     private lateinit var firebaseAuth: FirebaseAuth
 
+    // Holds references to the different views
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val senderMsg = itemView.findViewById<TextView>(R.id.senderMsg)
         val receiverMsg = itemView.findViewById<TextView>(R.id.receiverMsg)
@@ -23,6 +24,7 @@ class MessagesAdapter(messagesList: MutableList<Messages>) : RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+        // Inflates the layout for each message
         val view = LayoutInflater.from(parent.context).inflate(R.layout.msg_format, parent, false)
 
         firebaseAuth = FirebaseAuth.getInstance()
@@ -37,15 +39,19 @@ class MessagesAdapter(messagesList: MutableList<Messages>) : RecyclerView.Adapte
         val fromMessageType = message.type
 
         if(fromMessageType.equals("text")){
+            // Hides the receivers message and profile icon by default
             holder.receiverMsg.visibility = View.INVISIBLE
             holder.msgProfileImage.visibility = View.INVISIBLE
 
+            // Checks if the message is from the current user
             if (fromUserID.equals(currentUserId)) {
+                // Shows the sender's message view
                 holder.senderMsg.setBackgroundResource(R.drawable.msg_sender_text_background)
                 holder.senderMsg.setTextColor(Color.WHITE)
                 holder.senderMsg.gravity = Gravity.LEFT
                 holder.senderMsg.text = message.message
             }else{
+                // Shows the receiver's message, and hides the sender's message view
                 holder.senderMsg.visibility = View.INVISIBLE
                 holder.receiverMsg.visibility = View.VISIBLE
                 holder.msgProfileImage.visibility = View.VISIBLE

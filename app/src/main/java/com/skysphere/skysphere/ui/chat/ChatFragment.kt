@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui.chat
 
+import android.annotation.SuppressLint
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -78,6 +79,7 @@ class ChatFragment : Fragment() {
 
         loadUsername(msgReceiverId)
 
+        // Calls sendMessage() when send button is clicked
         sendMsg.setOnClickListener {
             sendMessage()
         }
@@ -87,6 +89,7 @@ class ChatFragment : Fragment() {
         return view
     }
 
+    // Initialise fields that populate the chat screen
     private fun initialiseChat() {
         msgAdapter = MessagesAdapter(messagesList)
         linearLayoutManager = LinearLayoutManager(context)
@@ -95,6 +98,7 @@ class ChatFragment : Fragment() {
         messages.adapter = msgAdapter
     }
 
+    // Loads the username of the person you are chatting with
     private fun loadUsername(userId: String) {
         usersRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -103,7 +107,6 @@ class ChatFragment : Fragment() {
                     receiverUsername.text = it.username
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, "Failed to load username", Toast.LENGTH_SHORT).show()
             }
@@ -111,30 +114,39 @@ class ChatFragment : Fragment() {
     }
 
     private fun sendMessage() {
+        // Get the message from the input field
         val message = msgInput.text.toString()
 
+        // Check if user has entered a message
         if(message.isEmpty()){
             Toast.makeText(context, "Please enter a message", Toast.LENGTH_SHORT).show()
-        }else{
+        }else{ // Else send the message
+            // Gets the path of the message from the sender from firebase
             val message_sender_ref = "messages/$currentUserId/$msgReceiverId"
+            // Gets the path of the message for the receiver from firebase
             val message_receiver_ref = "messages/$msgReceiverId/$currentUserId"
 
+            // Creates a unique key for each message
             val user_msg_key = msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId).push()
 
+            // Gets the key of the message
             val msg_push_id = user_msg_key.key
 
+            // Gets the date and formats it
             val getDate : Calendar
             getDate = Calendar.getInstance()
             val currentDate : SimpleDateFormat
             currentDate = SimpleDateFormat("dd-MMMM-yyyy")
             saveCurrentDate = currentDate.format(getDate.time)
 
+            // Gets the time and formats it
             val getTime : Calendar
             getTime = Calendar.getInstance()
             val currentTime : SimpleDateFormat
             currentTime = SimpleDateFormat("HH:mm aa")
             saveCurrentTime = currentTime.format(getTime.time)
 
+            // Hashmap that creates the values stored in the firebase database
             val msgMap = HashMap<String, Any>()
             msgMap["message"] = message
             msgMap["time"] = saveCurrentTime
@@ -142,13 +154,18 @@ class ChatFragment : Fragment() {
             msgMap["type"] = "text"
             msgMap["from"] = currentUserId.toString()
 
+            // Inserts the database with the sender & receiver path found above,
+            // along with the unique key, and the values stored in msgMap
             val msgMapDetails = HashMap<String, Any>()
             msgMapDetails.put(message_sender_ref + "/" + msg_push_id, msgMap)
             msgMapDetails.put(message_receiver_ref + "/" + msg_push_id, msgMap)
 
+            // Updates the database with the values stored in msgMapDetails
             msgsRef.updateChildren(msgMapDetails).addOnCompleteListener {
                 if (it.isSuccessful) {
+                    // Let user know that message was sent successfully
                     Toast.makeText(context, "Message sent successfully", Toast.LENGTH_SHORT).show()
+                    // Clears the input field
                     msgInput.text.clear()
                 } else {
                     val errorMsg = it.exception?.message
@@ -160,14 +177,19 @@ class ChatFragment : Fragment() {
     }
 
     private fun fetchMessages() {
+        // Path of the messages in the firebase database
         msgsRef.child("messages").child(currentUserId.toString()).child(msgReceiverId)
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     if(snapshot.exists()){
+                        // Creates a Messages object using the firebase
                         val message : Messages
                         message = snapshot.getValue(Messages::class.java)!!
+                        // Adds the message to the list
                         messagesList.add(message)
-                        msgAdapter.notifyDataSetChanged()
+                        // Notifies the adapter that a new message has been added (at the end of the list)
+                        msgAdapter.notifyItemInserted(messagesList.size - 1)
+                        // Scrolls to the bottom of the chat when chat is opened.
                         messages.scrollToPosition(messagesList.size - 1)
                     }
                 }
