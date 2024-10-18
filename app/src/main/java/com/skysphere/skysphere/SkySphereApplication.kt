@@ -33,6 +33,6 @@ class CustomWorkerFactory @Inject constructor(private val api: WeatherService, p
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker? = WeatherUpdateWorker(api, appContext, workerParameters, weatherRepo, viewModel)
+    ): ListenableWorker? = WeatherUpdateWorker(appContext, workerParameters, weatherRepo, viewModel)
 
 }

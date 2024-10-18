@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.data.weather.WeatherResults
-import com.skysphere.skysphere.services.weather.json.ApiResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -74,8 +74,8 @@ class SettingsManager @Inject constructor(
         editor.apply()
     }
 
-    fun checkNotification(key: String, enabled: Boolean) : Boolean
+    fun checkNotification(key: String, preference: Boolean) : Boolean
     {
-        return appPreferences.getBoolean(key, enabled)
+        return appPreferences.getBoolean(key, preference)
     }
 }

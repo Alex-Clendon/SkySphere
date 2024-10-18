@@ -18,7 +18,6 @@ import dagger.assisted.AssistedInject
 @HiltWorker
 @RequiresApi(Build.VERSION_CODES.O)
 class WeatherUpdateWorker @AssistedInject constructor(
-    private val api: WeatherService,
     @Assisted val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val repository: WeatherRepository,
@@ -27,7 +26,6 @@ class WeatherUpdateWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
 
         try {
-            val response = api.getWeather()
             repository.fetchAndStoreWeatherData()
 
             val currentTime = System.currentTimeMillis()
