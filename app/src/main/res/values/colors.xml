@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#1a9df1</color>
     <color name="gradient_start">#178ecf</color>
-    <color name="gradient_end">#a4def5</color>
-    <color name="transparent_blue">#1A0072d6</color>
+    <color name="gradient_end">#81c8eb</color>
+    <color name="transparent_blue">#1A086ca6</color>
     <color name="transparent_white">#33a3a3a3</color>
     <color name="search_bar">#FCFEFF</color>
     <color name="light_blue_50">#FFE1F5FE</color>

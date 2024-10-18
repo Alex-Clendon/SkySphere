@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.home
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
@@ -119,7 +120,11 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             weatherStateTextView.text = it.current?.weatherText
             it.current?.weatherType?.let { weatherType ->
                 weatherType.lottieAnimRes?.let { lottieFileName ->
-                    // Set the Lottie animation
+
+                    weatherCodeAnimationView.alpha = 0f
+                    val fadeIn = ObjectAnimator.ofFloat(weatherCodeAnimationView, "alpha", 0f, 1f)
+                    fadeIn.duration = 500
+                    fadeIn.start()
                     weatherCodeAnimationView.setAnimation(lottieFileName)
                     weatherCodeAnimationView.playAnimation()
                 }
@@ -138,7 +143,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
                 // Navigate to the DailyDetailsFragment
                 val navController = findNavController()
-                // Use NavController to navigate to HomeFragment
                 navController.navigate(R.id.action_nav_daily_details, bundle)
 
             }
@@ -190,12 +194,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Clickable region to show wind details in an alert dialog
         upperRegion.setOnClickListener {
             val navController = findNavController()
-            // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.action_nav_current_details)
         }
         settingsButton.setOnClickListener {
             val navController = findNavController()
-            // Use NavController to navigate to HomeFragment
             navController.navigate(R.id.action_settings)
         }
 
