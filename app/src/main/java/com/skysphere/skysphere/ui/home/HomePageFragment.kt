@@ -139,8 +139,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                 // Navigate to the DailyDetailsFragment
                 val navController = findNavController()
                 // Use NavController to navigate to HomeFragment
-                navController.navigate(R.id.nav_daily_details, bundle)
-                Log.d("DailyDetails", "Clicked")
+                navController.navigate(R.id.action_nav_daily_details, bundle)
 
             }
 
@@ -192,12 +191,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         upperRegion.setOnClickListener {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
-            navController.navigate(R.id.nav_current_details)
+            navController.navigate(R.id.action_nav_current_details)
         }
         settingsButton.setOnClickListener {
             val navController = findNavController()
             // Use NavController to navigate to HomeFragment
-            navController.navigate(R.id.nav_settings)
+            navController.navigate(R.id.action_settings)
         }
 
         var isFirstOpen = settingsManager.isFirstOpened()
