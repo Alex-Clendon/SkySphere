@@ -8,7 +8,9 @@ import com.skysphere.skysphere.data.dao.HourlyWeatherDao
 import com.skysphere.skysphere.data.entities.CurrentWeatherEntity
 import com.skysphere.skysphere.data.entities.HourlyWeatherEntity
 import com.skysphere.skysphere.data.entities.DailyWeatherEntity
-
+/*
+    Database class that creates a Room local database using the previously set up entities
+ */
 @Database(entities = [CurrentWeatherEntity::class, HourlyWeatherEntity::class, DailyWeatherEntity::class], version = 1)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao

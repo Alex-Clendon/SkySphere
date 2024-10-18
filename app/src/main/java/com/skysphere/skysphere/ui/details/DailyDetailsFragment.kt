@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
@@ -21,9 +22,11 @@ class DailyDetailsFragment : Fragment() {
     private var _binding: FragmentDailyDetailsBinding? = null
     private val binding get() = _binding!!
     private var position: Int = -1
-
+    /*
+        Inject data using Hilt
+     */
     @Inject
-    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+    lateinit var viewModel: WeatherViewModel
     private var weatherResults: WeatherResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +38,7 @@ class DailyDetailsFragment : Fragment() {
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            getData()
+            setData()
         }
     }
 
@@ -46,15 +49,21 @@ class DailyDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentDailyDetailsBinding.inflate(inflater, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.background_white)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white)
 
 
 
         return binding.root
     }
 
-    private fun getData() {
+    // Initializes UI components using binding
+    private fun setData() {
+
         weatherResults?.let {
+            // Set title to current day
+            (activity as AppCompatActivity?)!!.supportActionBar!!.title =
+                it.daily?.day?.get(position).toString()
             // Weather
             it.daily?.weatherType?.get(position).let { weatherType ->
                 weatherType?.lottieAnimRes?.let { lottieFileName ->
@@ -63,18 +72,35 @@ class DailyDetailsFragment : Fragment() {
                 }
             }
             binding.tvWeatherState.text = it.daily?.weatherText?.get(position)
-            binding.tvUvIndex.text = it.daily?.uvIndex?.get(position).toString() + " " + it.daily?.uvIndexText?.get(position)
-            binding.tvVisibility.text = String.format("%.1f", it.daily?.visibility?.get(position)) + " " + it.current?.visibilityUnit
+            binding.tvUvIndex.text =
+                it.daily?.uvIndex?.get(position).toString() + " " + it.daily?.uvIndexText?.get(
+                    position
+                )
+            binding.tvVisibility.text = String.format(
+                "%.1f",
+                it.daily?.visibility?.get(position)
+            ) + " " + it.current?.visibilityUnit
             // Temperature
-            binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(position)) + it.current?.tempUnit
-            binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(position)) + it.current?.tempUnit
+            binding.tvMaxTemp.text = String.format(
+                "%.1f",
+                it.daily?.temperatureMax?.get(position)
+            ) + it.current?.tempUnit
+            binding.tvMinTemp.text = String.format(
+                "%.1f",
+                it.daily?.temperatureMin?.get(position)
+            ) + it.current?.tempUnit
             // Wind
-            binding.tvWindSpeed.text =  String.format("%.1f", it.daily?.windSpeed?.get(position)) + it.current?.windSpeedUnit
+            binding.tvWindSpeed.text = String.format(
+                "%.1f",
+                it.daily?.windSpeed?.get(position)
+            ) + it.current?.windSpeedUnit
             binding.tvWindDegrees.text = it.daily?.windDegrees?.get(position).toString() + "°"
             binding.tvWindDirection.text = it.daily?.windDirection?.get(position)
             // Precipitation
-            binding.tvProbability.text = it.daily?.precipitationProbability?.get(position).toString() + "%"
-            binding.tvSum.text = it.daily?.precipitationSum?.get(position).toString() + it.current?.precipitationUnit
+            binding.tvProbability.text =
+                it.daily?.precipitationProbability?.get(position).toString() + "%"
+            binding.tvSum.text =
+                it.daily?.precipitationSum?.get(position).toString() + it.current?.precipitationUnit
             // Sun
             binding.ivSun.setAnimation(R.raw.clear_day)
             binding.ivSun.playAnimation()
@@ -89,6 +115,7 @@ class DailyDetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding reference to avoid memory leaks
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
     }
 }

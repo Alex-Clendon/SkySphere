@@ -1,5 +1,7 @@
 package com.skysphere.skysphere.data
-
+/*
+    Management class that handles all preferences
+ */
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,12 +12,13 @@ import javax.inject.Inject
 
 @RequiresApi(Build.VERSION_CODES.O)
 class SettingsManager @Inject constructor(
-    @ApplicationContext private val context: Context) {
+    @ApplicationContext private val context: Context
+) {
     private val appPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-    private val locationPreferences = context.getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+    private val locationPreferences =
+        context.getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
 
-    // Saving the preference for the temperature metric unit of the user
-    fun setPreferredUnit(key: String?, unit: String){
+    fun setPreferredUnit(key: String?, unit: String) {
         val editor = appPreferences.edit()
         editor.putString(key, unit)
         editor.apply()
@@ -48,14 +51,14 @@ class SettingsManager @Inject constructor(
     }
 
     fun getTtsStatus(): String {
-        return  appPreferences.getString("tts", "disabled") ?: "disabled"
+        return appPreferences.getString("tts", "disabled") ?: "disabled"
     }
 
     fun getTtsString(): String {
         return if (getTtsStatus() == "disabled") "Disabled" else "Enabled"
     }
 
-    fun getCustomLocation() : String? {
+    fun getCustomLocation(): String? {
         return locationPreferences.getString("place_name", "Custom Location")
     }
 
@@ -74,18 +77,15 @@ class SettingsManager @Inject constructor(
         editor.apply()
     }
 
-    fun checkNotification(key: String, preference: Boolean) : Boolean
-    {
+    fun checkNotification(key: String, preference: Boolean): Boolean {
         return appPreferences.getBoolean(key, preference)
     }
 
-    fun isFirstOpened(): Boolean
-    {
+    fun isFirstOpened(): Boolean {
         return appPreferences.getBoolean("isFirstOpen", false)
     }
 
-    fun saveFirstOpened(boolean: Boolean)
-    {
+    fun saveFirstOpened(boolean: Boolean) {
         val editor = appPreferences.edit()
         editor.putBoolean("isFirstOpen", boolean)
         editor.apply()

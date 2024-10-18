@@ -9,12 +9,12 @@ import okhttp3.MediaType.Companion.toMediaType
 object RetrofitInstance {
     private const val BASE_URL = "https://api.open-meteo.com/"
 
-    // Choose between Gson and Kotlinx Serialization at runtime
+
     fun getInstance(useKotlinxSerialization: Boolean): WeatherAPI {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .apply {
-                if (useKotlinxSerialization) {
+                if (useKotlinxSerialization) { // Choose between Gson and Kotlinx Serialization at runtime
                     addConverterFactory(
                         Json { ignoreUnknownKeys = true } // Ignore unknown keys
                             .asConverterFactory("application/json".toMediaType())

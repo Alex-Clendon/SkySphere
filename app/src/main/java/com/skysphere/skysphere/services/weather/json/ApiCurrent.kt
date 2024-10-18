@@ -2,7 +2,10 @@ package com.skysphere.skysphere.services.weather.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
-
+/*
+    Data class that stores API response
+    NOTE: This is NOT the data used in the UI. This is the data that gets parsed from the JSON response file
+ */
 @Serializable
 data class ApiCurrent(
     @SerialName("temperature_2m") val temperature: Double?,  // Works as expected

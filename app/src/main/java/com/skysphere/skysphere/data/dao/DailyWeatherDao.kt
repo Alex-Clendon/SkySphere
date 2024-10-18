@@ -6,6 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.skysphere.skysphere.data.entities.DailyWeatherEntity
 
+/*
+    DAO class to perform data queries on the local database
+ */
 @Dao
 interface DailyWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

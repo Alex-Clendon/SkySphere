@@ -8,8 +8,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import retrofit2.await
 
+/*
+    Operative class that handles the API call
+ */
 class WeatherService @Inject constructor(
-    @ApplicationContext private val context: Context // Injecting the application context
+    @ApplicationContext private val context: Context
 ) {
 
     suspend fun getWeather(): ApiResults {
@@ -17,7 +20,10 @@ class WeatherService @Inject constructor(
         val latitude = location.getFloat("latitude", 0f).toDouble()
         val longitude = location.getFloat("longitude", 0f).toDouble()
 
-        Log.d("API Call:", "API Call Made")
+        /*
+            Store requests into string arrays
+         */
+
         val daily = arrayOf(
             "weather_code",
             "temperature_2m_max",
@@ -57,7 +63,9 @@ class WeatherService @Inject constructor(
             "visibility",
         )
 
-
+        /*
+            Make the API call using the previous request arrays
+         */
         val api = RetrofitInstance.getInstance(true)
         return api.getWeatherData(
             latitude,

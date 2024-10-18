@@ -11,6 +11,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
+/*
+    Conversion class that handles all unit conversions
+ */
 object ConversionHelper {
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -41,8 +41,10 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
     // Initialize necessary variables
     @Inject
     lateinit var repository: WeatherRepository
+
     @Inject
     lateinit var viewModel: WeatherViewModel
+
     @Inject
     lateinit var settingsManager: SettingsManager
 
@@ -121,7 +123,8 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                         repository.fetchAndStoreWeatherData()
                         // Update SharedViewModel with new data
                         viewModel.fetchWeatherData()
-                        Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT)
+                            .show()
                     } catch (e: Exception) {
                         // Handle any errors
                         Log.d("WeatherFragment", "Error fetching weather data", e)

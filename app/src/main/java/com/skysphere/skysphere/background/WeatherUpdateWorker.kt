@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.updaters.background
+package com.skysphere.skysphere.background
 
 import android.content.Context
 import android.os.Build
@@ -6,15 +6,15 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
-import androidx.work.Data
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.services.weather.WeatherService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
+/*
+    Worker class that automatically refreshes weather data by calling the API
+ */
 @HiltWorker
 @RequiresApi(Build.VERSION_CODES.O)
 class WeatherUpdateWorker @AssistedInject constructor(
@@ -22,16 +22,19 @@ class WeatherUpdateWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val repository: WeatherRepository,
     private val viewModel: WeatherViewModel
-): CoroutineWorker(context, workerParameters) {
+) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
 
         try {
+            // Call API and store data into local database
             repository.fetchAndStoreWeatherData()
 
+            // Save fetch time
             val currentTime = System.currentTimeMillis()
             saveLastExecutionTime(currentTime)
+
+            // Update shared view model
             viewModel.fetchWeatherData()
-            Log.d("WeatherWorker", "Success, ${currentTime}")
             return Result.success()
         } catch (e: Exception) {
             Log.d("WeatherWorker", "Error")

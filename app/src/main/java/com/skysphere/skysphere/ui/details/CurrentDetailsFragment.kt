@@ -20,17 +20,20 @@ class CurrentDetailsFragment : Fragment() {
 
     private var _binding: FragmentCurrentDetailsBinding? = null
     private val binding get() = _binding!!
-
+    /*
+        Inject data using Hilt
+     */
     @Inject
-    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+    lateinit var viewModel: WeatherViewModel
     private var weatherResults: WeatherResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Observe the live data from the shared view model
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            getData()
+            setData()
         }
     }
 
@@ -41,14 +44,16 @@ class CurrentDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentCurrentDetailsBinding.inflate(inflater, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.background_white)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white)
 
 
 
         return binding.root
     }
 
-    private fun getData() {
+    // Initializes UI components using binding
+    private fun setData() {
         weatherResults?.let {
             // Weather
             it.current?.weatherType?.let { weatherType ->
@@ -58,21 +63,29 @@ class CurrentDetailsFragment : Fragment() {
                 }
             }
             binding.tvWeatherState.text = it.current?.weatherText
-            binding.tvUvIndex.text = it.daily?.uvIndex?.get(0).toString() + " " + it.daily?.uvIndexText?.get(0)
+            binding.tvUvIndex.text =
+                it.daily?.uvIndex?.get(0).toString() + " " + it.daily?.uvIndexText?.get(0)
             binding.tvHumidity.text = it.current?.relativeHumidity?.toString() + "%"
-            binding.tvVisibility.text = String.format("%.1f", it.current?.visibility) + " " + it.current?.visibilityUnit
+            binding.tvVisibility.text =
+                String.format("%.1f", it.current?.visibility) + " " + it.current?.visibilityUnit
             // Temperature
-            binding.tvCurrentTemp.text =  String.format("%.1f", it.current?.temperature) + it.current?.tempUnit
-            binding.tvApparentTemp.text = String.format("%.1f", it.current?.apparentTemperature) + it.current?.tempUnit
-            binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(0)) + it.current?.tempUnit
-            binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(0)) + it.current?.tempUnit
+            binding.tvCurrentTemp.text =
+                String.format("%.1f", it.current?.temperature) + it.current?.tempUnit
+            binding.tvApparentTemp.text =
+                String.format("%.1f", it.current?.apparentTemperature) + it.current?.tempUnit
+            binding.tvMaxTemp.text =
+                String.format("%.1f", it.daily?.temperatureMax?.get(0)) + it.current?.tempUnit
+            binding.tvMinTemp.text =
+                String.format("%.1f", it.daily?.temperatureMin?.get(0)) + it.current?.tempUnit
             // Wind
-            binding.tvWindSpeed.text =  String.format("%.1f", it.current?.windSpeed) + it.current?.windSpeedUnit
+            binding.tvWindSpeed.text =
+                String.format("%.1f", it.current?.windSpeed) + it.current?.windSpeedUnit
             binding.tvWindDegrees.text = it.current?.windDegrees.toString() + "°"
             binding.tvWindDirection.text = it.current?.windDirection
             // Precipitation
             binding.tvProbability.text = it.current?.precipitationProbability.toString() + "%"
-            binding.tvSum.text = it.current?.precipitation.toString() + it.current?.precipitationUnit
+            binding.tvSum.text =
+                it.current?.precipitation.toString() + it.current?.precipitationUnit
             // Sun
             binding.ivSun.setAnimation(R.raw.clear_day)
             binding.ivSun.playAnimation()
@@ -87,6 +100,7 @@ class CurrentDetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding reference to avoid memory leaks
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
     }
 }

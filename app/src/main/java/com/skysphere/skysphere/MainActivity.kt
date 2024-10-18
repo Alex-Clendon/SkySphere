@@ -25,7 +25,7 @@ import androidx.work.WorkManager
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
-import com.skysphere.skysphere.updaters.background.WeatherUpdateWorker
+import com.skysphere.skysphere.background.WeatherUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     @Inject
-    lateinit var viewModel: WeatherViewModel // Hilt will provide this
+    lateinit var viewModel: WeatherViewModel
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,32 +47,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize Shared View Model with weather data stored in local database
         viewModel.fetchWeatherData()
-        Log.d("Database Operation:", "Results Updated")
 
-            if(shouldRunWorker(applicationContext)) {
-                Log.d("WeatherWorker", "Enqueuing worker.")
-                val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
-                    repeatInterval = 90,
-                    repeatIntervalTimeUnit = TimeUnit.MINUTES,
-                ).setBackoffCriteria(
-                    backoffPolicy = BackoffPolicy.LINEAR,
-                    duration = Duration.ofSeconds(15)
-                )
-                    .build()
+        // Check if the data has been refreshed in the last 90 minutes
+        if (shouldRunWorker(applicationContext)) {
+            val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+                repeatInterval = 90,    // Set worker interval to 90 minutes
+                repeatIntervalTimeUnit = TimeUnit.MINUTES,
+            ).setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+            )
+                .build()
 
-                val workManager = WorkManager.getInstance(applicationContext)
+            val workManager = WorkManager.getInstance(applicationContext)
 
-                workManager.enqueueUniquePeriodicWork(
-                    "WeatherUpdateWork",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            }
-            else
-                {
-                    Log.d("WeatherWorker", "Worker Ignored.")
-                }
+            workManager.enqueueUniquePeriodicWork(
+                "WeatherUpdateWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+        } else {
+            Log.d("WeatherWorker", "Worker Ignored.") // If work has already been run within 90 minutes, do not enqueue a new job
+        }
 
 
         setSupportActionBar(binding.appBarMain.toolbar)
@@ -119,13 +117,14 @@ class MainActivity : AppCompatActivity() {
         checkAndRequestNotificationPermission()
     }
 
+    // Function to check if the worker should be ran
     private fun shouldRunWorker(context: Context): Boolean {
         val sharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
         val lastExecutionTime = sharedPreferences.getLong("last_execution_time", 0L)
         val currentTime = System.currentTimeMillis()
         val elapsedTime = currentTime - lastExecutionTime
 
-        // Return true if more than 15 minutes have passed
+        // Return true if more than 90 minutes have passed
         val result = elapsedTime >= 90 * 60 * 1000
         Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
         return result
@@ -137,7 +136,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Function to swap the nav menu depending on if the user is logged in or not
-     fun updateNavigationMenu(isLoggedIn: Boolean) {
+    fun updateNavigationMenu(isLoggedIn: Boolean) {
 
         val navView: NavigationView = binding.navView
         navView.menu.clear()

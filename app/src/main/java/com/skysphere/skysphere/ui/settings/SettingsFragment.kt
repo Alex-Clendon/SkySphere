@@ -27,7 +27,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class SettingsFragment : Fragment() {
-    // Initializing variables to store user preferences
+    /*
+        Inject Hilt components
+     */
     @Inject
     lateinit var viewModel: WeatherViewModel
 
@@ -64,18 +66,14 @@ class SettingsFragment : Fragment() {
             )
         ) // Action Bar Color
 
-        // Change Status Bar Color
+        // Change default app colours
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setTitle("")
 
-        // Initializing a SharedPreferences object called sharedPreferences so that the user can access the
-        // shared preferences, allowing you to read and write preferences (such as user settings or application state)
-        // in a persistent storage
-
-        // Assigning the buttons to their corresponding variables declared above
+        // Assigning the cards
         val tempCard: CardView = view.findViewById(R.id.tempCard)
         val windCard: CardView = view.findViewById(R.id.windCard)
         val rainCard: CardView = view.findViewById(R.id.rainfallCard)
@@ -83,13 +81,16 @@ class SettingsFragment : Fragment() {
         val visibilityCard: CardView = view.findViewById(R.id.visibilityCard)
         val severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
 
-        // Assigning the views to their corresponding variables declared above
+        // Assigning the views
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
         windspeedUnitTextView = view.findViewById(R.id.wind_details)
         rainfallUnitTextView = view.findViewById(R.id.rain_details)
         visibilityTextView = view.findViewById(R.id.visibility_details)
         ttsTextView = view.findViewById(R.id.tts_details)
 
+        /*
+            Set on click listeners in the cards and update their texts, building alert dialogues to set user options
+         */
         tempCard.setOnClickListener {
             val temperatureUnits = arrayOf("Celsius", "Fahrenheit")
 
@@ -103,12 +104,10 @@ class SettingsFragment : Fragment() {
                 .setSingleChoiceItems(temperatureUnits, selectedIndex) { dialog, which ->
                     when (which) {
                         0 -> {
-                            // User selected Celsius
                             settingsManager.setPreferredUnit("temperature_unit", "Celsius")
                         }
 
                         1 -> {
-                            // User selected Fahrenheit
                             settingsManager.setPreferredUnit("temperature_unit", "Fahrenheit")
                         }
                     }
@@ -160,7 +159,6 @@ class SettingsFragment : Fragment() {
                     dialog.dismiss()
                 }
 
-            // Create and show the dialog
             val dialog: AlertDialog = builder.create()
             dialog.show()
         }
@@ -335,6 +333,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // Change colors back when destroyed
     override fun onDestroyView() {
         super.onDestroyView()
         activity?.window?.navigationBarColor =
@@ -347,9 +346,7 @@ class SettingsFragment : Fragment() {
                     R.color.gradient_start
                 )
             )
-        ) // Action Bar Color
-
-        // Change Status Bar Color
+        )
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.gradient_start) // Status Bar Color
     }

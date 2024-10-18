@@ -10,9 +10,13 @@ import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.data.weather.WeatherDaily
 
+/*
+    Adapter class to intialize daily recycler view
+ */
 class DailyWeatherAdapter
-    (private var dailyWeather: WeatherDaily?,
-     private val onItemClicked: (Int) -> Unit
+    (
+    private var dailyWeather: WeatherDaily?,
+    private val onItemClicked: (Int) -> Unit
 ) :
     RecyclerView.Adapter<DailyWeatherAdapter.DailyWeatherViewHolder>() {
 
@@ -31,7 +35,8 @@ class DailyWeatherAdapter
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyWeatherViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.daily_weather_item, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.daily_weather_item, parent, false)
         return DailyWeatherViewHolder(itemView)
     }
 

@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
+import android.media.Image
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.FrameLayout
@@ -51,18 +52,20 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
-
+    /*
+        Inject Hilt components
+     */
     @Inject
     lateinit var viewModel: WeatherViewModel
+
     @Inject
     lateinit var settingsManager: SettingsManager
 
     private var weatherResults: WeatherResults? = null
     private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
     private lateinit var dailyRecyclerView: RecyclerView
-    // Declare the views that have been created in the XML file.
 
-    //Current Weather
+    // Declare the views that have been created in the XML file.
     private lateinit var dateTextView: TextView
     private lateinit var locationTextView: TextView
     private lateinit var weatherCodeAnimationView: LottieAnimationView
@@ -77,6 +80,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var settingsButton: ImageButton
     private lateinit var hourlyCardView: CardView
     private lateinit var dailyCardView: CardView
+    private lateinit var currentLocationButton: ImageButton
 
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
@@ -94,30 +98,35 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Set FirstOpened to false (this is used to detect if UI animations should play)
         settingsManager.saveFirstOpened(false)
+
+        // Observe live data from the shared view model
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            getData()
+            setData() // Set UI data
         }
     }
 
-    private fun getData() {
+    // Sets the data retrieved from the API to the views declared at the beginning.
+    private fun setData() {
 
-        // Sets the data retrieved from the API to the views declared at the beginning.
         weatherResults?.let {
+
             // Current
+            // Animate temperature
             var isFirstOpen = settingsManager.isFirstOpened()
-            Log.d("FirstOpened", "${isFirstOpen}")
-            if(!isFirstOpen) {
+            if (!isFirstOpen) {
                 animateTemperature(0, it.current?.roundedTemperature)
                 settingsManager.saveFirstOpened(true)
-            }
-            else
-            {
+            } else {
                 temperatureTextView.text = it.current?.roundedTemperature.toString()
             }
             temperatureUnit.text = it.current?.tempUnit
             weatherStateTextView.text = it.current?.weatherText
+
+            // Play weather type animation
             it.current?.weatherType?.let { weatherType ->
                 weatherType.lottieAnimRes?.let { lottieFileName ->
 
@@ -129,14 +138,16 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     weatherCodeAnimationView.playAnimation()
                 }
             }
-            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.roundedApparentTemperature.toString() + "°"
+
+            feelsLikeTemperatureTextView.text =
+                "Feels like " + it.current?.roundedApparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
             locationTextView.text = settingsManager.getCustomLocation()
             lastUpdatedText.text = it.current?.updatedTime
 
             // Weekly
             dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily) { position ->
-                // Handle the click here - navigate to the details page
+                // Handle the onclick
                 val bundle = Bundle().apply {
                     putInt("clickedPosition", position)
                 }
@@ -168,7 +179,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
@@ -186,7 +198,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         lastUpdatedText = view.findViewById(R.id.tvLastUpdated)
         hourlyCardView = view.findViewById(R.id.cvHourly)
         dailyCardView = view.findViewById(R.id.daily_card)
-        // End of Weekly Forecast variables
+        currentLocationButton = view.findViewById(R.id.currentLocationButton)
 
         // Initializing the show more details functionality
         upperRegion = view.findViewById(R.id.upperRegion)
@@ -201,15 +213,17 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             navController.navigate(R.id.action_settings)
         }
 
+        // Play card view animation if required
         var isFirstOpen = settingsManager.isFirstOpened()
         Log.d("FirstOpened", "${isFirstOpen}")
-        if(!isFirstOpen) {
-            fadeInCardViews(listOf(hourlyCardView,dailyCardView))
+        if (!isFirstOpen) {
+            fadeInCardViews(listOf(hourlyCardView, dailyCardView))
         }
 
 
         // Initializing the users preferences
-        sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        sharedPreferences =
+            requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
         // Initializing the chart
         temperatureChart = view.findViewById(R.id.temperatureChart)
@@ -217,16 +231,17 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // GPS client
         gpsManager = GPSManager(requireContext())
 
-        if(settingsManager.getTtsStatus() == "enabled") {
+        if (settingsManager.getTtsStatus() == "enabled") {
             textToSpeechBtn.visibility = View.VISIBLE
         }
 
         // Text to speech button
         textToSpeech = TextToSpeech(requireContext()) { status ->
-            if(status == TextToSpeech.SUCCESS) {
+            if (status == TextToSpeech.SUCCESS) {
                 val result = textToSpeech.setLanguage(Locale.getDefault())
-                if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Toast.makeText(requireContext(), "Language not supported", Toast.LENGTH_LONG).show()
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(requireContext(), "Language not supported", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -235,12 +250,18 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             textToSpeechDialog()
         }
 
+        currentLocationButton.setOnClickListener {
+            getLocation()
+            viewModel.fetchWeatherData()
+            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
+        }
+
 
         return view
     }
 
     // Text for text to speech
-    private fun textToSpeechDialog(){
+    private fun textToSpeechDialog() {
         // Getting data for text to speech
         val location = locationTextView.text.toString().trim()
         val date = dateTextView.text.toString().trim()
@@ -323,28 +344,24 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         temperatureChart.invalidate()
     }
 
-    private fun clearCustomLocationPreferences() { // Clears custom location preferences
-        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
-        with(sharedPrefs.edit()) {
-            clear()
-            apply()
-        }
-    }
-
     // Gets the user location by making user accept location permissions
-    private fun getLocation(){
+    private fun getLocation() {
         // This if statement checks if user has granted user location permissions (fine location and coarse location).
-        if(ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             // This statement occurs when permissions haven't been granted, and sends the request to the user.
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
             return
@@ -368,8 +385,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 101
     }
+
     // This function will update the widget when the location is changed
-    private fun updateWidget(){
+    private fun updateWidget() {
         val applicationContext = requireContext().applicationContext
 
         val intent = Intent(requireContext(), SkySphereWidget::class.java)
@@ -381,7 +399,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     }
 
     private fun saveLocationToPrefs(latitude: Double, longitude: Double) {
-        val sharedPrefs = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val sharedPrefs =
+            requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
         with(sharedPrefs.edit()) {
             putFloat("latitude", latitude.toFloat())
             putFloat("longitude", longitude.toFloat())
@@ -395,10 +414,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode){
+        when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 // If user denies then it sends the request again. If user denies again then a message is shown to inform that permissions must be allowed.
-                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLocation()
                 } else {
                     locationTextView.text = "You must allow location permission to get weather data"
@@ -408,15 +427,17 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         }
     }
 
+    // Function to animate the temperature
     private fun animateTemperature(startValue: Int, endValue: Int?) {
-        // Check if endValue is null before proceeding
+        // If value is not null, run animation
         if (endValue == null) return
 
         // Calculate the difference between start and end values
         val difference = Math.abs(endValue - startValue)
 
         // Set the duration based on the difference
-        val duration = if (difference < 20) 1000L else 2000L // 1 second for small differences, 2 seconds for larger
+        val duration =
+            if (difference < 20) 1000L else 2000L // 1 second for small differences, 2 seconds for larger
 
         // Create a ValueAnimator
         val animator = ValueAnimator.ofInt(startValue, endValue)
@@ -425,13 +446,15 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Add an update listener to update the TextView
         animator.addUpdateListener { animation ->
             val animatedValue = animation.animatedValue as Int
-            temperatureTextView.text = "$animatedValue" // Update the TextView with the animated value
+            temperatureTextView.text =
+                "$animatedValue" // Update the TextView with the animated value
         }
 
         // Start the animation
         animator.start()
     }
 
+    // Function to animate the card views one by one
     private fun fadeInCardViews(cardViews: List<CardView>) {
         for ((index, cardView) in cardViews.withIndex()) {
             // Set the initial alpha to 0 (completely transparent)
@@ -449,7 +472,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     override fun onStart() {
         super.onStart()
-        getData()
+        setData()
     }
-
 }

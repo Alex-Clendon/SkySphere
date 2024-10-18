@@ -10,10 +10,11 @@ import androidx.work.WorkerParameters
 import com.skysphere.skysphere.services.weather.WeatherService
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
-import com.skysphere.skysphere.updaters.background.WeatherUpdateWorker
-import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.WeatherRepository
-
+/*
+    Application class to configure Android Hilt 
+ */
 @HiltAndroidApp
 class SkySphereApplication : Application(), Configuration.Provider {
 

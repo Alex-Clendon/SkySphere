@@ -15,6 +15,10 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import dagger.hilt.android.qualifiers.ApplicationContext
 
+/*
+      Module class for Hilt Injection, providing instances of the necessary components
+ */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -22,7 +26,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideWeatherAPI(): WeatherAPI {
-        return RetrofitInstance.getInstance(true) // Uses existing Retrofit instance
+        return RetrofitInstance.getInstance(true)
     }
 
     @Provides

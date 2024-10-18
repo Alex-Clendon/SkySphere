@@ -12,7 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+/*
+    Shared View Model that shares live data to the fragments
+ */
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
 private val repository: WeatherRepository
@@ -21,11 +23,10 @@ private val repository: WeatherRepository
     val weatherResults: LiveData<WeatherResults?> get() = _weatherResults
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun fetchWeatherData() {
+    fun fetchWeatherData() {    // Function to update model with database results
         viewModelScope.launch(Dispatchers.IO) {
             val weatherResults = repository.getWeatherDataFromDatabase()
-            _weatherResults.postValue(weatherResults) // Update LiveData on the main thread
-            Log.d("Database Operation:", "Weather Fetched From storage:")
+            _weatherResults.postValue(weatherResults)
         }
     }
 }

@@ -2,7 +2,9 @@ package com.skysphere.skysphere.data.weather
 
 import com.skysphere.skysphere.API.WeatherType
 
-// Class to hold weather results, combining hourly and daily data
+/*
+   Data Class that holds all the weather data used by the app
+ */
 data class WeatherResults(
     val current: WeatherCurrent?,
     val hourly: WeatherHourly?,
@@ -37,7 +39,7 @@ data class WeatherCurrent(
     val updatedTime: String?
 )
 
-// Class to hold hourly weather
+// Class to hold hourly weather data
 data class WeatherHourly(
     val time: List<String?>,
     val temperature: List<Double?>,
@@ -57,8 +59,11 @@ data class WeatherDaily(
     val weatherType: List<WeatherType?>,
     val temperatureMax: List<Double?>,
     val temperatureMin: List<Double?>,
+
+    //Formatted temperatures
     val roundedTemperatureMax: List<Int?>,
     val roundedTemperatureMin: List<Int?>,
+
     val precipitationProbability: List<Int?>,
     val precipitationSum: List<Double?>,
     val windSpeed: List<Double?>,
