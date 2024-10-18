@@ -199,6 +199,55 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/visibilityCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="@color/card_white"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rainfallCard">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="18dp"
+                    android:layout_marginHorizontal="18dp">
+
+                    <TextView
+                        android:id="@+id/text_visibility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/fira_sans_medium"
+                        android:text="Visibility"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/visibility_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="km"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@+id/text_visibility"
+                        app:layout_constraintTop_toBottomOf="@+id/text_visibility" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <TextView
                 android:id="@+id/accessibilityTitle"
                 android:layout_width="wrap_content"
@@ -213,7 +262,7 @@
                 android:textSize="25sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rainfallCard" />
+                app:layout_constraintTop_toBottomOf="@id/visibilityCard" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/ttsCard"

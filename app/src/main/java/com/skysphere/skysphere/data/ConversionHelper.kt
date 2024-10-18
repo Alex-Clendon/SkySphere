@@ -2,6 +2,7 @@ package com.skysphere.skysphere.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.transition.Visibility
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -80,5 +81,16 @@ object ConversionHelper {
             }
         }
         return "(Unknown)"
+    }
+
+    fun convertVisibility(visibility: Double?, unit: String): Double? {
+        var visibilityKm = visibility?.div(1000)
+        return visibility?.let {
+            if (unit == "mi.") {
+                return visibilityKm?.div(1.609)
+            } else {
+               return visibilityKm
+            }
+        }
     }
 }

@@ -110,7 +110,8 @@ class WeatherRepository @Inject constructor(
                 weatherText = WeatherType.fromWMO(it.weatherCode).weatherDesc,
                 windSpeed = it.windSpeed,
                 windDirection = it.windDirection,
-                visibility = it.visibility,
+                visibility = ConversionHelper.convertVisibility(it.visibility, settingsManager.getVisibilityUnit()),
+                visibilityUnit = settingsManager.getVisibilityUnit(),
                 time = it.time,
                 date = ConversionHelper.convertToDate(it.time)
             )
@@ -136,8 +137,10 @@ class WeatherRepository @Inject constructor(
                 time = it.map { it.time },
                 weatherCode = dailyWeatherList.map { it.weatherCode },
                 weatherText = dailyWeatherList.map { WeatherType.fromWMO(it.weatherCode).weatherDesc },
-                temperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
-                temperatureMin = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.temperatureMin, settingsManager.getTemperatureUnit()) },
+                temperatureMax = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
+                temperatureMin = dailyWeatherList.map { ConversionHelper.convertTemperature(it.temperatureMin, settingsManager.getTemperatureUnit()) },
+                roundedTemperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.temperatureMax, settingsManager.getTemperatureUnit()) },
+                roundedTemperatureMin = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.temperatureMin, settingsManager.getTemperatureUnit()) },
                 precipitationProbability = dailyWeatherList.map { it.precipitationProbability },
                 precipitationSum = dailyWeatherList.map { it.precipitationSum },
                 apparentTemperatureMax = dailyWeatherList.map { ConversionHelper.convertRoundedTemperature(it.apparentTemperatureMax, settingsManager.getTemperatureUnit()) },

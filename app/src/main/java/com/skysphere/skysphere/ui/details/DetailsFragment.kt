@@ -56,7 +56,6 @@ class DetailsFragment : Fragment() {
             // Weather
             it.current?.weatherType?.let { weatherType ->
                 weatherType.lottieAnimRes?.let { lottieFileName ->
-                    // Set the Lottie animation
                     binding.ivWeatherState.setAnimation(lottieFileName)
                     binding.ivWeatherState.playAnimation()
                 }
@@ -64,9 +63,12 @@ class DetailsFragment : Fragment() {
             binding.tvWeatherState.text = it.current?.weatherText
             binding.tvUvIndex.text = it.daily?.uvIndex?.get(0).toString() + " " + it.daily?.uvIndexText?.get(0)
             binding.tvHumidity.text = it.current?.relativeHumidity?.toString() + "%"
-            binding.tvVisibility.text = it.current?.visibility?.toString()
+            binding.tvVisibility.text = String.format("%.1f", it.current?.visibility) + " " + it.current?.visibilityUnit
             // Temperature
-            binding.tvCurrentTemp.text = it.current?.temperature.toString()
+            binding.tvCurrentTemp.text =  String.format("%.1f", it.current?.temperature) + it.current?.tempUnit
+            binding.tvApparentTemp.text = String.format("%.1f", it.current?.apparentTemperature) + it.current?.tempUnit
+            binding.tvMaxTemp.text = String.format("%.1f", it.daily?.temperatureMax?.get(0)) + it.current?.tempUnit
+            binding.tvMinTemp.text = String.format("%.1f", it.daily?.temperatureMin?.get(0)) + it.current?.tempUnit
         } ?: run {
 
         }

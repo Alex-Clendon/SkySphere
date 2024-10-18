@@ -31,11 +31,11 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
-class SettingsFragment : Fragment()
-{
+class SettingsFragment : Fragment() {
     // Initializing variables to store user preferences
     @Inject
     lateinit var viewModel: WeatherViewModel
+
     @Inject
     lateinit var settingsManager: SettingsManager
 
@@ -49,6 +49,7 @@ class SettingsFragment : Fragment()
     private lateinit var temperatureUnitTextView: TextView
     private lateinit var windspeedUnitTextView: TextView
     private lateinit var rainfallUnitTextView: TextView
+    private lateinit var visibilityTextView: TextView
     private lateinit var ttsTextView: TextView
 
     override fun onCreateView(
@@ -56,12 +57,21 @@ class SettingsFragment : Fragment()
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.background_white)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white)
         val actionBar = (activity as? AppCompatActivity)?.supportActionBar
-        actionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.background_white))) // Action Bar Color
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.background_white
+                )
+            )
+        ) // Action Bar Color
 
         // Change Status Bar Color
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
         actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         actionBar?.setTitle("")
@@ -75,42 +85,45 @@ class SettingsFragment : Fragment()
         val windCard: CardView = view.findViewById(R.id.windCard)
         val rainCard: CardView = view.findViewById(R.id.rainfallCard)
         val ttsCard: CardView = view.findViewById(R.id.ttsCard)
+        val visibilityCard: CardView = view.findViewById(R.id.visibilityCard)
         val severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
 
         // Assigning the views to their corresponding variables declared above
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
         windspeedUnitTextView = view.findViewById(R.id.wind_details)
         rainfallUnitTextView = view.findViewById(R.id.rain_details)
+        visibilityTextView = view.findViewById(R.id.visibility_details)
         ttsTextView = view.findViewById(R.id.tts_details)
 
         tempCard.setOnClickListener {
-                val temperatureUnits = arrayOf("Celsius", "Fahrenheit")
+            val temperatureUnits = arrayOf("Celsius", "Fahrenheit")
 
-                val currentUnit = settingsManager.getTemperatureUnit()
-                val selectedIndex =
-                    if (currentUnit == "Celsius") 0 else 1
+            val currentUnit = settingsManager.getTemperatureUnit()
+            val selectedIndex =
+                if (currentUnit == "Celsius") 0 else 1
 
-                val builder = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
+            val builder = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
 
-                builder.setTitle("Temperature Unit")
-                    .setSingleChoiceItems(temperatureUnits, selectedIndex) { dialog, which ->
-                        when (which) {
-                            0 -> {
-                                // User selected Celsius
-                                settingsManager.setPreferredUnit("temperature_unit", "Celsius")
-                            }
-                            1 -> {
-                                // User selected Fahrenheit
-                                settingsManager.setPreferredUnit("temperature_unit", "Fahrenheit")
-                            }
+            builder.setTitle("Temperature Unit")
+                .setSingleChoiceItems(temperatureUnits, selectedIndex) { dialog, which ->
+                    when (which) {
+                        0 -> {
+                            // User selected Celsius
+                            settingsManager.setPreferredUnit("temperature_unit", "Celsius")
                         }
-                        updateTemperatureUnitTextView()
-                        viewModel.fetchWeatherData()
-                        dialog.dismiss()
-                    }
 
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
+                        1 -> {
+                            // User selected Fahrenheit
+                            settingsManager.setPreferredUnit("temperature_unit", "Fahrenheit")
+                        }
+                    }
+                    updateTemperatureUnitTextView()
+                    viewModel.fetchWeatherData()
+                    dialog.dismiss()
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
 
         windCard.setOnClickListener {
@@ -134,12 +147,15 @@ class SettingsFragment : Fragment()
                         0 -> {
                             settingsManager.setPreferredUnit("wind_speed_unit", "km/h")
                         }
+
                         1 -> {
                             settingsManager.setPreferredUnit("wind_speed_unit", "mph")
                         }
+
                         2 -> {
                             settingsManager.setPreferredUnit("wind_speed_unit", "m/s")
                         }
+
                         3 -> {
                             settingsManager.setPreferredUnit("wind_speed_unit", "knots")
                         }
@@ -169,6 +185,7 @@ class SettingsFragment : Fragment()
                         0 -> {
                             settingsManager.setPreferredUnit("rainfall_unit", "mm")
                         }
+
                         1 -> {
                             settingsManager.setPreferredUnit("rainfall_unit", "in.")
                         }
@@ -197,6 +214,7 @@ class SettingsFragment : Fragment()
                         0 -> {
                             settingsManager.setPreferredUnit("tts", "enabled")
                         }
+
                         1 -> {
                             settingsManager.setPreferredUnit("tts", "disabled")
                         }
@@ -209,8 +227,40 @@ class SettingsFragment : Fragment()
             dialog.show()
         }
 
+        visibilityCard.setOnClickListener {
+            val visibilityUnits = arrayOf("km", "mi.")
+
+            val currentUnit = settingsManager.getVisibilityUnit()
+            val selectedIndex =
+                if (currentUnit == "km") 0 else 1
+
+            val builder = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialogTheme)
+
+            builder.setTitle("Visibility Unit")
+                .setSingleChoiceItems(visibilityUnits, selectedIndex) { dialog, which ->
+                    when (which) {
+                        0 -> {
+                            // User selected Celsius
+                            settingsManager.setPreferredUnit("visibility_unit", "km")
+                        }
+
+                        1 -> {
+                            // User selected Fahrenheit
+                            settingsManager.setPreferredUnit("visibility_unit", "mi.")
+                        }
+                    }
+                    updateVisibilityUnitTextView()
+                    viewModel.fetchWeatherData()
+                    dialog.dismiss()
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
+
         // Determining the checked state of the weather warnings notification preference (off by default)
-        severeWeatherWarningCheckBox.isChecked = settingsManager.checkNotification(SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+        severeWeatherWarningCheckBox.isChecked =
+            settingsManager.checkNotification(SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
 
         // Setting up the listener for the severe weather warnings checkbox
         severeWeatherWarningCheckBox.setOnCheckedChangeListener { _, isChecked ->
@@ -221,7 +271,11 @@ class SettingsFragment : Fragment()
                 } else {
                     // Uncheck the box if permission is not granted
                     severeWeatherWarningCheckBox.isChecked = false
-                    Toast.makeText(context, "Notification permission is required for severe weather alerts", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Notification permission is required for severe weather alerts",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             } else {
                 settingsManager.saveNotificationPreference(false)
@@ -229,14 +283,16 @@ class SettingsFragment : Fragment()
             }
         }
 
-        // Initializing the TextView of Temperature Details with the current metric unit
+        // Initializing the TextView of Temperature Details with the current unit
         updateTemperatureUnitTextView()
-        // Initializing the TextView of Wind Speed Details with the current metric unit
+        // Initializing the TextView of Wind Speed Details with the current unit
         updateWindSpeedUnitTextView()
-        // Initializing the TextView of Rainfall Details with the current metric unit
+        // Initializing the TextView of Rainfall Details with the current unit
         updateRainfallUnitTextView()
         // Initializing the TextView of TTS Details with the current status
         updateTtsUnitTextView()
+        // Initializing the TextView of Visibility Details with the current unit
+        updateVisibilityUnitTextView()
 
         return view
     }
@@ -266,6 +322,12 @@ class SettingsFragment : Fragment()
         ttsTextView.text = status
     }
 
+    private fun updateVisibilityUnitTextView() {
+        // This sets the TextView for the Temperature Details to what it equates and displays it onto the settings page
+        val unit = settingsManager.getVisibilityUnit()
+        visibilityTextView.text = unit
+    }
+
     // Checking if the notification permission has been granted
     private fun checkNotificationPermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -280,11 +342,20 @@ class SettingsFragment : Fragment()
 
     override fun onDestroyView() {
         super.onDestroyView()
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
         val actionBar = (activity as? AppCompatActivity)?.supportActionBar
-        actionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(requireContext(), R.color.gradient_start))) // Action Bar Color
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        ) // Action Bar Color
 
         // Change Status Bar Color
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_start) // Status Bar Color
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start) // Status Bar Color
     }
 }

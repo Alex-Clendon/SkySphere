@@ -285,7 +285,7 @@
                     app:layout_constraintTop_toTopOf="@id/tvMaxTitle" />
 
                 <TextView
-                    android:id="@+id/tMinTemp"
+                    android:id="@+id/tvMinTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"

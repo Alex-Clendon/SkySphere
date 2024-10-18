@@ -30,8 +30,8 @@ class DailyWeatherAdapter(private var dailyWeather: WeatherDaily?) :
 
         val day = dailyWeather?.day?.get(position)
         val weatherCode = dailyWeather?.weatherCode?.get(position)
-        val tempMax = dailyWeather?.temperatureMax?.get(position)
-        val tempMin = dailyWeather?.temperatureMin?.get(position)
+        val tempMax = dailyWeather?.roundedTemperatureMax?.get(position)
+        val tempMin = dailyWeather?.roundedTemperatureMin?.get(position)
         val precipitation = dailyWeather?.precipitationProbability?.get(position)
 
         val weatherImageRes = WeatherType.fromWMO(weatherCode ?: 0).iconRes

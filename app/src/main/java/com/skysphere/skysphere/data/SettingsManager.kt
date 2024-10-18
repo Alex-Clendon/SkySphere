@@ -47,6 +47,10 @@ class SettingsManager @Inject constructor(
         return if (getRainfallUnit() == "millimeters") "mm" else "in."
     }
 
+    fun getVisibilityUnit(): String {
+        return appPreferences.getString("visibility_unit", "km") ?: "mi."
+    }
+
     fun getTtsStatus(): String {
         return  appPreferences.getString("tts", "disabled") ?: "disabled"
     }
