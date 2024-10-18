@@ -34,6 +34,7 @@ data class WeatherCurrent(
     val visibilityUnit: String?,
     val time: String,
     val date: String,
+    val updatedTime: String?
 )
 
 // Class to hold hourly weather
@@ -45,7 +46,7 @@ data class WeatherHourly(
     val precipitation: List<Double?>,
     val weatherCode: List<Int?>,
     val weatherText: List<String?>,
-    val isDay: List<Int?>,
+    val isDay: List<Int?>
 )
 
 // Class to hold daily weather data

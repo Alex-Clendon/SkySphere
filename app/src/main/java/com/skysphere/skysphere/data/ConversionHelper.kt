@@ -1,6 +1,8 @@
 package com.skysphere.skysphere.data
 
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.transition.Visibility
 import java.time.LocalDate
@@ -135,4 +137,30 @@ object ConversionHelper {
             }
         }
     }
+
+    fun convertTime(context: Context): String {
+        val sharedPreferences = context.getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
+        val currentTime = System.currentTimeMillis()
+        val lastExecutionTime = sharedPreferences.getLong("last_execution_time", 0L)
+        val diffInMillis = currentTime - lastExecutionTime
+        val seconds = diffInMillis / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        val days = hours / 24
+        val weeks = days / 7
+        val months = days / 30
+        val years = days / 365
+
+        return when {
+            seconds < 60 -> "Just now"
+            minutes < 60 -> "Last updated $minutes m ago"
+            hours < 24 -> "Last updated $hours h ago"
+            days < 7 -> "Last updated $days d ago"
+            weeks < 4 -> "Last updated $weeks w ago"
+            months < 12 -> "Last updated $months m ago"
+            years > 1 -> "Last updated $years y ago"
+            else -> "Last updated 1y ago"
+        }
+    }
+
 }

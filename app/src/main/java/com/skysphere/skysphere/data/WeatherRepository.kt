@@ -120,7 +120,8 @@ class WeatherRepository @Inject constructor(
                 visibility = ConversionHelper.convertVisibility(it.visibility, settingsManager.getVisibilityUnit()),
                 visibilityUnit = settingsManager.getVisibilityUnit(),
                 time = it.time,
-                date = ConversionHelper.convertToDate(it.time)
+                date = ConversionHelper.convertToDate(it.time),
+                updatedTime = ConversionHelper.convertTime(context)
             )
         }
 

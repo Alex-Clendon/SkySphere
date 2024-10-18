@@ -68,7 +68,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var feelsLikeTemperatureTextView: TextView
     private lateinit var weatherStateTextView: TextView
     private lateinit var homeTextView: TextView
-    private lateinit var setCurrentLocationButton: ImageButton
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
     private lateinit var settingsButton: ImageButton
@@ -114,6 +113,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             feelsLikeTemperatureTextView.text = "Feels like " + it.current?.roundedApparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
             locationTextView.text = settingsManager.getCustomLocation()
+            Log.d("Updated Time", "${it.current?.updatedTime}")
 
             // Weekly
             dailyWeatherAdapter = DailyWeatherAdapter(weatherResults?.daily) { position ->
@@ -141,7 +141,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         } ?: run {
 
         }
-
+        updateWidget()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -192,15 +192,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         // GPS client
         gpsManager = GPSManager(requireContext())
-
-        setCurrentLocationButton = view.findViewById(R.id.currentLocationButton) // Initialise current location button
-
-        setCurrentLocationButton.setOnClickListener { // Clear custom location preferences and get data from user's current location when clicked.
-            clearCustomLocationPreferences()
-            getLocation()
-            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_LONG).show()
-            updateWidget()
-        }
 
         if(settingsManager.getTtsStatus() == "enabled") {
             textToSpeechBtn.visibility = View.VISIBLE
