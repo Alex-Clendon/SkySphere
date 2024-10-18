@@ -26,7 +26,7 @@ object ConversionHelper {
         return dateTime.format(outputFormatter)
     }
 
-    fun convertTemperature(temperature: Double?, unit: String): Int? {
+    fun convertRoundedTemperature(temperature: Double?, unit: String): Int? {
         return temperature?.let {
             if (unit == "Fahrenheit") {
                 ((it * 9 / 5) + 32).roundToInt()
@@ -36,7 +36,15 @@ object ConversionHelper {
         }
     }
 
-
+    fun convertTemperature(temperature: Double?, unit: String): Double? {
+        return temperature?.let {
+            if (unit == "Fahrenheit") {
+                ((it * 9 / 5) + 32)
+            } else {
+                it
+            }
+        }
+    }
 
     fun convertHourly(temperature: Double?, unit: String): Double? {
         return temperature?.let {
@@ -46,5 +54,31 @@ object ConversionHelper {
                 it
             }
         }
+    }
+
+    fun convertUV(uvIndex: Double?): String? {
+        if (uvIndex != null) {
+            if (uvIndex >= 1 && uvIndex<= 2)
+            {
+                return "(Low)"
+            }
+            else if (uvIndex >= 3 && uvIndex<= 5)
+            {
+                return "(Moderate)"
+            }
+            else if (uvIndex >= 6 && uvIndex<= 7)
+            {
+                return "(High)"
+            }
+            else if (uvIndex >= 8 && uvIndex<=10)
+            {
+                return "(Very High)"
+            }
+            else
+            {
+                return "(Extreme)"
+            }
+        }
+        return "(Unknown)"
     }
 }

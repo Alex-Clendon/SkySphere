@@ -9,10 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.databinding.FragmentDetailsBinding
+import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -24,7 +26,6 @@ class DetailsFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: WeatherViewModel // Hilt will provide this
-
     private var weatherResults: WeatherResults? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +33,6 @@ class DetailsFragment : Fragment() {
 
         viewModel.weatherResults.observe(this) { results ->
             weatherResults = results
-            Log.d("Database Operation:", "Fragment Updated")
             getData()
         }
     }
@@ -45,11 +45,31 @@ class DetailsFragment : Fragment() {
         // Inflate the layout using view binding
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.background_white)
+
+
+
         return binding.root
     }
 
     private fun getData() {
+        weatherResults?.let {
+            // Weather
+            it.current?.weatherType?.let { weatherType ->
+                weatherType.lottieAnimRes?.let { lottieFileName ->
+                    // Set the Lottie animation
+                    binding.ivWeatherState.setAnimation(lottieFileName)
+                    binding.ivWeatherState.playAnimation()
+                }
+            }
+            binding.tvWeatherState.text = it.current?.weatherText
+            binding.tvUvIndex.text = it.daily?.uvIndex?.get(0).toString() + " " + it.daily?.uvIndexText?.get(0)
+            binding.tvHumidity.text = it.current?.relativeHumidity?.toString() + "%"
+            binding.tvVisibility.text = it.current?.visibility?.toString()
+            // Temperature
+            binding.tvCurrentTemp.text = it.current?.temperature.toString()
+        } ?: run {
 
+        }
     }
 
     override fun onDestroyView() {

@@ -12,9 +12,14 @@ data class WeatherResults(
 
 // Class to hold current weather data
 data class WeatherCurrent(
-    val temperature: Int?,
-    val apparentTemperature: Int?,
+    val temperature: Double?,
+    val apparentTemperature: Double?,
     val tempUnit: String,
+
+    // Formatted Temperatures
+    val roundedTemperature: Int?,
+    val roundedApparentTemperature: Int?,
+
     val relativeHumidity: Int?,
     val weatherCode: Int?,
     val weatherType: WeatherType,
@@ -52,6 +57,7 @@ data class WeatherDaily(
     val sunrise: List<String?>,
     val sunset: List<String?>,
     val sunshineDuration: List<Double?>,
-    val uvIndexMax: List<Double?>,
+    val uvIndex: List<Int?>,
+    val uvIndexText: List<String?>,
     val day:  List<String?>
 )

@@ -101,7 +101,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Sets the data retrieved from the API to the views declared at the beginning.
         weatherResults?.let {
             // Current
-            temperatureTextView.text = it.current?.temperature.toString()
+            temperatureTextView.text = it.current?.roundedTemperature.toString()
             temperatureUnit.text = it.current?.tempUnit
             weatherStateTextView.text = it.current?.weatherText
             it.current?.weatherType?.let { weatherType ->
@@ -111,7 +111,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
                     weatherCodeAnimationView.playAnimation()
                 }
             }
-            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.apparentTemperature.toString() + "°"
+            feelsLikeTemperatureTextView.text = "Feels like " + it.current?.roundedApparentTemperature.toString() + "°"
             dateTextView.text = it.current?.date
             locationTextView.text = settingsManager.getCustomLocation()
 
