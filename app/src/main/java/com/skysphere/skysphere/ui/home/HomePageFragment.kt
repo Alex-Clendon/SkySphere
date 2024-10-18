@@ -30,6 +30,7 @@ import android.util.Log
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,10 +44,12 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
+import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -60,6 +63,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     @Inject
     lateinit var settingsManager: SettingsManager
+
+    @Inject
+    lateinit var repository: WeatherRepository
 
     private var weatherResults: WeatherResults? = null
     private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
@@ -252,6 +258,19 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         currentLocationButton.setOnClickListener {
             getLocation()
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    // Call the suspend function
+                    repository.fetchAndStoreWeatherData()
+                    // Update SharedViewModel with new data
+                    viewModel.fetchWeatherData()
+                    Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT)
+                        .show()
+                } catch (e: Exception) {
+                    // Handle any errors
+                    Log.d("WeatherFragment", "Error fetching weather data", e)
+                }
+            }
             viewModel.fetchWeatherData()
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
         }
