@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import com.skysphere.skysphere.API.RetrofitInstance
@@ -17,9 +16,6 @@ import com.skysphere.skysphere.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /**
  * Implementation of App Widget functionality.
@@ -48,10 +44,10 @@ internal fun updateAppWidget(
     val latitude = sharedPrefs.getFloat("latitude", 0f).toDouble()
     val longitude = sharedPrefs.getFloat("longitude", 0f).toDouble()
 
-    val weatherService = RetrofitInstance.weatherAPI
+    val weatherService = RetrofitInstance.getInstance(false)
 
-    // Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
-    weatherService.getWeatherData(latitude, longitude, "weather_code,temperature_2m,apparent_temperature", "weather_code,temperature_2m_max,temperature_2m_min", "auto", "wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
+    //Calls the API and assigns the views declared above as the data retrieved from the API. Takes in the latitude and longitude of the user.
+    weatherService.getWeatherDataWidget(latitude, longitude, "weather_code,temperature_2m", "auto") // Calls the getWeatherData function and parses the user location variables, and other variables needed from the API.
         .enqueue(object : Callback<WeatherData> {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onResponse(call: Call<WeatherData>, response: Response<WeatherData>) {
