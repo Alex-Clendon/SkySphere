@@ -8,6 +8,8 @@ import okhttp3.MediaType.Companion.toMediaType
 
 object RetrofitInstance {
     private const val BASE_URL = "https://api.open-meteo.com/"
+    const val NEWS_API_KEY = "859c9a4fd0c341b0b1d0c4036c496704"
+    private const val NEWS_BASE_URL = "https://newsapi.org/"
 
 
     fun getInstance(useKotlinxSerialization: Boolean): WeatherAPI {

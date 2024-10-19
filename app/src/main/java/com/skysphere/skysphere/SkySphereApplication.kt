@@ -29,7 +29,7 @@ class SkySphereApplication : Application(), Configuration.Provider {
 
 }
 
-class CustomWorkerFactory @Inject constructor(private val api: WeatherService, private val viewModel: WeatherViewModel, private val weatherRepo: WeatherRepository): WorkerFactory() {
+class CustomWorkerFactory @Inject constructor(private val viewModel: WeatherViewModel, private val weatherRepo: WeatherRepository): WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,

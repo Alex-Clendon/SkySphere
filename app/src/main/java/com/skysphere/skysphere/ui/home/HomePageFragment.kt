@@ -36,6 +36,7 @@ import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -56,7 +57,7 @@ import java.time.Duration
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefreshLayout.OnRefreshListener {
 
     /*
         Inject Hilt components
@@ -90,6 +91,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     private lateinit var hourlyCardView: CardView
     private lateinit var dailyCardView: CardView
     private lateinit var currentLocationButton: ImageButton
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     // Declaring the clickable upper region and the variables that will inside the alertbox.
     private lateinit var upperRegion: FrameLayout
@@ -208,6 +210,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
         hourlyCardView = view.findViewById(R.id.cvHourly)
         dailyCardView = view.findViewById(R.id.daily_card)
         currentLocationButton = view.findViewById(R.id.currentLocationButton)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener(this)
 
         // Initializing the show more details functionality
         upperRegion = view.findViewById(R.id.upperRegion)
@@ -261,20 +265,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         currentLocationButton.setOnClickListener {
             getLocation()
-            val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-                .setBackoffCriteria(
-                    backoffPolicy = BackoffPolicy.LINEAR,
-                    duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-                )
-                .build()
-
-            val workManager = WorkManager.getInstance(requireContext())
-
-            workManager.enqueueUniqueWork(
-                "WeatherUpdateWork",
-                ExistingWorkPolicy.REPLACE,
-                workRequest
-            )
+            refreshWeather()
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
         }
 
@@ -308,6 +299,24 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
             textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
+    }
+
+    private fun refreshWeather() {
+        val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+            )
+            .build()
+
+        val workManager = WorkManager.getInstance(requireContext())
+
+        workManager.enqueueUniqueWork(
+            "WeatherUpdateWork",
+            ExistingWorkPolicy.REPLACE,
+            workRequest
+        )
+        settingsManager.saveFirstOpened(false)
     }
 
     private fun setupTemperatureChart(temperatures: List<Double?>?, times: List<String>) {
@@ -495,5 +504,10 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
     override fun onStart() {
         super.onStart()
         setData()
+    }
+
+    override fun onRefresh() {
+        refreshWeather()
+        swipeRefreshLayout.isRefreshing = false
     }
 }
