@@ -24,16 +24,18 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
-import android.media.Image
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.BackoffPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.airbnb.lottie.LottieAnimationView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -43,13 +45,14 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.data.weather.WeatherResults
 import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import java.time.Duration
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -258,19 +261,20 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         currentLocationButton.setOnClickListener {
             getLocation()
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    // Call the suspend function
-                    repository.fetchAndStoreWeatherData()
-                    // Update SharedViewModel with new data
-                    viewModel.fetchWeatherData()
-                    Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT)
-                        .show()
-                } catch (e: Exception) {
-                    // Handle any errors
-                    Log.d("WeatherFragment", "Error fetching weather data", e)
-                }
-            }
+            val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
+                .setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+                )
+                .build()
+
+            val workManager = WorkManager.getInstance(requireContext())
+
+            workManager.enqueueUniqueWork(
+                "WeatherUpdateWork",
+                ExistingWorkPolicy.REPLACE,
+                workRequest
+            )
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
         }
 

@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
+                android:paddingTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:context=".ui.details.CurrentDetailsFragment">
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="22dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:background="@color/light_grey"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvVisibility" />
@@ -78,7 +78,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="Overcast"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@+id/tvWeatherStateTitle"
                     app:layout_constraintTop_toTopOf="@+id/tvWeatherStateTitle" />
 
@@ -103,7 +103,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="3 (Low)"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@+id/tvUVTitle"
                     app:layout_constraintTop_toTopOf="@id/tvUVTitle" />
 
@@ -128,7 +128,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="12.2km"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@+id/tvVisibilityTitle"
                     app:layout_constraintTop_toTopOf="@id/tvVisibilityTitle" />
 
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
+                android:paddingTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/weather_details"
                 tools:context=".ui.details.CurrentDetailsFragment">
@@ -148,10 +148,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="22dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:background="@color/light_grey"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvCurrentTemp" />
+                    app:layout_constraintTop_toBottomOf="@id/tvMaxTemp" />
 
                 <ImageView
                     android:id="@+id/ivTempTitle"
@@ -207,7 +207,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="12.5°C"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvMaxTempTitle"
                     app:layout_constraintTop_toTopOf="@id/tvMaxTempTitle" />
 
@@ -219,7 +219,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="11.6°C"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvMinTempTitle"
                     app:layout_constraintTop_toTopOf="@id/tvMinTempTitle"/>
 
@@ -230,7 +230,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
+                android:paddingTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/temp_details"
                 tools:context=".ui.details.CurrentDetailsFragment">
@@ -239,7 +239,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="22dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:background="@color/light_grey"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvWindSpeed" />
@@ -310,7 +310,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="30km/h"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvWindSpeedTitle"
                     app:layout_constraintTop_toTopOf="@id/tvWindSpeedTitle" />
 
@@ -322,7 +322,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="45°"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@id/tvWindSpeed"
                     app:layout_constraintTop_toTopOf="@id/tvWindSpeedTitle"
                     android:layout_marginStart="36dp"/>
@@ -335,7 +335,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="N.E."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvDirectionTitle"
                     app:layout_constraintTop_toTopOf="@id/tvWindSpeedTitle" />
 
@@ -347,7 +347,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
+                android:paddingTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wind_details"
                 tools:context=".ui.details.CurrentDetailsFragment">
@@ -356,7 +356,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="22dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:background="@color/light_grey"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvProbability" />
@@ -415,7 +415,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="40%"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvProbabilityTitle"
                     app:layout_constraintTop_toTopOf="@id/tvProbabilityTitle" />
 
@@ -427,7 +427,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="4mm"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvSumTitle"
                     app:layout_constraintTop_toTopOf="@id/tvSumTitle" />
 
@@ -438,7 +438,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="20dp"
+                android:paddingTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/precipitation_details"
                 tools:context=".ui.details.CurrentDetailsFragment">
@@ -505,7 +505,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="06:49"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvSunriseTitle"
                     app:layout_constraintTop_toTopOf="@id/tvSunriseTitle" />
 
@@ -517,7 +517,7 @@
                     android:fontFamily="@font/fira_sans_medium"
                     android:text="19:28"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/tvSunsetTitle"
                     app:layout_constraintTop_toTopOf="@id/tvSunsetTitle" />
 
@@ -525,11 +525,11 @@
                     android:id="@+id/tvDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/fira_sans_extralight"
                     android:text="12 hrs 31 mins"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/ivSun"
                     app:layout_constraintEnd_toEndOf="@id/ivSun"
                     app:layout_constraintTop_toBottomOf="@id/ivSun" />

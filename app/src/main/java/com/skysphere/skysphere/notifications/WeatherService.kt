@@ -9,9 +9,11 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.ui.settings.SettingsFragment
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class WeatherService : Service() {
 
     @Inject
