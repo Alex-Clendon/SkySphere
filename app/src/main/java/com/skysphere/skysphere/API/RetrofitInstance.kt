@@ -27,5 +27,13 @@ object RetrofitInstance {
 
         return retrofit.create(WeatherAPI::class.java)
     }
+
+    val newsApi: NewsApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(NEWS_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NewsApiService::class.java)
+    }
 }
 

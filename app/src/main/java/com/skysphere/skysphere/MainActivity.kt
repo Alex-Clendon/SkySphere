@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import com.google.firebase.auth.FirebaseAuth
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     @Inject
     lateinit var viewModel: WeatherViewModel
@@ -75,6 +77,9 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -86,7 +91,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_locations,
                 R.id.nav_recommendations,
                 R.id.nav_login,
-                R.id.nav_logout
+                R.id.nav_logout,
+                R.id.nav_news,
+                R.id.nav_add_friend,
+                R.id.nav_friends_list
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -96,8 +104,10 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_logout -> {
-                    // Set login flag to false
+                    auth.signOut()
                     updateNavigationMenu(false)
+                    navController.navigate(R.id.nav_login)
+                    true
                     true // Indicate that the logout was handled
                 }
 
@@ -112,6 +122,7 @@ class MainActivity : AppCompatActivity() {
 
         // Set login flag to false
         updateNavigationMenu(false)
+        updateNavigationMenu(auth.currentUser != null)
 
         // Check for permissions and start notification service
         checkAndRequestNotificationPermission()

@@ -13,9 +13,21 @@
             android:icon="@drawable/location_on_24"
             android:title="@string/menu_locations" />
         <item
+            android:id="@+id/nav_news"
+            android:title="News"
+            android:icon="@drawable/baseline_newspaper_24"/>
+        <item
             android:id="@+id/nav_recommendations"
             android:icon="@drawable/baseline_lightbulb_24"
             android:title="@string/menu_recommendations" />
+        <item
+            android:id="@+id/nav_friends_list"
+            android:title="Friends"
+            android:icon="@drawable/baseline_people_24"/>
+        <item
+            android:id="@+id/nav_add_friend"
+            android:title="Add Friend"
+            android:icon="@drawable/baseline_person_add_24"/>
         <item
             android:id="@+id/nav_logout"
             android:title="Log Out"

@@ -1,6 +1,5 @@
-package com.skysphere.skysphere.ui
+package com.skysphere.skysphere.ui.userauthen
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,30 +11,30 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.UserData
-import com.skysphere.skysphere.ui.home.HomePageFragment
 
 class SignupFragment : Fragment() {
 
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseDatabase: FirebaseDatabase
-    private lateinit var databaseReference: DatabaseReference
+    private lateinit var usersRef: DatabaseReference
     private lateinit var signUpButton: Button
     private lateinit var signUpEmail: EditText
     private lateinit var signUpUsername: EditText
     private lateinit var signUpPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
 
         // Initialize firebase variables, table = "users"
+        firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
-        databaseReference = firebaseDatabase.reference.child("users")
+        usersRef = firebaseDatabase.reference.child("users")
     }
 
     override fun onCreateView(
@@ -56,9 +55,9 @@ class SignupFragment : Fragment() {
             val signUpPassword = signUpPassword.text.toString().trim()
             val signUpEmail = signUpEmail.text.toString().trim()
             // Check if data is not null
-            if (signUpUsername.isNotEmpty() && signUpPassword.isNotEmpty()) {
+            if (signUpEmail.isNotEmpty() && signUpUsername.isNotEmpty() && signUpPassword.isNotEmpty()) {
                 // Call registerUser if data is valid
-                registerUser(signUpEmail, signUpUsername, signUpPassword)
+                registerUser(signUpUsername, signUpEmail, signUpPassword)
             }
             else {
                 Toast.makeText(requireContext(), "All fields are mandatory", Toast.LENGTH_SHORT).show()
@@ -82,35 +81,31 @@ class SignupFragment : Fragment() {
         return view
     }
 
-    private fun registerUser(email: String, username: String, password: String) {
-        // Order database by username and compare data
-        databaseReference.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // If data doesn't already exist in the table, store the values
-                if(!dataSnapshot.exists()) {
-                    val id = databaseReference.push().key
-                    val userData = UserData(id, email, username, password)
-                    databaseReference.child(id!!).setValue(userData)
+    private fun registerUser(username: String, email: String, password: String) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Sign up success, update UI with the signed-in user's information
+                    val user = firebaseAuth.currentUser
+                    val userId = user?.uid ?: return@addOnCompleteListener
+
+                    // Save additional user info to Realtime Database
+                    val userData = UserData(userId, email, username, password)
+                    usersRef.child(userId).setValue(userData)
+
                     Toast.makeText(requireContext(), "Successfully Registered!", Toast.LENGTH_SHORT).show()
-                    // Set actionbar title to Log In
-                    (activity as AppCompatActivity?)!!.supportActionBar!!.title =
-                        "Log In"
-                    // Swap fragment to log in fragment
-                    val navController = findNavController()
-                    navController.popBackStack()
-                    // Use NavController to navigate to HomeFragment
-                    navController.navigate(R.id.nav_home)
-                    return
-                }
-                // If data already exists, pop a message instead
-                else {
-                    Toast.makeText(requireContext(), "User already exists", Toast.LENGTH_SHORT).show()
+
+                    // Update login status
+                    (activity as? MainActivity)?.updateNavigationMenu(true)
+
+                    // Navigate to Home
+                    findNavController().navigate(R.id.nav_home)
+                    (activity as AppCompatActivity?)?.supportActionBar?.title = "Home"
+                } else {
+                    // If sign up fails, display a message to the user.
+                    Toast.makeText(requireContext(), "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-            // Handle database error
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(requireContext(), "Database Error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
+
 }

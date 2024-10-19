@@ -57,6 +57,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.libraries.places:places:3.5.0")
     implementation(libs.firebase.database)
+    implementation(libs.androidx.junit.ktx)
+    implementation ("com.firebaseui:firebase-ui-database:8.0.0")
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.cardview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,12 +72,31 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation("com.google.android.material:material:1.9.0")
     implementation(libs.androidx.work.runtime.ktx)
-
     // JSON Serialization dependencies
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation ("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
     implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
     implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+
+    implementation(libs.androidx.swiperefreshlayout)
+
+    androidTestImplementation("junit:junit:4.13.2'")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    debugImplementation("androidx.fragment:fragment-testing:1.4.1")
+    androidTestImplementation("org.mockito:mockito-core:3.12.4")
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.3.6")
+
+    testImplementation ("org.mockito:mockito-core:3.12.4")
+    testImplementation ("org.mockito:mockito-inline:3.11.2")
+    testImplementation ("androidx.test:core:1.5.0")
+    testImplementation ("androidx.test.ext:junit:1.1.5")
+    testImplementation ("androidx.fragment:fragment-testing:1.5.5")
+    testImplementation ("androidx.test:runner:1.5.2")
+    testImplementation ("org.robolectric:robolectric:4.9")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
 
     // Coroutines dependency
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")

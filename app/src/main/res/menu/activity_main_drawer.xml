@@ -13,6 +13,10 @@
             android:icon="@drawable/location_on_24"
             android:title="@string/menu_locations" />
         <item
+            android:id="@+id/nav_news"
+            android:title="News"
+            android:icon="@drawable/baseline_newspaper_24"/>
+        <item
             android:id="@+id/nav_recommendations"
             android:icon="@drawable/baseline_lightbulb_24"
             android:title="@string/menu_recommendations" />
@@ -20,5 +24,6 @@
             android:id="@+id/nav_login"
             android:title="Log In"
             android:icon="@drawable/user_icon"/>
+
     </group>
 </menu>
