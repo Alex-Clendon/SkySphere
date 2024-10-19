@@ -37,6 +37,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import com.airbnb.lottie.LottieAnimationView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -54,6 +56,7 @@ import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -189,8 +192,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
@@ -296,18 +297,20 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
     private fun refreshWeather() {
-        val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.LINEAR,
-                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-            )
+        val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+            repeatInterval = 90,    // Set worker interval to 90 minutes
+            repeatIntervalTimeUnit = TimeUnit.MINUTES,
+        ).setBackoffCriteria(
+            backoffPolicy = BackoffPolicy.LINEAR,
+            duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+        )
             .build()
 
         val workManager = WorkManager.getInstance(requireContext())
 
-        workManager.enqueueUniqueWork(
+        workManager.enqueueUniquePeriodicWork(
             "WeatherUpdateWork",
-            ExistingWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.REPLACE,
             workRequest
         )
         settingsManager.saveFirstOpened(false)
@@ -497,6 +500,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
     override fun onStart() {
         super.onStart()
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
         setData()
     }
 

@@ -336,8 +336,6 @@ class SettingsFragment : Fragment() {
     // Change colors back when destroyed
     override fun onDestroyView() {
         super.onDestroyView()
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
         val actionBar = (activity as? AppCompatActivity)?.supportActionBar
         actionBar?.setBackgroundDrawable(
             ColorDrawable(

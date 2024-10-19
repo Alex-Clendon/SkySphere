@@ -79,21 +79,22 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-
-
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // Initialize settings button
         val settingsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.settingsButton)
         settingsButton.setOnClickListener {
-            // Navigate to the fragment
+            // Navigate to the settings
             navController.navigate(R.id.nav_settings)
         }
+
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
