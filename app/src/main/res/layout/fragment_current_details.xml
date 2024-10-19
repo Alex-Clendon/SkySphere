@@ -54,6 +54,7 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="16dp"
+                    app:lottie_loop="true"
                     app:layout_constraintStart_toStartOf="@id/tvWeatherTitle"
                     app:layout_constraintTop_toBottomOf="@id/tvWeatherTitle"
                     tools:src="@tools:sample/avatars" />
@@ -542,6 +543,7 @@
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     tools:src="@tools:sample/avatars"
+                    app:lottie_loop="true"
                     app:layout_constraintTop_toBottomOf="@id/ivSunTitle"
                     app:layout_constraintStart_toStartOf="@id/ivSunTitle"
                     android:layout_marginTop="16dp"/>

@@ -87,7 +87,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     private lateinit var lastUpdatedText: TextView
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
-    private lateinit var settingsButton: ImageButton
     private lateinit var hourlyCardView: CardView
     private lateinit var dailyCardView: CardView
     private lateinit var currentLocationButton: ImageButton
@@ -205,7 +204,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
         textToSpeechBtn = view.findViewById(R.id.ttsBtn)
-        settingsButton = view.findViewById(R.id.settingsButton)
         lastUpdatedText = view.findViewById(R.id.tvLastUpdated)
         hourlyCardView = view.findViewById(R.id.cvHourly)
         dailyCardView = view.findViewById(R.id.daily_card)
@@ -220,10 +218,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         upperRegion.setOnClickListener {
             val navController = findNavController()
             navController.navigate(R.id.action_nav_current_details)
-        }
-        settingsButton.setOnClickListener {
-            val navController = findNavController()
-            navController.navigate(R.id.action_settings)
         }
 
         // Play card view animation if required

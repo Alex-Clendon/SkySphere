@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -77,6 +79,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+
+
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
@@ -85,6 +89,11 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        val settingsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.settingsButton)
+        settingsButton.setOnClickListener {
+            // Navigate to the fragment
+            navController.navigate(R.id.nav_settings)
+        }
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
