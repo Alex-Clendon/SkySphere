@@ -51,21 +51,20 @@
             app:layout_constraintEnd_toStartOf="@id/textViewPrecipitation"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/imageViewWeather"
             android:layout_width="33dp"
             android:layout_height="33dp"
-            android:src="@drawable/ic_sunny"
+            app:lottie_loop="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="@id/textViewTemp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="120dp"/>
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/imageView2"
             android:layout_width="33dp"
             android:layout_height="33dp"
-            android:src="@drawable/night"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageViewWeather"
             app:layout_constraintBottom_toBottomOf="parent"
