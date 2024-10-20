@@ -17,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 
 class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recommendations) {
 
@@ -28,6 +30,10 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
     private lateinit var updateButton: Button
     private lateinit var toggleIndoor: ToggleButton
     private lateinit var toggleOutdoor: ToggleButton
+    private lateinit var questionInput: TextInputLayout
+    private lateinit var askQuestionButton: Button
+    private lateinit var answerTextView: TextView
+
 
     // User preference for activities (indoor, outdoor, or both)
     private var preference: String = "both"
@@ -46,9 +52,13 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         updateButton = view.findViewById(R.id.btnUpdateRecommendations)
         toggleIndoor = view.findViewById(R.id.toggleIndoor)
         toggleOutdoor = view.findViewById(R.id.toggleOutdoor)
+        questionInput = view.findViewById(R.id.questionInput)
+        askQuestionButton = view.findViewById(R.id.askQuestionButton)
+        answerTextView = view.findViewById(R.id.answerTextView)
 
         // Set up listeners
         updateButton.setOnClickListener { updateRecommendations() }
+        askQuestionButton.setOnClickListener { askWeatherQuestion() }
 
         // Set up toggle buttons for preference
         setupToggleButtons()
@@ -193,6 +203,63 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
             putString("last_updated", lastUpdated)
             apply()
         }
+    }
+
+    // Function to handle weather questions
+    private fun askWeatherQuestion() {
+        val question = questionInput.editText?.text.toString()
+        if (question.isNotEmpty()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    // Disable button to prevent multiple requests
+                    askQuestionButton.isEnabled = false
+                    // Get AI answer in background thread
+                    val answer = withContext(Dispatchers.IO) {
+                        getAIAnswer(question)
+                    }
+                    // Update UI with the answer
+                    updateAnswerUI(answer)
+                } catch (e: Exception) {
+                    updateAnswerUI("Sorry, I couldn't generate an answer. Please try again.")
+                } finally {
+                    // Re-enable button
+                    askQuestionButton.isEnabled = true
+                }
+            }
+        }
+    }
+
+    // Function to get AI-generated answer for user's question
+    private suspend fun getAIAnswer(question: String): String {
+        // Getting weather values from the main fragment via SharedPreferences
+        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
+        val temperature = sharedPrefs.getFloat("temperature_celsius", 0f)
+        val weatherCode = sharedPrefs.getInt("weather_code", 0)
+        val currentTime = sharedPrefs.getString("current_time", null)
+        val weatherType = WeatherType.fromWMO(weatherCode)
+
+        // Making prompt for AI model
+        val prompt = """
+        Given the following weather conditions and time of day:
+        - Temperature: $temperature°C
+        - Weather: ${weatherType.weatherDesc}
+        - Current time: $currentTime
+
+
+        Please answer the following question about the weather:
+        $question
+        
+        Provide a concise and helpful answer, including time as a factor, Do not answer questions that do not relate to weather
+        """.trimIndent()
+
+        // Generate content using the GeminiAI model
+        val response: GenerateContentResponse = generativeModel.generateContent(prompt)
+        return response.text ?: "I'm sorry, I couldn't generate an answer."
+    }
+
+    // Function to update UI with AI's answer
+    private fun updateAnswerUI(answer: String) {
+        answerTextView.text = answer
     }
 
 

@@ -130,6 +130,44 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/white" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ask a Weather-Related Question"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/questionInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/askQuestionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ask Question"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/answerTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="16dp" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
