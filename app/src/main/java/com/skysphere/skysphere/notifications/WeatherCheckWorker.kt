@@ -69,7 +69,7 @@ class WeatherCheckWorker @AssistedInject constructor(
 
     // Check if the weather code is one of the severe codes.
     private fun isSevereWeather(weatherData: WeatherResults?): Boolean {
-        val severeWeatherCodes = listOf(95, 96, 99) // Thunderstorm codes
+        val severeWeatherCodes = listOf(95, 96, 99, 0, 1, 2, 3) // Thunderstorm codes
         return weatherData?.current?.weatherCode in severeWeatherCodes
     }
 }
