@@ -7,7 +7,6 @@ import androidx.hilt.work.HiltWorker
 import androidx.lifecycle.Observer
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.skysphere.skysphere.GPSManager
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.weather.WeatherResults
@@ -40,9 +39,6 @@ class WeatherCheckWorker @AssistedInject constructor(
         viewModel.weatherResults.observeForever(observer)
 
         try {
-            // Get the current location
-            val gpsManager = GPSManager(applicationContext)
-
             // Trigger fetching weather data
             viewModel.fetchWeatherData() // This will update the LiveData
 
