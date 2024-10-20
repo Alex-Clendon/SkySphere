@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/msgProfileImage"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_person_24"
+        android:background="@drawable/friend_search"/>
+
+    <TextView
+        android:id="@+id/receiverMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/msgProfileImage"
+        android:background="@drawable/msg_receiver_text_background"
+        android:text="Reciever message"
+        android:textColor="@color/white"
+        android:padding="9dp"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/senderMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentTop="@+id/receiverMsg"
+        android:background="@drawable/msg_sender_text_background"
+        android:text="Sender message"
+        android:textColor="@color/white"
+        android:padding="9dp"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+
+</RelativeLayout>
