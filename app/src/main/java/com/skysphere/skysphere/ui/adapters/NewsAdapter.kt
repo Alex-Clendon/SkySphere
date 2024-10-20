@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.ui.news
+package com.skysphere.skysphere.ui.adapters
 
 import android.content.Intent
 import android.net.Uri

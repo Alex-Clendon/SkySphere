@@ -1,29 +1,14 @@
 package com.skysphere.skysphere.API
 
+/*
+    Seperate data class exclusively for the widget, as it has not been overhauled
+ */
 data class WeatherData(
-    val current: Current,
-    val daily: Daily,
-    val hourly: Hourly
+    val current: Current
 
 )
 
 data class Current(
-    val time: String,
     val weather_code: Int,
-    val temperature_2m: Double,
-    val apparent_temperature: Double
-)
-
-data class Daily(
-    val weather_code: List<Int>,
-    val temperature_2m_max: List<Double>,
-    val temperature_2m_min: List<Double>,
-    val time: List<String>
-)
-
-data class Hourly(
-    val wind_speed_10m: List<Double>,
-    val wind_direction_10m: List<Double>,
-    val wind_gusts_10m: List<Double>,
-    val temperature_2m: List<Double>,
+    val temperature_2m: Double
 )
