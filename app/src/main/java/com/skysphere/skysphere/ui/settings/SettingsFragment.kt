@@ -265,7 +265,7 @@ class SettingsFragment : Fragment() {
                 if (checkNotificationPermission()) {
                     settingsManager.saveNotificationPreference(
                         RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, true)
-                    // TODO enable rain forecast notifications
+                    WeatherService.startWeatherMonitoring(requireContext())
                 } else {
                     // Uncheck the box if permission is not granted
                     rainForecastCheckBox.isChecked = false
@@ -277,7 +277,7 @@ class SettingsFragment : Fragment() {
                 }
             } else {
                 settingsManager.saveNotificationPreference(RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, false)
-                // TODO disable rain forecast notifications
+                WeatherService.stopWeatherMonitoring(requireContext())
             }
         }
 
