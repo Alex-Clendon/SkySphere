@@ -2,7 +2,9 @@ package com.skysphere.skysphere.ui.location
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -39,6 +41,7 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -67,28 +70,40 @@ class LocationsFragment : Fragment() {
 
         // Initialize the RecyclerView and Adapter
         locationsAdapter = LocationsAdapter { location ->
-            // Handle the on-click
-            settingsManager.saveLocation(location.latitude, location.longitude, location.area)
+            // Check if there is an internet connection
+            val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork = connectivityManager.activeNetworkInfo
+            val isConnected = activeNetwork?.isConnectedOrConnecting == true
 
-            val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
-                repeatInterval = 90,    // Set worker interval to 90 minutes
-                repeatIntervalTimeUnit = TimeUnit.MINUTES,
-            ).setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.LINEAR,
-                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-            )
-                .build()
+            if (!isConnected) {
+                // Show a Snackbar if there is no internet connection
+                Snackbar.make(binding.root, "Network Unavailable", Snackbar.LENGTH_LONG).show()
+            } else {
+                // Handle the on-click action if internet is available
+                settingsManager.saveLocation(location.latitude, location.longitude, location.area)
 
-            val workManager = WorkManager.getInstance(requireContext())
+                val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+                    repeatInterval = 90,    // Set worker interval to 90 minutes
+                    repeatIntervalTimeUnit = TimeUnit.MINUTES,
+                ).setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+                )
+                    .build()
 
-            workManager.enqueueUniquePeriodicWork(
-                "WeatherUpdateWork",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
-            updateWidget()
+                val workManager = WorkManager.getInstance(requireContext())
+
+                workManager.enqueueUniquePeriodicWork(
+                    "WeatherUpdateWork",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+
+                Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
+                updateWidget()
+            }
         }
+
 
         binding.locationsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)

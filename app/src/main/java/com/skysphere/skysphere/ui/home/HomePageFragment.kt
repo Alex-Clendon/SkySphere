@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.FrameLayout
@@ -46,6 +47,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.material.snackbar.Snackbar
 import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
@@ -293,6 +295,16 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
     private fun refreshWeather() {
+
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        val isConnected = activeNetwork?.isConnectedOrConnecting == true
+
+        if (!isConnected) {
+            // Show a Snackbar if there is no internet connection
+            view?.let { Snackbar.make(it, "Network Unavailable", Snackbar.LENGTH_LONG).show() }
+        }
+
         val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
             repeatInterval = 90,    // Set worker interval to 90 minutes
             repeatIntervalTimeUnit = TimeUnit.MINUTES,
