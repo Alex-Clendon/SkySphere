@@ -1,5 +1,8 @@
 package com.skysphere.skysphere.view_models
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skysphere.skysphere.data.entities.locations.LocationEntity
@@ -9,15 +12,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LocationViewModel@Inject constructor(
+class LocationViewModel @Inject constructor(
     private val locationRepository: LocationRepository
-): ViewModel() {
+) : ViewModel() {
+
+    private val _locations = MutableLiveData<List<LocationEntity>>()
+    val locations: LiveData<List<LocationEntity>> = _locations
 
     // Fetch all locations
-    fun fetchLocations(callback: (List<LocationEntity>) -> Unit) {
+    fun fetchLocations() {
         viewModelScope.launch {
-            val locations = locationRepository.getAllLocations()
-            callback(locations)
+            val locationsList = locationRepository.getAllLocations()
+            _locations.postValue(locationsList) // Update LiveData
         }
     }
 }
+

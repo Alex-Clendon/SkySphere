@@ -8,7 +8,9 @@ import com.skysphere.skysphere.data.dao.weather.CurrentWeatherDao
 import com.skysphere.skysphere.data.dao.weather.DailyWeatherDao
 import com.skysphere.skysphere.data.dao.weather.HourlyWeatherDao
 import com.skysphere.skysphere.data.databases.locations.LocationDatabase
+import com.skysphere.skysphere.data.repositories.LocationRepository
 import com.skysphere.skysphere.data.repositories.WeatherRepository
+import com.skysphere.skysphere.view_models.LocationViewModel
 import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.Module
 import dagger.Provides
@@ -37,6 +39,14 @@ object NetworkModule {
         weatherRepository: WeatherRepository
     ): WeatherViewModel {
         return WeatherViewModel(weatherRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationViewModel(
+        locationRepository: LocationRepository
+    ): LocationViewModel {
+        return LocationViewModel(locationRepository)
     }
 
     @Provides
