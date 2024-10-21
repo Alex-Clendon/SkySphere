@@ -3,6 +3,7 @@ package com.skysphere.skysphere.ui.location
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.skysphere.skysphere.R
@@ -38,7 +40,8 @@ import java.util.concurrent.TimeUnit
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-@AndroidEntryPoint // This annotation enables Hilt's dependency injection in this Fragment
+@AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.O)
 class LocationsFragment : Fragment() {
 
     private var _binding: FragmentLocationsBinding? = null
@@ -105,9 +108,39 @@ class LocationsFragment : Fragment() {
                 val position = viewHolder.adapterPosition
                 val location = locationsAdapter.getLocationAt(position)
                 lifecycleScope.launch {
+                    val locations = locationRepository.getAllLocations() // Fetch current list of locations
+
+                    if (settingsManager.getCustomLocation() == location.area) {
+                        // If there are exactly 2 locations, delete the swiped one and update settings with the remaining location
+                        locationRepository.deleteLocation(location.area)
+                        val remainingLocation = locations.firstOrNull { it.id != location.id } // Get the remaining location
+                        remainingLocation?.let {
+                            settingsManager.saveLocation(it.latitude, it.longitude, it.area)
+                            val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+                                repeatInterval = 90,    // Set worker interval to 90 minutes
+                                repeatIntervalTimeUnit = TimeUnit.MINUTES,
+                            ).setBackoffCriteria(
+                                backoffPolicy = BackoffPolicy.LINEAR,
+                                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+                            )
+                                .build()
+
+                            val workManager = WorkManager.getInstance(requireContext())
+
+                            workManager.enqueueUniquePeriodicWork(
+                                "WeatherUpdateWork",
+                                ExistingPeriodicWorkPolicy.REPLACE,
+                                workRequest
+                            )
+
+                        }
+                        locationViewModel.fetchLocations() // Refresh the list of locations
+                    } else {
+                        // Otherwise, delete the location normally
                         locationRepository.deleteLocation(location.area)
                         locationViewModel.fetchLocations()
-                        }
+                    }
+                }
             }
         })
 

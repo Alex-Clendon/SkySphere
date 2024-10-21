@@ -61,6 +61,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.O)
 class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefreshLayout.OnRefreshListener {
 
     /*
@@ -224,7 +225,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
         // Play card view animation if required
         var isFirstOpen = settingsManager.isFirstOpened()
-        Log.d("FirstOpened", "${isFirstOpen}")
         if (!isFirstOpen) {
             fadeInCardViews(listOf(hourlyCardView, dailyCardView))
         }
@@ -259,12 +259,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
             textToSpeechDialog()
         }
 
-        currentLocationButton.setOnClickListener {
-            getLocation()
-            refreshWeather()
-            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
-        }
-
+        getLocation()
 
         return view
     }
@@ -400,10 +395,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         gpsManager.getCurrentLocation(this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?, country: String?) {
-        locationTextView.text = locality ?: "Unknown Location"
-        saveLocationToPrefs(latitude, longitude) // Save location to SharedPreferences
         viewLifecycleOwner.lifecycleScope.launch {
             locationRepository.saveCurrentLocation(locality, country, latitude, longitude)
         }

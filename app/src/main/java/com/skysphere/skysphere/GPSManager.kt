@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.Locale
@@ -56,14 +55,8 @@ class GPSManager(private val context: Context) {
 
                         // String Falls back to the next option if the current one is unavailable.
                     val addressDetails = sublocality ?: locality ?: adminArea ?: country ?: "Unknown Location"
-                    val sharedPrefs = context.getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
-                    with(sharedPrefs.edit()) {
-                        putFloat("latitude", location.latitude.toFloat())
-                        putFloat("longitude", location.longitude.toFloat())
-                        putString("place_name", addressDetails)
-                        apply()
-                    }
                     callback.onLocationRetrieved(location.latitude, location.longitude, addressDetails, country)
+                    Log.d("CURRENTLOCATIONDEBUG", "RETRIEVED")
                 }
                 else
                 {
