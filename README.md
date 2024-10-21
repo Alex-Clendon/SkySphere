@@ -39,10 +39,12 @@ Make sure you have the following before using SkySphere:
 
 ## 🔧 **Installation**
 **Clone Repository**
+
 Clone the repository onto Android Studio:
 When you open Android Studio you should see a screen that says Welcome to Android Studio. From there around the top right, it should have three options at the top “New Project”, “Open”, “Get from VCS”. Click on “Get from VCS” and paste the link to the GitHub **https://github.com/Alex-Clendon/SkySphere** from there you should be able to clone the repo.
 
 **Running SkySphere**
+
 From there you are going to want to sync the project with the Gradle files. This can be done by clicking on **File > Sync Project with Gradle Files**. Once the Gradle has been synced, you can now run and build SkySphere on either your personal device or emulator.
 
 ------------------------------------------------------------------------------------------------------------------------
