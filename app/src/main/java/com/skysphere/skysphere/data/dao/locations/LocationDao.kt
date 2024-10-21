@@ -16,6 +16,9 @@ interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: LocationEntity)
 
+    @Query("SELECT * FROM locations WHERE area = :areaName LIMIT 1")
+    suspend fun getLocationByName(areaName: String): LocationEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCurrentLocation(
         area: String,
@@ -40,4 +43,8 @@ interface LocationDao {
     // Delete a location by ID
     @Delete
     suspend fun deleteLocation(location: LocationEntity)
+
+    @Query("DELETE FROM locations WHERE area = :areaName")
+    suspend fun deleteLocationByName(areaName: String)
+
 }
