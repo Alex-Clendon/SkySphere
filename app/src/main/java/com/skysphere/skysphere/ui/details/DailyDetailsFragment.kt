@@ -10,8 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.WeatherViewModel
-import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.view_models.WeatherViewModel
+import com.skysphere.skysphere.data.WeatherResults
 import com.skysphere.skysphere.databinding.FragmentDailyDetailsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

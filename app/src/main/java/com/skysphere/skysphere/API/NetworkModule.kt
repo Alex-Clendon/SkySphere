@@ -2,12 +2,14 @@ package com.skysphere.skysphere.API
 
 import android.content.Context
 import androidx.room.Room
-import com.skysphere.skysphere.WeatherViewModel
-import com.skysphere.skysphere.data.WeatherDatabase
-import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.data.dao.CurrentWeatherDao
-import com.skysphere.skysphere.data.dao.DailyWeatherDao
-import com.skysphere.skysphere.data.dao.HourlyWeatherDao
+import com.skysphere.skysphere.data.dao.locations.LocationDao
+import com.skysphere.skysphere.data.databases.weather.WeatherDatabase
+import com.skysphere.skysphere.data.dao.weather.CurrentWeatherDao
+import com.skysphere.skysphere.data.dao.weather.DailyWeatherDao
+import com.skysphere.skysphere.data.dao.weather.HourlyWeatherDao
+import com.skysphere.skysphere.data.databases.locations.LocationDatabase
+import com.skysphere.skysphere.data.repositories.WeatherRepository
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,5 +65,21 @@ object NetworkModule {
     @Singleton
     fun provideDailyWeatherDao(db: WeatherDatabase): DailyWeatherDao {
         return db.dailyWeatherDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDatabase(@ApplicationContext appContext: Context): LocationDatabase {
+        return Room.databaseBuilder(
+            appContext,
+            LocationDatabase::class.java,
+            "location_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(db: LocationDatabase): LocationDao {
+        return db.locationDao()
     }
 }

@@ -18,7 +18,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.notifications.WeatherService
 import dagger.hilt.android.AndroidEntryPoint

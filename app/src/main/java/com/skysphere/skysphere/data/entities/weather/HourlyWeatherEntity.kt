@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.data.entities
+package com.skysphere.skysphere.data.entities.weather
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -33,8 +33,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.BackoffPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -47,11 +45,11 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
-import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.data.repositories.WeatherRepository
+import com.skysphere.skysphere.data.WeatherResults
 import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint

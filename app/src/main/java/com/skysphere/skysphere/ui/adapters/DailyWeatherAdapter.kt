@@ -3,13 +3,11 @@ package com.skysphere.skysphere.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
-import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.data.weather.WeatherDaily
+import com.skysphere.skysphere.data.WeatherDaily
 
 /*
     Adapter class to intialize daily recycler view

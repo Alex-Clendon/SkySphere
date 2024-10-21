@@ -6,9 +6,9 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
-import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.data.WeatherResults
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject

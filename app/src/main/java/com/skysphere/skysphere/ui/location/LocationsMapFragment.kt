@@ -28,10 +28,10 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.WeatherViewModel
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
-import com.skysphere.skysphere.data.WeatherRepository
+import com.skysphere.skysphere.data.repositories.WeatherRepository
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration

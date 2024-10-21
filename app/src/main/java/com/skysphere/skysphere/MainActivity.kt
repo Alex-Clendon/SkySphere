@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -29,6 +28,7 @@ import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.util.concurrent.TimeUnit

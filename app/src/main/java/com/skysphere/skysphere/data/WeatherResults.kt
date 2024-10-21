@@ -1,4 +1,4 @@
-package com.skysphere.skysphere.data.weather
+package com.skysphere.skysphere.data
 
 import com.skysphere.skysphere.API.WeatherType
 
