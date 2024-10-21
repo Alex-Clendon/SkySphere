@@ -39,7 +39,7 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
     private var preference: String = "both"
 
     // Initialize AI model for generating recommendations
-    private val generativeModel = GenerativeModel(modelName = "gemini-pro", apiKey = "AIzaSyAJLOJbXHdCNS72X78uPi_If92bCAsAhgQ")
+    private lateinit var generativeModel: GenerativeModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,6 +55,10 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         questionInput = view.findViewById(R.id.questionInput)
         askQuestionButton = view.findViewById(R.id.askQuestionButton)
         answerTextView = view.findViewById(R.id.answerTextView)
+
+        // Initialize model with API key from resources
+        val apiKey = getString(R.string.gemini_api_key)
+        generativeModel = GenerativeModel(modelName = "gemini-pro", apiKey = apiKey)
 
         // Set up listeners
         updateButton.setOnClickListener { updateRecommendations() }
