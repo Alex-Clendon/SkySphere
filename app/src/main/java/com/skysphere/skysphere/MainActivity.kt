@@ -232,7 +232,7 @@ class MainActivity : AppCompatActivity() {
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
 
     //Code for getting calendar permissions
-    val CALENDAR_PERMISSIONS_REQUEST_CODE = 100
+    private val CALENDAR_PERMISSIONS_REQUEST_CODE = 100
 
     //Checks to see if notification permissions are granted and start weather service if they are.
     private fun checkAndRequestNotificationPermission() {
@@ -256,7 +256,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Checks to see if calendar permissions are granted and start weather fetching and adding events to calendar if they are.
-    fun checkCalendarPermissions() {
+    private fun checkCalendarPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
 
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Method for adding weather data to the calendar as an event
-    fun addWeatherEvent(title: String, description: String, startTime: Long, endTime: Long, calendarId: Long) {
+    private fun addWeatherEvent(title: String, description: String, startTime: Long, endTime: Long, calendarId: Long) {
         val values = ContentValues().apply {
             put(CalendarContract.Events.TITLE, title)
             put(CalendarContract.Events.DESCRIPTION, description)
@@ -327,7 +327,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Method of retrieving the calendar id
-    fun getCalendarId(): Long? {
+    private fun getCalendarId(): Long? {
         val projection = arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.ACCOUNT_NAME)
         val uri = CalendarContract.Calendars.CONTENT_URI
         val cursor = contentResolver.query(uri, projection, null, null, null)
