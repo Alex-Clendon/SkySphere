@@ -62,10 +62,10 @@ class SettingsManager @Inject constructor(
         return locationPreferences.getString("place_name", "Custom Location")
     }
 
-    fun saveLocation(latLng: LatLng, location: String?) {
+    fun saveLocation(latitude: Double, longitude: Double, location: String?) {
         val editor = locationPreferences.edit()
-        editor.putFloat("latitude", latLng.latitude.toFloat())
-        editor.putFloat("longitude", latLng.longitude.toFloat())
+        editor.putFloat("latitude", latitude.toFloat())
+        editor.putFloat("longitude", longitude.toFloat())
         editor.putString("place_name", location)
         editor.apply()
     }

@@ -40,18 +40,10 @@ class LocationRepository @Inject constructor(
     // Fetch all locations
     suspend fun getAllLocations(): List<LocationEntity> {
         val list = locationDao.getAllLocations()
-        val list2 = list.sortedBy { if (it.id == 0) -1 else it.id }
-
-        Log.d("LOCATIONDEBUG", "${list2}")
-        return list2
+        return list.sortedBy { if (it.id == 0) -1 else it.id }
     }
 
-    // Delete a location
-    suspend fun deleteLocation(location: LocationEntity) {
-        locationDao.deleteLocation(location)
-    }
-
-    suspend fun deleteLocationByArea(area: String) {
+    suspend fun deleteLocation(area: String) {
         locationDao.deleteLocationByName(area)
     }
 

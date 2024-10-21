@@ -11,9 +11,11 @@ import com.skysphere.skysphere.data.entities.locations.LocationEntity
 /*
     Adapter class to intialize locations recycler view
  */
-class LocationsAdapter: RecyclerView.Adapter<LocationsAdapter.LocationsViewHolder>() {
+class LocationsAdapter(
+    private var locationsList: List<LocationEntity> = emptyList(),
+    private val onItemClicked: (LocationEntity) -> Unit
+): RecyclerView.Adapter<LocationsAdapter.LocationsViewHolder>() {
 
-    private var locationsList: List<LocationEntity> = emptyList()
 
     inner class LocationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -24,8 +26,11 @@ class LocationsAdapter: RecyclerView.Adapter<LocationsAdapter.LocationsViewHolde
         fun bind(location: LocationEntity) {
             areaTextView.text = location.area
             countryTextView.text = location.country
-        }
 
+            itemView.setOnClickListener {
+                onItemClicked(location)
+            }
+        }
     }
 
     // ViewHolder to hold the views for each row
