@@ -24,10 +24,9 @@
     <string name="Millimeters">mm</string>
     <string name="Inches">in</string>
     <string name="Notifications">Notifications</string>
-    <string name="Weather_Refresh">Weather Refresh</string>
+    <string name="Rain_Notification">Rain Notifications [Currently Unavailable]</string>
     <string name="Severe_Weather_Warnings">Severe Weather Warnings</string>
-    <string name="Rain_Alerts">Rain Alerts</string>
-    <string name="Daily_Summary">Daily Summary</string>
+    <string name="Daily_Summary">Daily Summary [Currently Unavailable]</string>
     <string name="menu_home">Home</string>
     <string name="FeelsLikeTemperature">Feels Like Temperature</string>
     <string name="menu_locations">Locations</string>

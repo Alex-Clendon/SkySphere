@@ -331,11 +331,11 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <CheckBox
-                android:id="@+id/weather_refresh"
+                android:id="@+id/rain_notifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="@string/Weather_Refresh"
+                android:text="@string/Rain_Notification"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/text_Notifications"
                 app:layout_constraintTop_toBottomOf="@id/text_Notifications" />
@@ -346,17 +346,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Severe_Weather_Warnings"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@id/weather_refresh"
-                app:layout_constraintTop_toBottomOf="@id/weather_refresh" />
-
-            <CheckBox
-                android:id="@+id/rain_alerts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Rain_Alerts"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@id/severe_weather_warnings"
-                app:layout_constraintTop_toBottomOf="@id/severe_weather_warnings" />
+                app:layout_constraintStart_toStartOf="@id/rain_notifications"
+                app:layout_constraintTop_toBottomOf="@id/rain_notifications" />
 
             <CheckBox
                 android:id="@+id/daily_summary"
@@ -364,8 +355,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Daily_Summary"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@id/rain_alerts"
-                app:layout_constraintTop_toBottomOf="@id/rain_alerts" />
+                app:layout_constraintStart_toStartOf="@id/severe_weather_warnings"
+                app:layout_constraintTop_toBottomOf="@id/severe_weather_warnings" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
