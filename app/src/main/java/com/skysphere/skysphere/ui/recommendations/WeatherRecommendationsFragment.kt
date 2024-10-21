@@ -1,193 +1,270 @@
 package com.skysphere.skysphere.ui.recommendations
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
-import com.skysphere.skysphere.R
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.skysphere.skysphere.API.WeatherType
+import com.skysphere.skysphere.R
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
+import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 
-@RequiresApi(Build.VERSION_CODES.O)
-class WeatherRecommendationsFragment : Fragment() {
+class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recommendations) {
 
-    private lateinit var recommendationsTextView: TextView
+    // UI components
+    private lateinit var currentWeatherTextView: TextView
+    private lateinit var activityRecommendationsTextView: TextView
+    private lateinit var clothingRecommendationsTextView: TextView
     private lateinit var lastUpdatedTextView: TextView
+    private lateinit var updateButton: Button
+    private lateinit var toggleIndoor: ToggleButton
+    private lateinit var toggleOutdoor: ToggleButton
+    private lateinit var questionInput: TextInputLayout
+    private lateinit var askQuestionButton: Button
+    private lateinit var answerTextView: TextView
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_weather_recommendations, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
-        //Initialize TextViews for displaying recommendations and last updated.
-        recommendationsTextView = view.findViewById(R.id.tvRecommendations)
-        lastUpdatedTextView = view.findViewById(R.id.tvLastUpdated)
-        return view
-    }
+    // User preference for activities (indoor, outdoor, or both)
+    private var preference: String = "both"
+
+    // Initialize AI model for generating recommendations
+    private lateinit var generativeModel: GenerativeModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateRecommendations()
+
+        // Initialize views
+        currentWeatherTextView = view.findViewById(R.id.tvCurrentWeather)
+        activityRecommendationsTextView = view.findViewById(R.id.tvActivityRecommendations)
+        clothingRecommendationsTextView = view.findViewById(R.id.tvClothingRecommendations)
+        lastUpdatedTextView = view.findViewById(R.id.tvLastUpdated)
+        updateButton = view.findViewById(R.id.btnUpdateRecommendations)
+        toggleIndoor = view.findViewById(R.id.toggleIndoor)
+        toggleOutdoor = view.findViewById(R.id.toggleOutdoor)
+        questionInput = view.findViewById(R.id.questionInput)
+        askQuestionButton = view.findViewById(R.id.askQuestionButton)
+        answerTextView = view.findViewById(R.id.answerTextView)
+
+        // Initialize model with API key from resources
+        val apiKey = getString(R.string.gemini_api_key)
+        generativeModel = GenerativeModel(modelName = "gemini-pro", apiKey = apiKey)
+
+        // Set up listeners
+        updateButton.setOnClickListener { updateRecommendations() }
+        askQuestionButton.setOnClickListener { askWeatherQuestion() }
+
+        // Set up toggle buttons for preference
+        setupToggleButtons()
+
+        // Load saved recommendations
+        loadSavedRecommendations()
     }
 
-    // Retrieve weather data from SharedPreferences and update UI with recommendations
+    // Setting up the indoor and outdoor preference buttons
+    private fun setupToggleButtons() {
+        toggleIndoor.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                toggleOutdoor.isChecked = false
+                preference = "indoor"
+            } else if (!toggleOutdoor.isChecked) {
+                preference = "both"
+            }
+        }
+
+        toggleOutdoor.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                toggleIndoor.isChecked = false
+                preference = "outdoor"
+            } else if (!toggleIndoor.isChecked) {
+                preference = "both"
+            }
+        }
+    }
+
+    // Function to load the saved recommendations from earlier session using sharedprefs, to save current recommendations and prevent automatically updating recommendations each time
+    private fun loadSavedRecommendations() {
+        val sharedPrefs = requireContext().getSharedPreferences("recommendations", Context.MODE_PRIVATE)
+        currentWeatherTextView.text = sharedPrefs.getString("current_weather", "")
+        activityRecommendationsTextView.text = sharedPrefs.getString("activities", "")
+        clothingRecommendationsTextView.text = sharedPrefs.getString("clothing", "")
+        lastUpdatedTextView.text = sharedPrefs.getString("last_updated", "")
+    }
+
+    // Function to update recommendations
     private fun updateRecommendations() {
+        // Getting weather values from the main fragment via SharedPreferences
         val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
-        val temperatureCelsius = sharedPrefs.getFloat("temperature_celsius", 0f)
+        val temperature = sharedPrefs.getFloat("temperature_celsius", 0f)
         val weatherCode = sharedPrefs.getInt("weather_code", 0)
-        val lastUpdated = sharedPrefs.getLong("last_updated", 0)
         val currentTime = sharedPrefs.getString("current_time", null)
 
-        val isDay = isDaytime(currentTime)
-        val recommendations = getRecommendations(temperatureCelsius.toDouble(), weatherCode, isDay)
-        recommendationsTextView.text = recommendations
+        // Disable update button after clicking to prevent multiple requests
+        updateButton.isEnabled = false
+
+        // Launch coroutine to perform AI request in the background
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val recommendations = withContext(Dispatchers.IO) {
+                    // Get AI recommendations on IO dispatcher
+                    getAIRecommendations(temperature, weatherCode, currentTime, preference)
+                }
+                // Update UI with new recommendations
+                updateUI(recommendations)
+            } catch (e: Exception) {
+                updateUIWithError(e.message ?: "An error occurred")
+            } finally {
+                // Re-enable update button after process
+                updateButton.isEnabled = true
+            }
+        }
+    }
+
+    // Function to get AI-generated recommendations based on weather conditions and user preferences
+    private suspend fun getAIRecommendations(temperature: Float, weatherCode: Int, currentTime: String?, preference: String): Recommendations {
+        // Get the weather type description from the weather code - thanks stephen
+        val weatherType = WeatherType.fromWMO(weatherCode)
+
+        // Making prompt for AI model
+        val prompt = """
+        Given the following weather conditions:
+        - Temperature: $temperature°C
+        - Weather: ${weatherType.weatherDesc}
+        - Current time: $currentTime
+        - User preference: $preference (indoor, outdoor, or both)
+
+        Please provide:
+        1. A brief description of the current weather, incorporating the provided weather description.
+        2. Three unique activity recommendations suitable for these conditions(temperature, weather, current time) and the user's preference.
+        3. Three clothing recommendations appropriate for this weather and the recommended activities.
+
+        Format your response as follows:
+
+        Current Weather: [Brief description incorporating ${weatherType.weatherDesc}]
+
+        Activity Recommendations:
+        1. [Activity 1]
+        2. [Activity 2]
+        3. [Activity 3]
+
+        Clothing Recommendations:
+        1. [Clothing item 1]
+        2. [Clothing item 2]
+        3. [Clothing item 3]
+    """.trimIndent()
+
+        // Generate content using the GeminiAI model
+        val response: GenerateContentResponse = generativeModel.generateContent(prompt)
+        val content = response.text ?: throw Exception("Unable to generate recommendations")
+
+        // Parse AI response into separate sections
+        val currentWeather = content.substringAfter("Current Weather:").substringBefore("Activity Recommendations:").trim()
+        val activities = content.substringAfter("Activity Recommendations:").substringBefore("Clothing Recommendations:").trim()
+        val clothing = content.substringAfter("Clothing Recommendations:").trim()
+
+        // Return Recommendations object with parsed data
+        return Recommendations(currentWeather, activities, clothing)
+    }
+
+    // Function to update the UI with new recommendations
+    private fun updateUI(recommendations: Recommendations) {
+        currentWeatherTextView.text = recommendations.currentWeather
+        activityRecommendationsTextView.text = recommendations.activities
+        clothingRecommendationsTextView.text = recommendations.clothing
 
         val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
-        val lastUpdatedStr = if (lastUpdated != 0L) {
-            "Last updated: ${dateFormat.format(Date(lastUpdated))}"
-        } else {
-            "Last updated: Unknown"
-        }
+        val lastUpdatedStr = "Last updated: ${dateFormat.format(Date())}"
         lastUpdatedTextView.text = lastUpdatedStr
+
+        // Save new recommendations
+        saveRecommendations(recommendations, lastUpdatedStr)
     }
 
-    // Check if it's currently daytime (between 6 AM and 6 PM)
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun isDaytime(timeString: String?): Boolean {
-        return try {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-            val dateTime = LocalDateTime.parse(timeString, formatter)
-            val hour = dateTime.hour
-            hour in 6..17
-        } catch (e: Exception) {
-            // If there is an error parsing the time, default to using time of local device
-            val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-            hour in 6..17
+    // Function to update the UI in case of error
+    private fun updateUIWithError(errorMessage: String) {
+        currentWeatherTextView.text = "Error: $errorMessage"
+        activityRecommendationsTextView.text = ""
+        clothingRecommendationsTextView.text = ""
+    }
+
+    // Function to save recommendations to SharedPreferences
+    private fun saveRecommendations(recommendations: Recommendations, lastUpdated: String) {
+        val sharedPrefs = requireContext().getSharedPreferences("recommendations", Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            putString("current_weather", recommendations.currentWeather)
+            putString("activities", recommendations.activities)
+            putString("clothing", recommendations.clothing)
+            putString("last_updated", lastUpdated)
+            apply()
         }
     }
 
-    // Gathering weather recommendations by giving the temp, weather code and isday method using the
-    // getActivities,and getClothingRecommendation methods.
-    private fun getRecommendations(temperature: Double, weatherCode: Int, isDay: Boolean): String {
+    // Function to handle weather questions
+    private fun askWeatherQuestion() {
+        val question = questionInput.editText?.text.toString()
+        if (question.isNotEmpty()) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    // Disable button to prevent multiple requests
+                    askQuestionButton.isEnabled = false
+                    // Get AI answer in background thread
+                    val answer = withContext(Dispatchers.IO) {
+                        getAIAnswer(question)
+                    }
+                    // Update UI with the answer
+                    updateAnswerUI(answer)
+                } catch (e: Exception) {
+                    updateAnswerUI("Sorry, I couldn't generate an answer. Please try again.")
+                } finally {
+                    // Re-enable button
+                    askQuestionButton.isEnabled = true
+                }
+            }
+        }
+    }
+
+    // Function to get AI-generated answer for user's question
+    private suspend fun getAIAnswer(question: String): String {
+        // Getting weather values from the main fragment via SharedPreferences
+        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
+        val temperature = sharedPrefs.getFloat("temperature_celsius", 0f)
+        val weatherCode = sharedPrefs.getInt("weather_code", 0)
+        val currentTime = sharedPrefs.getString("current_time", null)
         val weatherType = WeatherType.fromWMO(weatherCode)
-        val activityRecommendation = getActivities(weatherCode, isDay)
-        val clothingRecommendation = getClothingRecommendations(temperature, weatherCode)
 
-        return "Current Weather: ${weatherType.weatherDesc}\n\n" +
-                "Activities to do:\n$activityRecommendation\n\n" +
-                "Clothing Recommendations:\n$clothingRecommendation"
+        // Making prompt for AI model
+        val prompt = """
+        Given the following weather conditions and time of day:
+        - Temperature: $temperature°C
+        - Weather: ${weatherType.weatherDesc}
+        - Current time: $currentTime
+
+
+        Please answer the following question about the weather:
+        $question
+        
+        Provide a concise and helpful answer, including time as a factor, Do not answer questions that do not relate to weather
+        """.trimIndent()
+
+        // Generate content using the GeminiAI model
+        val response: GenerateContentResponse = generativeModel.generateContent(prompt)
+        return response.text ?: "I'm sorry, I couldn't generate an answer."
     }
 
-    // Suggest activities based on weather code and time of day
-    private fun getActivities(weatherCode: Int, isDay: Boolean): String {
-        return when {
-
-            // Activities for clear weather.
-            weatherCode in 0..3 -> if (isDay) {
-                "1. Go for a walk or jog\n" +
-                        "2. Have a picnic in the park\n" +
-                        "3. Play outdoor sports\n" +
-                        "4. Visit an outdoor café"
-            } else {
-                "1. Stargaze\n" +
-                        "2. Take a moonlit walk\n" +
-                        "3. Visit a rooftop bar\n" +
-                        "4. Have a late-night picnic"
-            }
-            // Activities for foggy conditions
-            weatherCode in 45..48 -> {
-                "1. Visit a museum\n" +
-                        "2. Enjoy a hot drink at a cafe\n3" +
-                        ". Take atmospheric photographs\n" +
-                        "4. Explore a local art gallery"
-            }
-            // Activities for different intensities of rain
-            weatherCode in 51..67 -> {
-                "1. Watch a movie\n" +
-                        "2. Read a book\n" +
-                        "3. Visit a shopping mall\n" +
-                        "4. Take a cooking class"
-            }
-            // Activities for different intensities of snow
-            weatherCode in 71..77 -> if (isDay) {
-                "1. Build a snowman\n" +
-                        "2. Go sledding\n" +
-                        "3. Have a snowball fight\n" +
-                        "4. Try cross-country skiing"
-            } else {
-                "1. Have a cozy night in\n" +
-                        "2. Try night skiing\n" +
-                        "3. Visit a winter night festival\n" +
-                        "4. Go ice skating"
-            }
-            // Activities for thunderstorms or extreme conditions
-            else -> {
-                "1. Indoor workout\n" +
-                        "2. Start a home project\n" +
-                        "3. Have a game night\n" +
-                        "4. Practice meditation or yoga"
-            }
-        }
+    // Function to update UI with AI's answer
+    private fun updateAnswerUI(answer: String) {
+        answerTextView.text = answer
     }
 
-    // Provide clothing recommendations based on temperature and weather code
-    private fun getClothingRecommendations(temperature: Double, weatherCode: Int): String {
-        val initialRecommendation = when {
 
-            // Clothing for hot temps
-            temperature > 25 -> {
-                "1. Light, breathable clothing\n" +
-                    "2. Sun hat or cap\n" +
-                    "3. Sunglasses\n" +
-                    "4. Sunscreen"
-            }
-
-            // Clothing for normal temps
-            temperature in 15.0..25.0 -> {
-                "1. Light jacket or long-sleeved shirt\n" +
-                        "2. Comfortable pants or jeans\n" +
-                        "3. Closed-toe shoes\n" +
-                        "4. Light scarf or shawl"
-            }
-
-            // Clothing for cold temps
-            else -> {
-                "1. Warm coat or heavy jacket\n" +
-                        "2. Layered clothing (thermals, sweater)\n" +
-                        "3. Warm hat and gloves\n" +
-                        "4. Thick socks and boots"
-            }
-        }
-
-        val additionalRecommendation = when {
-
-            // Clothing for rainy conditions
-            weatherCode in 51..67 -> {
-                "\n5. Waterproof jacket or raincoat\n" +
-                        "6. Water-resistant shoes\n" +
-                        "7. Umbrella"
-            }
-            // Clothing for snow conditions
-            weatherCode in 71..77 -> {
-                "\n5. Insulated, waterproof outerwear\n" +
-                        "6. Waterproof snow boots\n" +
-                        "7. Warm, waterproof gloves"
-            }
-            else -> ""
-        }
-
-        return initialRecommendation + additionalRecommendation
-    }
 }
