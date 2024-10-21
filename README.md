@@ -1,4 +1,4 @@
-🌤️ **SkySphere - Your Personal Social Weather App.**
+# 🌤️ **SkySphere - Your Personal Social Weather App.**
 ------------------------------------------------------------------------------------------------------------------------
 
 Welcome to **SkySphere** - a weather app that is more than just a weather app. SkySphere offers more than just your basic weather data. We include social interations, AI driven suggestions regarding weather, and mandatory weather data that you need for everyday life. SkySphere offers more than just a regualr weather app, so lets see what you might see when you install SkySphere.
