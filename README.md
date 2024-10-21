@@ -4,7 +4,7 @@
 Welcome to **SkySphere** - a weather app that is more than just a weather app. SkySphere offers more than just your basic weather data. We include social interations, AI driven suggestions regarding weather, and mandatory weather data that you need for everyday life. SkySphere offers more than just a regualr weather app, so lets see what you might see when you install SkySphere.
 
 ------------------------------------------------------------------------------------------------------------------------
-☀️ **Features**
+## ☀️ **Features**
 
 •	⛈️ **Weather Data**: See any important weather data you may need to plan your day
 
@@ -26,7 +26,7 @@ Welcome to **SkySphere** - a weather app that is more than just a weather app. S
 
 ------------------------------------------------------------------------------------------------------------------------
 
-🔎 **Prerequisites**
+## 🔎 **Prerequisites**
 Make sure you have the following before using SkySphere:
 
 •	**Android Studio** 
@@ -37,7 +37,7 @@ Make sure you have the following before using SkySphere:
 
 ------------------------------------------------------------------------------------------------------------------------
 
-🔧 **Installation**
+## 🔧 **Installation**
 **Clone Repository**
 Clone the repository onto Android Studio:
 When you open Android Studio you should see a screen that says Welcome to Android Studio. From there around the top right, it should have three options at the top “New Project”, “Open”, “Get from VCS”. Click on “Get from VCS” and paste the link to the GitHub **https://github.com/Alex-Clendon/SkySphere** from there you should be able to clone the repo.
@@ -47,7 +47,7 @@ From there you are going to want to sync the project with the Gradle files. This
 
 ------------------------------------------------------------------------------------------------------------------------
 
-⭐ **How to Use**
+## ⭐ **How to Use**
 
 Allow all permissions on first launch.
 
