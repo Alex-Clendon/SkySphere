@@ -176,7 +176,7 @@ class LocationsFragment : Fragment() {
 
         // Navigation to map fragment
         val navController = findNavController()
-        binding.addLocationButton.setOnClickListener {
+        binding.addLocationCard.setOnClickListener {
             navController.navigate(R.id.nav_map)
         }
 
