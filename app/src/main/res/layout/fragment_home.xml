@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             tools:context=".ui.home.HomePageFragment"
             android:id="@+id/fragment_home"
-            android:paddingBottom="28dp">
+            android:paddingBottom="20dp">
 
             <FrameLayout
                 android:id="@+id/upperRegion"
@@ -31,18 +31,21 @@
                 android:layout_height="0dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintTop_toBottomOf="@id/tvLocation"
-                app:layout_constraintBottom_toBottomOf="@id/tvWeatherState"
-                app:layout_constraintStart_toStartOf="@id/tvTemperature"
-                app:layout_constraintEnd_toEndOf="@id/ivWeatherIcon"/>
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/tvLastUpdated"
+                app:layout_constraintBottom_toTopOf="@id/cvHourly"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:contextClickable="true"
+                android:foreground="@drawable/selectable_background_ripple"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvHourly"
                 android:layout_width="0dp"
                 android:layout_height="145dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="75dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="55dp"
                 app:cardBackgroundColor="@color/transparent_blue"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
@@ -50,11 +53,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvFeelsLikeTemperature">
 
+
+
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/temperatureChart"
                     android:layout_width="match_parent"
-                    android:layout_height="125dp"
+                    android:layout_height="135dp"
                     android:orientation="horizontal"
+                    android:layout_gravity="center"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:layout_marginTop="4dp"
@@ -62,6 +68,8 @@
                     android:clipToPadding="true"/>
 
             </androidx.cardview.widget.CardView>
+
+
 
             <TextView
                 android:id="@+id/text_home"
@@ -85,22 +93,12 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:fontFamily="@font/fira_sans_extralight"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="30dp"
                 app:layout_constraintVertical_bias="0.045" />
-
-            <TextView
-                android:id="@+id/lastRefreshTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/tvDate"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"/>
 
             <TextView
                 android:id="@+id/tvLocation"
@@ -112,34 +110,73 @@
                 android:autoSizeMinTextSize="12sp"
                 android:autoSizeMaxTextSize="24sp"
                 android:autoSizeStepGranularity="2sp"
+                android:fontFamily="@font/fira_sans_medium"
                 android:textColor="@color/white"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lastRefreshTextView"
+                android:text=""
+                app:layout_constraintStart_toEndOf="@id/currentLocationButton"
+                app:layout_constraintTop_toBottomOf="@+id/tvDate"
                 android:layout_marginTop="35dp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintVertical_bias="0.087" />
 
             <ImageView
-                android:id="@+id/ivWeatherIcon"
-                android:layout_width="75dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="15dp"
-                app:layout_constraintStart_toEndOf="@id/tvTemperature"
-                app:layout_constraintBottom_toBottomOf="@id/tvTemperature"
-                tools:src="@tools:sample/avatars" />
+                android:id="@+id/ivClock"
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_clock"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+                app:layout_constraintStart_toStartOf="@id/currentLocationButton"
+                app:layout_constraintEnd_toEndOf="@id/currentLocationButton"
+                app:tint="@color/card_white"/>
+
+            <TextView
+                android:id="@+id/tvLastUpdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+                app:layout_constraintStart_toStartOf="@id/tvLocation"
+                android:text=""
+                android:textColor="@color/white"
+                android:fontFamily="@font/fira_sans_extralight"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/weatherCodeAnimationView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                android:layout_marginTop="-5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvTemperature"
+                tools:src="@tools:sample/avatars"
+                android:layout_marginEnd="50dp"/>
 
             <TextView
                 android:id="@+id/tvTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="90sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/fira_sans_extralight"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLocation"
+                app:layout_constraintTop_toBottomOf="@+id/tvLastUpdated"
                 android:layout_marginTop="50dp"
                 android:layout_marginStart="40dp"/>
+
+            <TextView
+                android:id="@+id/tvTemperatureUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/white"
+                android:fontFamily="@font/fira_sans_medium"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/tvTemperature"
+                app:layout_constraintTop_toTopOf="@+id/tvTemperature"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:id="@+id/tvFeelsLikeTemperature"
@@ -148,8 +185,8 @@
                 android:layout_marginStart="10dp"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="25dp"
+                android:fontFamily="@font/fira_sans_medium"
+                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@+id/tvTemperature"
                 app:layout_constraintTop_toBottomOf="@+id/tvWeatherState"/>
 
@@ -158,6 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:fontFamily="@font/fira_sans_extralight"
                 android:textSize="18sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@id/tvFeelsLikeTemperature"
@@ -168,10 +206,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="12dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/locations_24"
-                app:layout_constraintEnd_toStartOf="@+id/tvLocation"
+                app:layout_constraintStart_toStartOf="@id/tvTemperature"
                 app:layout_constraintTop_toTopOf="@+id/tvLocation"
                 app:tint="@color/white" />
 
@@ -184,416 +221,67 @@
                 android:layout_marginTop="4dp"
                 app:layout_constraintStart_toEndOf="@+id/tvLocation"
                 app:layout_constraintTop_toTopOf="@+id/tvLocation"
+                android:visibility="gone"
                 app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                app:cardBackgroundColor="@color/transparent_blue"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/daily_card"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cvHourly">
+                app:layout_constraintTop_toBottomOf="@id/cvHourly"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/transparent_blue"
+                android:clickable="true"
+                android:foreground="@drawable/selectable_background_ripple">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="center_horizontal">
-
-                    <!-- Day 1 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:weightSum="5"
-                        android:paddingStart="22sp"
-                        android:paddingEnd="22sp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="50sp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3.6"
-                            android:textSize="16sp"
-                            android:text="Today"
-                            android:textColor="@color/white"/>
-
-                        <ImageView
-                            android:id="@+id/day1_icon"
-                            android:layout_width="36sp"
-                            android:layout_height="33sp"
-                            android:src="@drawable/ic_cloudy"
-                            tools:src="@tools:sample/avatars" />
-
-                        <ImageView
-                            android:layout_width="36sp"
-                            android:layout_height="33sp"
-                            android:paddingStart="5sp"
-                            android:src="@drawable/night"
-                            tools:src="@tools:sample/avatars" />
-
-                        <TextView
-                            android:id="@+id/day1_max"
-                            android:layout_width="55sp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
-                            android:text="11°"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/white"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/day1_min"
-                            android:layout_width="40sp"
-                            android:layout_height="wrap_content"
-                            android:text="2°"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/white"
-                            android:textSize="20sp" />
-
-                    </LinearLayout>
-
-            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:weightSum="5"
-                    android:paddingStart="22sp"
-                    android:paddingEnd="22sp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginHorizontal="18dp"
+                    android:layout_height="wrap_content">
 
-
-                    <TextView
-                        android:id="@+id/day2_day"
-                        android:layout_width="50sp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3.6"
-                        android:textSize="16sp"
-                        android:text="Day 2"
-                        android:textColor="@color/white"/>
-
-                    <ImageView
-                        android:id="@+id/day2_icon"
-                        android:layout_width="36sp"
-                        android:layout_height="33sp"
-                        android:src="@drawable/ic_cloudy"
-                        tools:src="@tools:sample/avatars" />
-
-                    <ImageView
-                        android:layout_width="36sp"
-                        android:layout_height="33sp"
-                        android:paddingStart="5sp"
-                        android:src="@drawable/night"
-                        tools:src="@tools:sample/avatars" />
-
-                    <TextView
-                        android:id="@+id/day2_max"
-                        android:layout_width="55sp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
-                        android:text="11°"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/day2_min"
-                        android:layout_width="40sp"
-                        android:layout_height="wrap_content"
-                        android:text="2°"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
-
-                </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/day3_day"
-                    android:layout_width="50sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
-                    android:textSize="16sp"
-                    android:text="Day 3"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:id="@+id/day3_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/day3_max"
-                    android:layout_width="55sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/day3_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/day4_day"
-                    android:layout_width="50sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
-                    android:textSize="16sp"
-                    android:text="Day 4"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:id="@+id/day4_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/day4_max"
-                    android:layout_width="55sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/day4_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/day5_day"
-                    android:layout_width="50sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
-                    android:textSize="16sp"
-                    android:text="Day 5"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:id="@+id/day5_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/day5_max"
-                    android:layout_width="55sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/day5_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/day6_day"
-                    android:layout_width="50sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
-                    android:textSize="16sp"
-                    android:text="Day 6"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:id="@+id/day6_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/day6_max"
-                    android:layout_width="55sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/day6_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:weightSum="5"
-                android:paddingStart="22sp"
-                android:paddingEnd="22sp"
-                android:layout_marginBottom="16dp">
-
-
-                <TextView
-                    android:id="@+id/day7_day"
-                    android:layout_width="50sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3.6"
-                    android:textSize="16sp"
-                    android:text="Day 7"
-                    android:textColor="@color/white"/>
-
-                <ImageView
-                    android:id="@+id/day7_icon"
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:src="@drawable/ic_cloudy"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:layout_width="36sp"
-                    android:layout_height="33sp"
-                    android:paddingStart="5sp"
-                    android:src="@drawable/night"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/day7_max"
-                    android:layout_width="55sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="11°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/day7_min"
-                    android:layout_width="40sp"
-                    android:layout_height="wrap_content"
-                    android:text="2°"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dailyRecycler"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tvMeteo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/daily_card"
+                app:layout_constraintStart_toStartOf="@id/daily_card"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="5dp"
+                android:text="Data by Open-Meteo.com"
+                android:fontFamily="@font/fira_sans_extralight"
+                android:textColor="@color/white"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tvMeteo"
+                app:layout_constraintStart_toStartOf="@id/daily_card"
+                android:layout_marginStart="5dp"
+                android:text="Animated icons by basmilius"
+                android:fontFamily="@font/fira_sans_extralight"
+                android:textColor="@color/white"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
