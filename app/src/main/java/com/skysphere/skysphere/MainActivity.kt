@@ -2,10 +2,14 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -29,6 +33,7 @@ import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -126,6 +131,27 @@ class MainActivity : AppCompatActivity() {
 
         // Check for permissions and start notification service
         checkAndRequestNotificationPermission()
+
+        // Check for calendar permission
+        checkCalendarPermissions()
+
+        viewModel.weatherResults.observe(this) { weatherResults ->
+            weatherResults?.let {
+                // After fetching the weather data, prepare to add an event to the calendar
+                val title = "Weather Update"
+                val description = "Current temperature: ${it.current?.temperature}°"
+                val startTime = System.currentTimeMillis() // Set appropriate start time
+                val endTime = startTime + 3600000 // 1 hour later
+
+                // Get the calendar ID and then add the event
+                val calendarId = getCalendarId()
+                if (calendarId != null) {
+                    addWeatherEvent(title, description, startTime, endTime, calendarId)
+                } else {
+                    Toast.makeText(this, "No calendar found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     // Function to check if the worker should be ran
@@ -161,6 +187,9 @@ class MainActivity : AppCompatActivity() {
     //Code for getting notification permissions
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 123
 
+    //Code for getting calendar permissions
+    private val CALENDAR_PERMISSIONS_REQUEST_CODE = 100
+
     //Checks to see if notification permissions are granted and start weather service if they are.
     private fun checkAndRequestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -182,6 +211,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Checks to see if calendar permissions are granted and start weather fetching and adding events to calendar if they are.
+    private fun checkCalendarPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
+                CALENDAR_PERMISSIONS_REQUEST_CODE)
+        } else {
+            // Permissions are granted, you can now call your method to get calendar ID
+            getCalendarId()
+        }
+    }
+
     // Handles the result of the permission request
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -199,6 +242,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        if (requestCode == CALENDAR_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // All permissions granted
+                getCalendarId()
+            } else {
+                // Permissions denied
+                Toast.makeText(this, "Calendar permissions are required", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     // Starts the weather service if notification permissions are granted
@@ -210,5 +262,42 @@ class MainActivity : AppCompatActivity() {
         if (isNotificationEnabled) {
             WeatherService.startWeatherMonitoring(this)
         }
+    }
+
+    private fun addWeatherEvent(title: String, description: String, startTime: Long, endTime: Long, calendarId: Long) {
+        val values = ContentValues().apply {
+            put(CalendarContract.Events.TITLE, title)
+            put(CalendarContract.Events.DESCRIPTION, description)
+            put(CalendarContract.Events.DTSTART, startTime)
+            put(CalendarContract.Events.DTEND, endTime)
+            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+            put(CalendarContract.Events.CALENDAR_ID, calendarId) // Add calendar ID here
+        }
+
+        val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+        if (uri != null) {
+            Toast.makeText(this, "Event added to calendar", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Failed to add event", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getCalendarId(): Long? {
+        val projection = arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.ACCOUNT_NAME)
+        val uri = CalendarContract.Calendars.CONTENT_URI
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val calendarIdIndex = it.getColumnIndex(CalendarContract.Calendars._ID)
+                if (calendarIdIndex != -1) {
+                    // Retrieve the calendar ID
+                    return it.getLong(calendarIdIndex)
+                } else {
+                    Log.e("CalendarProvider", "Column _ID not found")
+                }
+            }
+        }
+        return null // Return null if no calendar is found
     }
 }
