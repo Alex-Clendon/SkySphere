@@ -12,8 +12,10 @@ import com.skysphere.skysphere.R
 
 object NotificationManager {
     // Including the channel id and notification id here
-    private const val CHANNEL_ID = "severe_weather_channel"
-    private const val NOTIFICATION_ID = 1
+    private const val CHANNEL_ID = "weather_channel"
+    private const val SEVERE_WEATHER_NOTIFICATION_ID = 1
+    private const val RAIN_FORECAST_NOTIFICATION_ID = 2
+    private const val DAILY_SUMMARY_NOTIFICATION_ID = 3
 
     // Function to show a severe weather notification
     fun showSevereWeatherNotification(context: Context) {
@@ -45,6 +47,6 @@ object NotificationManager {
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(SEVERE_WEATHER_NOTIFICATION_ID, notification)
     }
 }
