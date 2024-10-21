@@ -30,7 +30,7 @@ class WeatherCheckWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
        try {
            // Initialize weather results directly from viewModel
-           val weatherResults = viewModel.getData()
+           weatherResults = viewModel.getData()
 
            // If the weather code is severe and notifications are enabled, show notification
            if (isSevereWeather(weatherResults) && isNotificationEnabled()) {
