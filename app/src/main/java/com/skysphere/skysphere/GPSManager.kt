@@ -20,7 +20,8 @@ class GPSManager(private val context: Context) {
         fun onLocationRetrieved(
             latitude: Double,
             longitude: Double,
-            addressDetails: String?
+            addressDetails: String?,
+            country: String?
         )
         fun onLocationError(error: String)
     }
@@ -62,7 +63,7 @@ class GPSManager(private val context: Context) {
                         putString("place_name", addressDetails)
                         apply()
                     }
-                    callback.onLocationRetrieved(location.latitude, location.longitude, addressDetails)
+                    callback.onLocationRetrieved(location.latitude, location.longitude, addressDetails, country)
                 }
                 else
                 {

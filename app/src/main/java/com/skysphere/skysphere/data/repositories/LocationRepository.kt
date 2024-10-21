@@ -40,8 +40,10 @@ class LocationRepository @Inject constructor(
     // Fetch all locations
     suspend fun getAllLocations(): List<LocationEntity> {
         val list = locationDao.getAllLocations()
-        Log.d("LOCATIONDEBUG", "${list}")
-        return list.sortedBy { if (it.id == 0) -1 else it.id }
+        val list2 = list.sortedBy { if (it.id == 0) -1 else it.id }
+
+        Log.d("LOCATIONDEBUG", "${list2}")
+        return list2
     }
 
     // Delete a location
@@ -53,12 +55,18 @@ class LocationRepository @Inject constructor(
         locationDao.deleteLocationByName(area)
     }
 
-    suspend fun saveCurrentLocation(area: String, country: String, latitude: Double, longitude: Double) {
-        locationDao.insertCurrentLocation(
-            area = area,
-            country = country,
-            latitude = latitude,
-            longitude = longitude
-        )
+    suspend fun saveCurrentLocation(area: String?, country: String?, latitude: Double?, longitude: Double?) {
+        // Check if any parameter is null
+        if (area != null && country != null && latitude != null && longitude != null) {
+            val locationEntity = LocationEntity(
+                id = 1,
+                area = area,
+                country = country,
+                latitude = latitude,
+                longitude = longitude
+            )
+            locationDao.insertLocation(locationEntity)
+        }
     }
+
 }

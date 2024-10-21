@@ -29,6 +29,7 @@ import android.util.Log
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,9 +51,11 @@ import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.repositories.WeatherRepository
 import com.skysphere.skysphere.data.WeatherResults
+import com.skysphere.skysphere.data.repositories.LocationRepository
 import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -70,7 +73,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     lateinit var settingsManager: SettingsManager
 
     @Inject
-    lateinit var repository: WeatherRepository
+    lateinit var locationRepository: LocationRepository
 
     private var weatherResults: WeatherResults? = null
     private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
@@ -398,9 +401,12 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
+    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?, country: String?) {
         locationTextView.text = locality ?: "Unknown Location"
         saveLocationToPrefs(latitude, longitude) // Save location to SharedPreferences
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationRepository.saveCurrentLocation(locality, country, latitude, longitude)
+        }
     }
 
     override fun onLocationError(error: String) {
