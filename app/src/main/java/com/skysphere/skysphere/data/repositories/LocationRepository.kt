@@ -44,7 +44,7 @@ class LocationRepository @Inject constructor(
     }
 
     suspend fun deleteLocation(area: String) {
-        locationDao.deleteLocationByName(area)
+        locationDao.deleteLocation(area)
     }
 
     suspend fun saveCurrentLocation(area: String?, country: String?, latitude: Double?, longitude: Double?) {

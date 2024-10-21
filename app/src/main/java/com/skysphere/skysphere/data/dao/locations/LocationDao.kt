@@ -24,10 +24,7 @@ interface LocationDao {
     suspend fun getAllLocations(): List<LocationEntity>
 
     // Delete a location by ID
-    @Delete
-    suspend fun deleteLocation(location: LocationEntity)
-
-    @Query("DELETE FROM locations WHERE area = :areaName")
-    suspend fun deleteLocationByName(areaName: String)
+    @Query("DELETE FROM locations WHERE area = :areaName AND id != 1")
+    suspend fun deleteLocation(areaName: String)
 
 }

@@ -35,6 +35,8 @@ import com.skysphere.skysphere.widgets.SkySphereWidget
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 
 @AndroidEntryPoint // This annotation enables Hilt's dependency injection in this Fragment
 class LocationsFragment : Fragment() {
@@ -83,15 +85,36 @@ class LocationsFragment : Fragment() {
             )
             Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
             updateWidget()
-            /*lifecycleScope.launch {
-                locationRepository.deleteLocation(location.area) // Delete from database
-                locationViewModel.fetchLocations() // Fetch updated list to refresh the adapter
-            }*/
         }
 
         binding.locationsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = locationsAdapter
+        }
+
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val location = locationsAdapter.getLocationAt(position)
+                lifecycleScope.launch {
+                        locationRepository.deleteLocation(location.area)
+                        locationViewModel.fetchLocations()
+                        }
+            }
+        })
+
+        itemTouchHelper.attachToRecyclerView(binding.locationsRecyclerView)
+
+        locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            locationsAdapter.updateLocations(locations)
         }
 
         // Observe locations from the ViewModel

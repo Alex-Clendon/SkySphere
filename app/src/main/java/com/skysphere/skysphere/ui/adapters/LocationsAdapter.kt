@@ -50,4 +50,8 @@ class LocationsAdapter(
         this.locationsList = locations
         notifyDataSetChanged() // Notify the adapter to refresh the view
     }
+
+    fun getLocationAt(position: Int): LocationEntity {
+        return locationsList[position]
+    }
 }

@@ -133,27 +133,8 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
                 // Updated device preferences using SettingsManager
                 viewLifecycleOwner.lifecycleScope.launch {
                     locationRepository.insertLocation(area, country, latitude, longitude)
-                    locationRepository.getAllLocations()
                 }
-                // Initiate the worker to store API data in a database
-                val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
-                    repeatInterval = 90,    // Set worker interval to 90 minutes
-                    repeatIntervalTimeUnit = TimeUnit.MINUTES,
-                ).setBackoffCriteria(
-                    backoffPolicy = BackoffPolicy.LINEAR,
-                    duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-                )
-                    .build()
-
-                val workManager = WorkManager.getInstance(requireContext())
-
-                workManager.enqueueUniquePeriodicWork(
-                    "WeatherUpdateWork",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-                Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
-                updateWidget()
+                Toast.makeText(requireContext(), "Location Added", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -173,17 +154,5 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
 
-    }
-
-    // This function will update the widget when the location is changed
-    private fun updateWidget() {
-        val applicationContext = requireContext().applicationContext
-
-        val intent = Intent(requireContext(), SkySphereWidget::class.java)
-        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-        val ids: IntArray = AppWidgetManager.getInstance(applicationContext)
-            .getAppWidgetIds(ComponentName(applicationContext, SkySphereWidget::class.java))
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-        requireContext().sendBroadcast(intent)
     }
 }
