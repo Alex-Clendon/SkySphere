@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -31,8 +30,10 @@ import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
+import com.skysphere.skysphere.data.ConversionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.Calendar
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -112,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                     auth.signOut()
                     updateNavigationMenu(false)
                     navController.navigate(R.id.nav_login)
-                    true
                     true // Indicate that the logout was handled
                 }
 
@@ -135,20 +135,64 @@ class MainActivity : AppCompatActivity() {
         // Check for calendar permission
         checkCalendarPermissions()
 
+        // Creating a preference key for weather event for calendar
+        val eventAddedKey = "event_added"
+
         viewModel.weatherResults.observe(this) { weatherResults ->
             weatherResults?.let {
-                // After fetching the weather data, prepare to add an event to the calendar
-                val title = "Weather Update"
-                val description = "Current temperature: ${it.current?.temperature}°"
-                val startTime = System.currentTimeMillis() // Set appropriate start time
-                val endTime = startTime + 3600000 // 1 hour later
+                val sharedPreferences = getSharedPreferences("weather_prefs", Context.MODE_PRIVATE)
 
-                // Get the calendar ID and then add the event
-                val calendarId = getCalendarId()
-                if (calendarId != null) {
-                    addWeatherEvent(title, description, startTime, endTime, calendarId)
-                } else {
-                    Toast.makeText(this, "No calendar found", Toast.LENGTH_SHORT).show()
+                // Check the last added date
+                val lastAddedDate = sharedPreferences.getLong("last_added_date", 0L)
+                val currentDate = System.currentTimeMillis()
+
+                // Reset the flag if it's a new day
+                if (lastAddedDate == 0L || !isSameDay(lastAddedDate, currentDate)) {
+                    with(sharedPreferences.edit()) {
+                        putBoolean(eventAddedKey, false)
+                        putLong("last_added_date", currentDate)
+                        apply()
+                    }
+                }
+
+                // Check if the event has already been added for today
+                val eventAdded = sharedPreferences.getBoolean(eventAddedKey, false)
+
+                // Get the current date
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                val startTime = calendar.timeInMillis // Start of the day
+
+                // End of the day
+                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                val endTime = calendar.timeInMillis // End of the day
+
+                // Check if the event has already been added for today
+                if (!eventAdded) {
+                    val title = "Weather for the Day"
+
+                    // Get the preferred temperature unit from SharedPreferences
+                    val preferredUnit = sharedPreferences.getString("preferred_temperature_unit", "Celsius") ?: "Celsius"
+                    // Convert the temperature
+                    val temperature = ConversionHelper.convertRoundedTemperature(it.current?.temperature, preferredUnit)
+
+                    val description = "Current temperature: ${temperature}°${if (preferredUnit == "Fahrenheit") "F" else "C"}"
+                    val calendarId = getCalendarId()
+
+                    if (calendarId != null) {
+                        addWeatherEvent(title, description, startTime, endTime, calendarId)
+
+                        // Update the flag to indicate the event has been added
+                        with(sharedPreferences.edit()) {
+                            putBoolean(eventAddedKey, true)
+                            apply()
+                        }
+                    } else {
+                        Toast.makeText(this, "No calendar found", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -163,7 +207,7 @@ class MainActivity : AppCompatActivity() {
 
         // Return true if more than 90 minutes have passed
         val result = elapsedTime >= 90 * 60 * 1000
-        Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
+        Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = $result")
         return result
     }
 
@@ -211,7 +255,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Checks to see if calendar permissions are granted and start weather fetching and adding events to calendar if they are.
+    // Checks to see if calendar permissions are granted and start weather fetching and adding events to calendar if they are.
     private fun checkCalendarPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
@@ -254,7 +298,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Starts the weather service if notification permissions are granted
-
     private fun startWeatherServiceIfEnabled() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val isNotificationEnabled =
@@ -264,6 +307,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Method for adding weather data to the calendar as an event
     private fun addWeatherEvent(title: String, description: String, startTime: Long, endTime: Long, calendarId: Long) {
         val values = ContentValues().apply {
             put(CalendarContract.Events.TITLE, title)
@@ -282,6 +326,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Method of retrieving the calendar id
     private fun getCalendarId(): Long? {
         val projection = arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.ACCOUNT_NAME)
         val uri = CalendarContract.Calendars.CONTENT_URI
@@ -299,5 +344,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return null // Return null if no calendar is found
+    }
+
+    // Helper function to check if two timestamps are on the same day
+    private fun isSameDay(time1: Long, time2: Long): Boolean {
+        val calendar1 = Calendar.getInstance().apply { timeInMillis = time1 }
+        val calendar2 = Calendar.getInstance().apply { timeInMillis = time2 }
+        return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
+                calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
     }
 }
