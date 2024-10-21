@@ -98,6 +98,11 @@ dependencies {
     testImplementation ("org.robolectric:robolectric:4.9")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
 
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
+
+
+
+
     // Coroutines dependency
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
