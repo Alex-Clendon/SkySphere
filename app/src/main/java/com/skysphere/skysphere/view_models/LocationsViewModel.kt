@@ -13,25 +13,11 @@ class LocationViewModel@Inject constructor(
     private val locationRepository: LocationRepository
 ): ViewModel() {
 
-    // Insert a new location
-    fun insertLocation(location: LocationEntity) {
-        viewModelScope.launch {
-            locationRepository.insertLocation(location)
-        }
-    }
-
     // Fetch all locations
     fun fetchLocations(callback: (List<LocationEntity>) -> Unit) {
         viewModelScope.launch {
             val locations = locationRepository.getAllLocations()
             callback(locations)
-        }
-    }
-
-    // Delete a location
-    fun deleteLocation(location: LocationEntity) {
-        viewModelScope.launch {
-            locationRepository.deleteLocation(location)
         }
     }
 }
