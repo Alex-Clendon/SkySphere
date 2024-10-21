@@ -94,6 +94,7 @@ class WeatherRepository @Inject constructor(
             // Clear previous data, as the primary key (time) was always different, so it would infinitely store lists of data
             dailyWeatherDao.clearDailyWeather()
             dailyWeatherDao.insertDailyWeather(dailyWeatherList)
+            // EVENT LOGIC HERE: CREATE NEW CLASS
         }
 
         // Store fetch time to update the last updated text in the home fragment
