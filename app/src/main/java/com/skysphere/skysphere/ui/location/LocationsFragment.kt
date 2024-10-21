@@ -15,8 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.common.api.Status
@@ -64,7 +62,7 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_locations, container, false)
+        val view = inflater.inflate(R.layout.fragment_locations_map, container, false)
         activity?.window?.navigationBarColor =
             ContextCompat.getColor(requireContext(), R.color.gradient_end)
 

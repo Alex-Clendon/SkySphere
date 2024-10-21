@@ -32,7 +32,7 @@
         android:id="@+id/nav_locations"
         android:name="com.skysphere.skysphere.ui.location.LocationsFragment"
         android:label="@string/menu_locations"
-        tools:layout="@layout/fragment_locations" />
+        tools:layout="@layout/fragment_locations_map" />
 
     <fragment
         android:id="@+id/nav_news"
