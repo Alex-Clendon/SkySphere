@@ -24,4 +24,13 @@ class LocationRepository @Inject constructor(
     suspend fun deleteLocation(location: LocationEntity) {
         locationDao.deleteLocation(location)
     }
+
+    suspend fun saveCurrentLocation() {
+        locationDao.insertCurrentLocation(
+            area = "Central Park",
+            country = "USA",
+            latitude = 40.7851,
+            longitude = -73.9683
+        )
+    }
 }
