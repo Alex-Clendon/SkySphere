@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.skysphere.skysphere.R
@@ -72,7 +75,23 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Inflate the layout using view binding
         _binding = FragmentLocationsBinding.inflate(inflater, container, false)
         gpsManager = GPSManager(requireContext())
-
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.background_white
+                )
+            )
+        ) // Action Bar Color
+        // Change default app colours
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
+        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setTitle("")
         // Initialize the RecyclerView and Adapter
         locationsAdapter = LocationsAdapter { location ->
             // Check if there is an internet connection
@@ -136,6 +155,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
                         val remainingLocation = locations.firstOrNull { it.id != location.id } // Get the remaining location
                         remainingLocation?.let {
                             settingsManager.saveLocation(it.latitude, it.longitude, it.area)
+                            Log.d("DEBUGDEBUG", "${it.area}")
                             val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
                                 repeatInterval = 90,    // Set worker interval to 90 minutes
                                 repeatIntervalTimeUnit = TimeUnit.MINUTES,

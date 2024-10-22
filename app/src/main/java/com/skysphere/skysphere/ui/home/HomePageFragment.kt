@@ -197,6 +197,9 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
         // Assign the views to variables declared above.

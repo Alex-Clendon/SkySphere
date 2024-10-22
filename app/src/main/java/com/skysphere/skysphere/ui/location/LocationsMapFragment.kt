@@ -2,6 +2,7 @@ package com.skysphere.skysphere.ui.location
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.BackoffPolicy
@@ -69,9 +71,10 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_locations_map, container, false)
-        activity?.window?.navigationBarColor =
-
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setTitle("")
 
         Places.initialize(
             requireContext(),
@@ -151,8 +154,20 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
+    private fun zoomCurrent(latitude: Double, longitude: Double) //Function to zoom in on map upon selecting a location
+    {
+        val latLng = LatLng(latitude, longitude)
+        val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng, 11f) // 13f -> zoom level
+        mGoogleMap?.animateCamera(newLatLngZoom)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mGoogleMap = googleMap
+        val location = requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
+        val currentLatitude = location.getFloat("latitude", 0f).toDouble()
+        val currentLongitude = location.getFloat("longitude", 0f).toDouble()
+
+        zoomCurrent(currentLatitude, currentLongitude)
 
     }
 }
