@@ -30,6 +30,7 @@ import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
+import com.skysphere.skysphere.calendar.CalendarManager
 import com.skysphere.skysphere.data.SettingsManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var calendarManager: CalendarManager
 
     @Inject
     lateinit var viewModel: WeatherViewModel
@@ -134,6 +136,9 @@ class MainActivity : AppCompatActivity() {
         updateNavigationMenu(false)
         updateNavigationMenu(auth.currentUser != null)
 
+        // Initialize CalendarManager
+        calendarManager = CalendarManager(this)
+
         // Check for calendar permission before accessing calendar
         checkCalendarPermissions()
 
@@ -167,7 +172,7 @@ class MainActivity : AppCompatActivity() {
                 val currentDate = System.currentTimeMillis()
 
                 // Reset the flag if it's a new day
-                if (lastAddedDate == 0L || !isSameDay(lastAddedDate, currentDate)) {
+                if (lastAddedDate == 0L || !calendarManager.isSameDay(lastAddedDate, currentDate)) {
                     with(sharedPreferences.edit()) {
                         putBoolean(eventAddedKey, false)
                         putLong("last_added_date", currentDate)
@@ -204,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                         val daymin = dailyData.roundedTemperatureMin[i]
 
                         // Add event to calendar...
-                        val description: String = if (isSameDay(calendar.timeInMillis, System.currentTimeMillis())) {
+                        val description: String = if (calendarManager.isSameDay(calendar.timeInMillis, System.currentTimeMillis())) {
                             // If it's today, include current weather
                             "Current Temperature: $temperature $unit\n" +
                                     "Expected Temperatures:\n" +
@@ -227,12 +232,12 @@ class MainActivity : AppCompatActivity() {
                         calendar.add(Calendar.DAY_OF_MONTH, 1)
                         val endTime = calendar.timeInMillis // End of the day
 
-                        val calendarId = getCalendarId()
+                        val calendarId = calendarManager.getCalendarId()
 
                         if (calendarId != null) {
-                            addWeatherEvent(title, description, startTime, endTime, calendarId)
+                            calendarManager.addWeatherEvent(title, description, startTime, endTime, calendarId)
                         } else {
-                            Toast.makeText(this, "No calendar found", Toast.LENGTH_SHORT).show()
+                            Log.e("No calendar found", "Calendar Permission was denied.")
                         }
                     } else {
                         Log.e("WeatherData", "Daily data not available or insufficient data.")
@@ -275,25 +280,30 @@ class MainActivity : AppCompatActivity() {
     // Code for getting calendar permissions
     private val CALENDAR_PERMISSIONS_REQUEST_CODE = 100
 
+    //Storing preference of calendar permission being denied
+    private val PREF_CALENDAR_PERMISSION_DENIED = "calendar_permission_denied"
+
     // Permissions request for calendar
     private fun checkCalendarPermissions() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_CALENDAR
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_CALENDAR
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
-                CALENDAR_PERMISSIONS_REQUEST_CODE
-            )
+        val sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val isCalendarPermissionDenied = sharedPreferences.getBoolean(PREF_CALENDAR_PERMISSION_DENIED, false)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+
+            if (isCalendarPermissionDenied) {
+                // User has previously denied permission, just log and show a toast
+                Log.d("CalendarPermissions", "User denied calendar permissions previously; skipping request.")
+                Toast.makeText(this, "Calendar features are disabled due to lack of permissions.", Toast.LENGTH_SHORT).show()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR),
+                    CALENDAR_PERMISSIONS_REQUEST_CODE
+                )
+            }
         } else {
-            // Permissions are granted, handle calendar operations
-            handleCalendarOperations()
+            handleCalendarOperations() // Permissions granted, handle calendar operations
         }
     }
 
@@ -331,17 +341,26 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             CALENDAR_PERMISSIONS_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                    handleCalendarOperations() // Handle calendar operations only after permission is granted
+                    handleCalendarOperations() // Permissions granted
                 } else {
-                    Toast.makeText(this, "Calendar permissions are required. Calendar events will not be added.", Toast.LENGTH_SHORT).show()
-                    // Optionally, you can disable features that require calendar access here
+                    // User denied permissions
+                    Log.d("CalendarPermissions", "User denied calendar permissions; skipping calendar operations.")
+                    Toast.makeText(this, "Calendar features are disabled due to lack of permissions.", Toast.LENGTH_SHORT).show()
+
+                    // Store that the user has denied permission
+                    val sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                    with(sharedPreferences.edit()) {
+                        putBoolean(PREF_CALENDAR_PERMISSION_DENIED, true)
+                        apply()
+                    }
                 }
             }
             NOTIFICATION_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted, start the weather service for notifications
                     startWeatherServiceIfEnabled()
                 } else {
-                    Toast.makeText(this, "Notification permission is required for notifications.", Toast.LENGTH_SHORT).show()
+                    // Permission denied, handle accordingly (e.g., show a message to the user)
                 }
             }
         }
@@ -349,10 +368,18 @@ class MainActivity : AppCompatActivity() {
 
     // Handle calendar operations after permission is granted
     private fun handleCalendarOperations() {
-        // Only attempt to get calendar events if permissions are granted
-        val currentUnit = settingsManager.getTemperatureUnit()
-        getCalendarId()
-        setupObservers(currentUnit)
+        // Check if permissions are granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            // Proceed with calendar operations
+            val currentUnit = settingsManager.getTemperatureUnit()
+            calendarManager.getCalendarId()
+            setupObservers(currentUnit)
+        } else {
+            // Log and notify user that calendar features are disabled
+            Log.d("CalendarOperations", "Calendar permissions not granted; skipping calendar operations.")
+            Toast.makeText(this, "Calendar features are disabled due to lack of permissions.", Toast.LENGTH_SHORT).show()
+            // You can also disable related UI elements here if needed
+        }
     }
 
     // Starts the weather service if notification permissions are granted
@@ -363,92 +390,5 @@ class MainActivity : AppCompatActivity() {
         if (isNotificationEnabled) {
             WeatherService.startWeatherMonitoring(this)
         }
-    }
-
-    // Method for adding weather data to the calendar as an event
-    private fun addWeatherEvent(
-        title: String,
-        description: String,
-        startTime: Long,
-        endTime: Long,
-        calendarId: Long
-    ) {
-        val existingEventId = findExistingEventId(title, startTime)
-        if (existingEventId != null) {
-            // If an existing event is found, delete it before adding a new one
-            deleteEvent(existingEventId)
-        }
-
-        val values = ContentValues().apply {
-            put(CalendarContract.Events.TITLE, title)
-            put(CalendarContract.Events.DESCRIPTION, description)
-            put(CalendarContract.Events.DTSTART, startTime)
-            put(CalendarContract.Events.DTEND, endTime)
-            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
-            put(CalendarContract.Events.CALENDAR_ID, calendarId)
-        }
-
-        val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
-        if (uri != null) {
-            Toast.makeText(this, "Event added to calendar", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Failed to add event", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // Method to delete an Event in Calendar
-    private fun deleteEvent(eventId: Long) {
-        val uri = CalendarContract.Events.CONTENT_URI.buildUpon().appendPath(eventId.toString()).build()
-        contentResolver.delete(uri, null, null)
-    }
-
-    // Method of retrieving the calendar id
-    private fun getCalendarId(): Long? {
-        val projection =
-            arrayOf(CalendarContract.Calendars._ID, CalendarContract.Calendars.ACCOUNT_NAME)
-        val uri = CalendarContract.Calendars.CONTENT_URI
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-
-        cursor?.use {
-            if (cursor != null && it.moveToFirst()) {
-                val calendarIdIndex = it.getColumnIndex(CalendarContract.Calendars._ID)
-                if (calendarIdIndex != -1) {
-                    // Retrieve the calendar ID
-                    return it.getLong(calendarIdIndex)
-                } else {
-                    Log.e("CalendarProvider", "No calendar found or query failed")
-                    return null
-                }
-            }
-        }
-        return null // Return null if no calendar is found
-    }
-
-    // Helper function to check if two timestamps are on the same day
-    private fun isSameDay(time1: Long, time2: Long): Boolean {
-        val calendar1 = Calendar.getInstance().apply { timeInMillis = time1 }
-        val calendar2 = Calendar.getInstance().apply { timeInMillis = time2 }
-        return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
-                calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
-    }
-
-    // Method to find existing events based on the title
-    private fun findExistingEventId(title: String, startTime: Long): Long? {
-        val projection = arrayOf(CalendarContract.Events._ID, CalendarContract.Events.DTSTART)
-        val selection = "${CalendarContract.Events.TITLE} = ? AND ${CalendarContract.Events.DTSTART} = ?"
-        val selectionArgs = arrayOf(title, startTime.toString())
-        val cursor = contentResolver.query(CalendarContract.Events.CONTENT_URI, projection, selection, selectionArgs, null)
-
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val eventIdIndex = it.getColumnIndex(CalendarContract.Events._ID)
-                return if (eventIdIndex != -1) {
-                    it.getLong(eventIdIndex)
-                } else {
-                    null
-                }
-            }
-        }
-        return null // Return null if no event is found
     }
 }
