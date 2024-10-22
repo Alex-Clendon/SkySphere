@@ -25,6 +25,17 @@
                 android:background="@android:color/transparent"
                 android:layout_gravity="end"
                android:layout_marginEnd="10dp"/>
+
+            <ImageButton
+                android:id="@+id/locationsButton"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_edit_location"
+                app:tint = "@color/card_white"
+                android:background="@android:color/transparent"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"/>
         </androidx.appcompat.widget.Toolbar>
 
     <include layout="@layout/content_main" />

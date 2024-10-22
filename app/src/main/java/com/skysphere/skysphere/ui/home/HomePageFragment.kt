@@ -26,7 +26,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat

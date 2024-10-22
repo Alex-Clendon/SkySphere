@@ -93,12 +93,17 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_settings)
         }
 
+        val locationsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.locationsButton)
+        locationsButton.setOnClickListener {
+            // Navigate to the settings
+            navController.navigate(R.id.nav_locations)
+        }
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
-                R.id.nav_locations,
                 R.id.nav_recommendations,
                 R.id.nav_login,
                 R.id.nav_logout,
