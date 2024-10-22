@@ -55,7 +55,7 @@ class WeatherCheckWorker @AssistedInject constructor(
            }
 
            // If the daily summary has not been sent from 7:00 - 7:59 and notification is enabled, show notification
-           val currentTime = LocalDateTime.now()
+           val currentTime = LocalDateTime.now() // 24 hr time
            if(currentTime.hour == 15 && isNotificationEnabled(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY)){
                 if(!hasDailyBeenSent){
                     NotificationManager.showDailySummaryNotification(applicationContext, weatherResults)
