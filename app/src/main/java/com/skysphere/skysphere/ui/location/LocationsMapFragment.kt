@@ -130,7 +130,7 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
                     delay(100)
                     // Swap back to the locations list fragment
                     val navController = findNavController()
-                    navController.navigate(R.id.nav_locations)
+                    navController.navigate(R.id.action_nav_locations)
                 }
 
             }

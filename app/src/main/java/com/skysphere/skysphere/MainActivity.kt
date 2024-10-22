@@ -90,13 +90,13 @@ class MainActivity : AppCompatActivity() {
         val settingsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.settingsButton)
         settingsButton.setOnClickListener {
             // Navigate to the settings
-            navController.navigate(R.id.nav_settings)
+            navController.navigate(R.id.action_nav_settings)
         }
 
         val locationsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.locationsButton)
         locationsButton.setOnClickListener {
             // Navigate to the settings
-            navController.navigate(R.id.nav_locations)
+            navController.navigate(R.id.action_nav_locations)
         }
 
         // Passing each menu ID as a set of Ids because each

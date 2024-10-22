@@ -193,7 +193,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Navigation to map fragment when add button is pressed
         val navController = findNavController()
         binding.addLocationCard.setOnClickListener {
-            navController.navigate(R.id.nav_map)
+            navController.navigate(R.id.action_nav_map)
         }
 
         return binding.root
