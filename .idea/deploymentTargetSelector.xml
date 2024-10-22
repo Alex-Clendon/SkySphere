@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testLocationEntityPropertyValues()">
+      <SelectionState runConfigName="MainActivity">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testLocationEntityCreation()">
+      <SelectionState runConfigName="CalendarManagerTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testLocationEntityAutoGenerateId()">
+      <SelectionState runConfigName="testAddWeatherEvent_createsEventInCalendar()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testLocationEntityDataEntry()">
+      <SelectionState runConfigName="testGetCalendarId_permissionDenied()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testDeleteCurrentLocation()">
+      <SelectionState runConfigName="testGetCalendarId_returnsValidId()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

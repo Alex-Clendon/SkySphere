@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.notifications.WeatherService
@@ -40,6 +41,8 @@ class SettingsFragment : Fragment() {
     // Object for severe notification preference key, needed for the notification functionality
     companion object {
         const val SEVERE_NOTIFICATION_PREFERENCE_KEY = "severe_notification_preference"
+        const val RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY = "rain_forecast_notification_preference"
+        const val DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY = "daily_summary_notification_preference"
     }
 
     // Declared the views that have been created in the XML files
@@ -80,6 +83,8 @@ class SettingsFragment : Fragment() {
         val ttsCard: CardView = view.findViewById(R.id.ttsCard)
         val visibilityCard: CardView = view.findViewById(R.id.visibilityCard)
         val severeWeatherWarningCheckBox: CheckBox = view.findViewById(R.id.severe_weather_warnings)
+        val rainForecastCheckBox: CheckBox = view.findViewById(R.id.rain_notifications)
+        val dailySummaryCheckBox: CheckBox = view.findViewById(R.id.daily_summary)
 
         // Assigning the views
         temperatureUnitTextView = view.findViewById(R.id.temp_details)
@@ -113,6 +118,10 @@ class SettingsFragment : Fragment() {
                     }
                     updateTemperatureUnitTextView()
                     viewModel.fetchWeatherData()
+
+                    // Notify MainActivity to update calendar events
+                    (activity as? MainActivity)?.updateCalendarEvents()
+
                     dialog.dismiss()
                 }
 
@@ -251,6 +260,32 @@ class SettingsFragment : Fragment() {
             dialog.show()
         }
 
+        // Determining the checked state of the rain forecast notification preference (off by default)
+        rainForecastCheckBox.isChecked =
+            settingsManager.checkNotification(RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, false)
+
+        // Setting up the listener for the rain forecast notification checkbox
+        rainForecastCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (checkNotificationPermission()) {
+                    settingsManager.saveNotificationPreference(
+                        RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, true)
+                    WeatherService.startWeatherMonitoring(requireContext())
+                } else {
+                    // Uncheck the box if permission is not granted
+                    rainForecastCheckBox.isChecked = false
+                    Toast.makeText(
+                        context,
+                        "Notification permission is required for rain forecast notifications",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                settingsManager.saveNotificationPreference(RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, false)
+                WeatherService.stopWeatherMonitoring(requireContext())
+            }
+        }
+
         // Determining the checked state of the weather warnings notification preference (off by default)
         severeWeatherWarningCheckBox.isChecked =
             settingsManager.checkNotification(SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
@@ -259,7 +294,7 @@ class SettingsFragment : Fragment() {
         severeWeatherWarningCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (checkNotificationPermission()) {
-                    settingsManager.saveNotificationPreference(true)
+                    settingsManager.saveNotificationPreference(SEVERE_NOTIFICATION_PREFERENCE_KEY, true)
                     WeatherService.startWeatherMonitoring(requireContext())
                 } else {
                     // Uncheck the box if permission is not granted
@@ -271,7 +306,33 @@ class SettingsFragment : Fragment() {
                     ).show()
                 }
             } else {
-                settingsManager.saveNotificationPreference(false)
+                settingsManager.saveNotificationPreference(SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+                WeatherService.stopWeatherMonitoring(requireContext())
+            }
+        }
+
+        // Determining the checked state of the daily summary notification preference (off by default)
+        dailySummaryCheckBox.isChecked =
+            settingsManager.checkNotification(DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
+
+        // Setting up the listener for the daily summary checkbox
+        dailySummaryCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (checkNotificationPermission()) {
+                    settingsManager.saveNotificationPreference(
+                        DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, true)
+                    WeatherService.startWeatherMonitoring(requireContext())
+                } else {
+                    // Uncheck the box if permission is not granted
+                    dailySummaryCheckBox.isChecked = false
+                    Toast.makeText(
+                        context,
+                        "Notification permission is required for daily summary notifications",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                settingsManager.saveNotificationPreference(DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
                 WeatherService.stopWeatherMonitoring(requireContext())
             }
         }

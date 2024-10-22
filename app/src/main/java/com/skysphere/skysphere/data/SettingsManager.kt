@@ -70,9 +70,9 @@ class SettingsManager @Inject constructor(
     }
 
     // Saving the preference for the severe weather warnings notification of the user
-    fun saveNotificationPreference(enabled: Boolean) {
+    fun saveNotificationPreference(key: String, enabled: Boolean,) {
         val editor = appPreferences.edit()
-        editor.putBoolean(SEVERE_NOTIFICATION_PREFERENCE_KEY, enabled)
+        editor.putBoolean(key, enabled)
         editor.apply()
     }
 

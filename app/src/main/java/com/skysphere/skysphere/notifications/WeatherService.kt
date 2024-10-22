@@ -3,7 +3,10 @@ package com.skysphere.skysphere.notifications
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -37,16 +40,20 @@ class WeatherService : Service() {
 
     // Including the onCreate function here, if notifications are enabled, start the worker
     // If they are disabled, cancel the worker if it was ever running.
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val isNotificationEnabled = settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, true)
 
-        if (isNotificationEnabled) {
+        // Check to make sure user has any type of notification selected
+        val forSevere = settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+        val forRain = settingsManager.checkNotification(SettingsFragment.RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, false)
+        val forDaily = settingsManager.checkNotification(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
+
+        if (forSevere || forRain || forDaily) {
             scheduleWeatherCheck()
         } else {
             cancelWeatherCheck()
             stopSelf()
         }
-
         return START_STICKY
     }
 
