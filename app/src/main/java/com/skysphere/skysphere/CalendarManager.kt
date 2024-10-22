@@ -7,7 +7,7 @@ import android.util.Log
 import java.util.Calendar
 import java.util.TimeZone
 
-class CalendarManager(private val context: Context) {
+open class CalendarManager(private val context: Context) {
 
     // Method to add weather data to the calendar as an event
     fun addWeatherEvent(
@@ -41,13 +41,13 @@ class CalendarManager(private val context: Context) {
     }
 
     // Method to delete an event in Calendar
-    private fun deleteEvent(eventId: Long) {
+    fun deleteEvent(eventId: Long) {
         val uri = CalendarContract.Events.CONTENT_URI.buildUpon().appendPath(eventId.toString()).build()
         context.contentResolver.delete(uri, null, null)
     }
 
     // Method to retrieve the calendar ID
-    fun getCalendarId(): Long? {
+    open fun getCalendarId(): Long? {
         return try {
             val projection = arrayOf(CalendarContract.Calendars._ID)
             val uri = CalendarContract.Calendars.CONTENT_URI
@@ -71,7 +71,7 @@ class CalendarManager(private val context: Context) {
     }
 
     // Method to find existing events based on the title and start time
-    private fun getEventsByTitleAndTime(title: String, startTime: Long, calendarId: Long): List<Long> {
+    fun getEventsByTitleAndTime(title: String, startTime: Long, calendarId: Long): List<Long> {
         val eventIds = mutableListOf<Long>()
 
         val projection = arrayOf(CalendarContract.Events._ID)
