@@ -56,7 +56,6 @@ class GPSManager(private val context: Context) {
                         // String Falls back to the next option if the current one is unavailable.
                     val addressDetails = sublocality ?: locality ?: adminArea ?: country ?: "Unknown Location"
                     callback.onLocationRetrieved(location.latitude, location.longitude, addressDetails, country)
-                    Log.d("CURRENTLOCATIONDEBUG", "RETRIEVED")
                 }
                 else
                 {

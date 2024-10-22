@@ -42,10 +42,12 @@ import java.util.concurrent.TimeUnit
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.skysphere.skysphere.GPSManager
+import com.skysphere.skysphere.ui.home.HomePageFragment
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
-class LocationsFragment : Fragment() {
+class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
 
     private var _binding: FragmentLocationsBinding? = null
     private val binding get() = _binding!!
@@ -61,12 +63,15 @@ class LocationsFragment : Fragment() {
     @Inject
     lateinit var settingsManager: SettingsManager
 
+    private lateinit var gpsManager: GPSManager
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout using view binding
         _binding = FragmentLocationsBinding.inflate(inflater, container, false)
+        gpsManager = GPSManager(requireContext())
 
         // Initialize the RecyclerView and Adapter
         locationsAdapter = LocationsAdapter { location ->
@@ -163,16 +168,20 @@ class LocationsFragment : Fragment() {
 
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
             locationsAdapter.updateLocations(locations)
-        }
-
-        // Observe locations from the ViewModel
-        locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
-            locationsAdapter.updateLocations(locations)
-            Log.d("LOCATIONSMODELDEBUG", "Updated locations: $locations")
+            if (locations.isEmpty()) {
+                binding.addCurrentCard.visibility = View.VISIBLE
+            } else {
+                binding.addCurrentCard.visibility = View.GONE
+                binding.addLocationCard.visibility = View.VISIBLE
+            }
         }
 
         // Fetch locations when the fragment is created
         locationViewModel.fetchLocations()
+
+        binding.addCurrentCard.setOnClickListener {
+            gpsManager.getCurrentLocation(this)
+        }
 
         // Navigation to map fragment
         val navController = findNavController()
@@ -197,6 +206,22 @@ class LocationsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onLocationRetrieved(
+        latitude: Double,
+        longitude: Double,
+        addressDetails: String?,
+        country: String?
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationRepository.saveCurrentLocation(addressDetails, country, latitude, longitude)
+            locationViewModel.fetchLocations()
+        }
+    }
+
+    override fun onLocationError(error: String) {
+        Snackbar.make(binding.root, "Location Error", Snackbar.LENGTH_LONG).show()
     }
 }
 

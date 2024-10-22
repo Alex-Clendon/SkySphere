@@ -18,7 +18,8 @@
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="20dp">
+        android:layout_marginEnd="20dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/add_location_icon"
@@ -26,6 +27,27 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_add" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Add Current Button -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/add_current_card"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/card_white"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp">
+
+        <ImageView
+            android:id="@+id/ivCurrentIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_current_location" />
     </androidx.cardview.widget.CardView>
 
 
