@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -130,7 +131,11 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
                     delay(100)
                     // Swap back to the locations list fragment
                     val navController = findNavController()
-                    navController.navigate(R.id.action_nav_locations)
+                    val navOptions = navOptions {
+                        popUpTo(R.id.nav_locations) { inclusive = true }
+                    }
+                    navController.navigate(R.id.action_nav_locations, null, navOptions)
+
                 }
 
             }
