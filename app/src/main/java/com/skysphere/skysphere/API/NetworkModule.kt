@@ -3,11 +3,11 @@ package com.skysphere.skysphere.API
 import android.content.Context
 import androidx.room.Room
 import com.skysphere.skysphere.data.dao.locations.LocationDao
-import com.skysphere.skysphere.data.databases.weather.WeatherDatabase
 import com.skysphere.skysphere.data.dao.weather.CurrentWeatherDao
 import com.skysphere.skysphere.data.dao.weather.DailyWeatherDao
 import com.skysphere.skysphere.data.dao.weather.HourlyWeatherDao
 import com.skysphere.skysphere.data.databases.locations.LocationDatabase
+import com.skysphere.skysphere.data.databases.weather.WeatherDatabase
 import com.skysphere.skysphere.data.repositories.LocationRepository
 import com.skysphere.skysphere.data.repositories.WeatherRepository
 import com.skysphere.skysphere.view_models.LocationViewModel
@@ -15,9 +15,9 @@ import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 /*
       Module class for Hilt Injection, providing instances of the necessary components

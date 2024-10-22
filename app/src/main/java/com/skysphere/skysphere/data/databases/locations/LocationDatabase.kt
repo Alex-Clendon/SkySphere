@@ -6,7 +6,9 @@ import androidx.room.RoomDatabase
 import android.content.Context
 import com.skysphere.skysphere.data.dao.locations.LocationDao
 import com.skysphere.skysphere.data.entities.locations.LocationEntity
-
+/*
+    Database class for the locations table
+ */
 @Database(entities = [LocationEntity::class], version = 1)
 abstract class LocationDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao

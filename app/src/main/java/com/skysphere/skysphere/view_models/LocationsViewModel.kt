@@ -10,7 +10,9 @@ import com.skysphere.skysphere.data.repositories.LocationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+/*
+    Shared ViewModel to retrieve stored location data
+ */
 @HiltViewModel
 class LocationViewModel @Inject constructor(
     private val locationRepository: LocationRepository

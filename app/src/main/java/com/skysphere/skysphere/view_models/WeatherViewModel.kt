@@ -5,12 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.skysphere.skysphere.data.repositories.WeatherRepository
 import com.skysphere.skysphere.data.WeatherResults
+import com.skysphere.skysphere.data.repositories.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 /*
     Shared View Model that shares live data to the fragments
  */

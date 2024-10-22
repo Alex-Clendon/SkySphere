@@ -65,7 +65,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
-class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefreshLayout.OnRefreshListener {
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback,
+    SwipeRefreshLayout.OnRefreshListener {
 
     /*
         Inject Hilt components
@@ -264,6 +265,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
             textToSpeechDialog()
         }
 
+        // Update the current location of the device
         getLocation()
 
         return view
@@ -315,13 +317,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
     private fun refreshWeather() {
 
-        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetworkInfo
         val isConnected = activeNetwork?.isConnectedOrConnecting == true
 
         if (!isConnected) {
             // Show a Snackbar if there is no internet connection
-            view?.let { Snackbar.make(it, "Network Unavailable", Snackbar.LENGTH_LONG).show() }
+            view?.let { Snackbar.make(it, "Network Unavailable", Snackbar.LENGTH_SHORT).show() }
         }
 
         val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
@@ -427,8 +430,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
 
-    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?, country: String?) {
+    override fun onLocationRetrieved(
+        latitude: Double,
+        longitude: Double,
+        locality: String?,
+        country: String?
+    ) {
         viewLifecycleOwner.lifecycleScope.launch {
+            // Insert current location into local database
             locationRepository.saveCurrentLocation(locality, country, latitude, longitude)
         }
     }

@@ -1,10 +1,10 @@
 package com.skysphere.skysphere.API
 
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlinx.serialization.json.Json
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import okhttp3.MediaType.Companion.toMediaType
 
 object RetrofitInstance {
     private const val BASE_URL = "https://api.open-meteo.com/"

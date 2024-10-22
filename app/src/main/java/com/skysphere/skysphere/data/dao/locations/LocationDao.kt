@@ -9,7 +9,7 @@ import com.skysphere.skysphere.data.entities.locations.LocationEntity
 import com.skysphere.skysphere.data.entities.weather.CurrentWeatherEntity
 
 /*
-    DAO class to perform data queries on the local database
+    DAO class to perform data queries on the local locations database
  */
 @Dao
 interface LocationDao {

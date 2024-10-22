@@ -7,21 +7,21 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ToggleButton
-import androidx.fragment.app.Fragment
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.GenerateContentResponse
-import com.skysphere.skysphere.API.WeatherType
-import com.skysphere.skysphere.R
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.android.material.textfield.TextInputLayout
+import com.skysphere.skysphere.API.WeatherType
+import com.skysphere.skysphere.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recommendations) {
 

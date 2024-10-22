@@ -8,45 +8,37 @@ import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.skysphere.skysphere.R
-import com.skysphere.skysphere.databinding.FragmentLocationsBinding
-import com.skysphere.skysphere.ui.adapters.LocationsAdapter
-import com.skysphere.skysphere.ui.adapters.NewsAdapter
-import com.skysphere.skysphere.view_models.LocationViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.material.snackbar.Snackbar
+import com.skysphere.skysphere.GPSManager
+import com.skysphere.skysphere.R
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.repositories.LocationRepository
-import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
+import com.skysphere.skysphere.databinding.FragmentLocationsBinding
+import com.skysphere.skysphere.ui.adapters.LocationsAdapter
+import com.skysphere.skysphere.view_models.LocationViewModel
 import com.skysphere.skysphere.widgets.SkySphereWidget
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.skysphere.skysphere.GPSManager
-import com.skysphere.skysphere.ui.home.HomePageFragment
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
@@ -56,7 +48,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
     private val binding get() = _binding!!
     private lateinit var locationsAdapter: LocationsAdapter
 
-    // Use Hilt to inject the ViewModel
+    // Use Hilt to inject data
     @Inject
     lateinit var locationViewModel: LocationViewModel
 
@@ -76,6 +68,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         _binding = FragmentLocationsBinding.inflate(inflater, container, false)
         gpsManager = GPSManager(requireContext())
 
+        // Set the UI colours to white to match the background
         updateColours()
 
         // Initialize the RecyclerView and Adapter
@@ -87,11 +80,12 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
 
             if (!isConnected) {
                 // Show a Snackbar if there is no internet connection
-                Snackbar.make(binding.root, "Network Unavailable", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, "Network Unavailable", Snackbar.LENGTH_SHORT).show()
             } else {
-                // Handle the on-click action if internet is available
+                // Save location to shared preferences to update the API call
                 settingsManager.saveLocation(location.latitude, location.longitude, location.area)
 
+                // Enqueue a new worker to make a new API call and store it
                 val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
                     repeatInterval = 90,    // Set worker interval to 90 minutes
                     repeatIntervalTimeUnit = TimeUnit.MINUTES,
@@ -109,7 +103,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
                     workRequest
                 )
 
-                Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Location Updated", Snackbar.LENGTH_SHORT).show()
                 updateWidget()
             }
         }
@@ -120,7 +114,9 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
             adapter = locationsAdapter
         }
 
+        // Create an itemTouchHelper to handle swiping gesture on card
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -129,19 +125,22 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
                 return false
             }
 
+            // Logic for when card is swoped
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val location = locationsAdapter.getLocationAt(position)
                 lifecycleScope.launch {
                     val locations = locationRepository.getAllLocations() // Fetch current list of locations
 
+                    // If the current location is being used to display the data
                     if (settingsManager.getCustomLocation() == location.area) {
-                        // If there are exactly 2 locations, delete the swiped one and update settings with the remaining location
+                        // Delete the swiped location (current location wont delete because of the delete function handling)
                         locationRepository.deleteLocation(location.area)
-                        val remainingLocation = locations.firstOrNull { it.id != location.id } // Get the remaining location
+                        // Get the remaining location
+                        val remainingLocation = locations.firstOrNull { it.id != location.id }
                         remainingLocation?.let {
+                            // Save the remaining location and make a fresh API call for it
                             settingsManager.saveLocation(it.latitude, it.longitude, it.area)
-                            Log.d("DEBUGDEBUG", "${it.area}")
                             val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
                                 repeatInterval = 90,    // Set worker interval to 90 minutes
                                 repeatIntervalTimeUnit = TimeUnit.MINUTES,
@@ -160,7 +159,8 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
                             )
 
                         }
-                        locationViewModel.fetchLocations() // Refresh the list of locations
+                        // Refresh the list of locations
+                        locationViewModel.fetchLocations()
                     } else {
                         // Otherwise, delete the location normally
                         locationRepository.deleteLocation(location.area)
@@ -172,6 +172,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
 
         itemTouchHelper.attachToRecyclerView(binding.locationsRecyclerView)
 
+        // If current location is null, show button to add it to cards. If not, show the regular add button
         locationViewModel.locations.observe(viewLifecycleOwner) { locations ->
             locationsAdapter.updateLocations(locations)
             if (locations.isEmpty()) {
@@ -189,7 +190,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
             gpsManager.getCurrentLocation(this)
         }
 
-        // Navigation to map fragment
+        // Navigation to map fragment when add button is pressed
         val navController = findNavController()
         binding.addLocationCard.setOnClickListener {
             navController.navigate(R.id.nav_map)
@@ -198,6 +199,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         return binding.root
     }
 
+    // Function to update the UI Colours
     private fun updateColours() {
         activity?.window?.navigationBarColor =
             ContextCompat.getColor(requireContext(), R.color.background_white)
@@ -234,6 +236,7 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         _binding = null
     }
 
+    // Update location preferences to update the API call when gpsManager is successful
     override fun onLocationRetrieved(
         latitude: Double,
         longitude: Double,

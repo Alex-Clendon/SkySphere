@@ -5,7 +5,6 @@ package com.skysphere.skysphere.data
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.google.android.gms.maps.model.LatLng
 import com.skysphere.skysphere.ui.settings.SettingsFragment.Companion.SEVERE_NOTIFICATION_PREFERENCE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

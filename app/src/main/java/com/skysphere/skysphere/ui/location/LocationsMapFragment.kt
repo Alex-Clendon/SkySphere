@@ -1,55 +1,41 @@
 package com.skysphere.skysphere.ui.location
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.work.BackoffPolicy
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.view_models.WeatherViewModel
-import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.repositories.LocationRepository
-import com.skysphere.skysphere.widgets.SkySphereWidget
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.O)
 class LocationsMapFragment : Fragment(), OnMapReadyCallback {
 
-    // Initialize necessary variables
+    // Inject necessary variables
     @Inject
     lateinit var locationRepository: LocationRepository
 
@@ -98,7 +84,9 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
             }
 
             override fun onPlaceSelected(place: Place) {
+
                 selectedLatLng = place.latLng
+                // Retrieve locations latitude and longitude
                 latitude = selectedLatLng.latitude ?: 0.0
                 longitude = selectedLatLng.longitude ?: 0.0
 
@@ -135,10 +123,12 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
 
         setLocationButton.setOnClickListener {
             selectedLatLng?.let { latLng ->
-                // Updated device preferences using SettingsManager
+                // Insert the location into the database using a coroutine
                 viewLifecycleOwner.lifecycleScope.launch {
                     locationRepository.insertLocation(area, country, latitude, longitude)
+                    // Provide a small delay so table has time to update
                     delay(100)
+                    // Swap back to the locations list fragment
                     val navController = findNavController()
                     navController.navigate(R.id.nav_locations)
                 }
@@ -159,7 +149,7 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap?.animateCamera(newLatLngZoom)
     }
 
-    private fun zoomCurrent(latitude: Double, longitude: Double) //Function to zoom in on map upon selecting a location
+    private fun zoomCurrent(latitude: Double, longitude: Double) //Function to zoom in on map upon fragment start
     {
         val latLng = LatLng(latitude, longitude)
         val newLatLngZoom = CameraUpdateFactory.newLatLngZoom(latLng, 11f) // 13f -> zoom level

@@ -14,7 +14,7 @@ import com.skysphere.skysphere.data.entities.locations.LocationEntity
 class LocationsAdapter(
     private var locationsList: List<LocationEntity> = emptyList(),
     private val onItemClicked: (LocationEntity) -> Unit
-): RecyclerView.Adapter<LocationsAdapter.LocationsViewHolder>() {
+) : RecyclerView.Adapter<LocationsAdapter.LocationsViewHolder>() {
 
 
     inner class LocationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
