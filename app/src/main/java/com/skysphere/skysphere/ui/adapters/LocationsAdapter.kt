@@ -21,10 +21,16 @@ class LocationsAdapter(
 
         private val areaTextView: TextView = itemView.findViewById(R.id.tvArea)
         private val countryTextView: TextView = itemView.findViewById(R.id.tvCountry)
+        private val currentTextView: TextView = itemView.findViewById(R.id.tvCurrentLocation)
 
         // Bind location data to the view
         fun bind(location: LocationEntity) {
+            if(position == 0)
+            {
+                currentTextView.visibility = View.VISIBLE
+            }
             areaTextView.text = location.area
+
             countryTextView.text = location.country
 
             itemView.setOnClickListener {
