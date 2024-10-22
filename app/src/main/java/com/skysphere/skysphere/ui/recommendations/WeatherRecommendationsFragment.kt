@@ -177,11 +177,25 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         - Current time: $currentTime
         - User preference: $preference (indoor, outdoor, or both)
 
-        Please provide:
-        1. A brief description of the current weather.
-        2. Three activity recommendations.
-        3. Three clothing recommendations.
-        """.trimIndent()
+       Please provide:
+        1. A brief description of the current weather, incorporating the provided weather description.
+        2. Three unique activity recommendations suitable for these conditions(temperature, weather, current time) and the user's preference.
+        3. Three clothing recommendations appropriate for this weather and the recommended activities.
+        Format your response as follows:
+        
+        Current Weather: [Brief description incorporating ${weatherText}]
+        
+        Activity Recommendations:
+        1. [Activity 1]
+        2. [Activity 2]
+        3. [Activity 3]
+        
+        Clothing Recommendations:
+        1. [Clothing item 1]
+        2. [Clothing item 2]
+        3. [Clothing item 3]
+        
+    """.trimIndent()
 
         val response: GenerateContentResponse = generativeModel.generateContent(prompt)
         val content = response.text ?: throw Exception("Unable to generate recommendations")
@@ -248,13 +262,16 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         val currentTime = weatherResults?.current?.time
 
         val prompt = """
-        Given the following weather conditions:
+        Given the following weather conditions and current time:
         - Temperature: $temperature°C
         - Weather: ${weatherText}
         - Current time: $currentTime
 
         Please answer the following weather-related question:
         $question
+        
+        Provide a concise and helpful answer, including time as a factor, Do not answer questions that do not relate to weather
+        
         """.trimIndent()
 
         val response: GenerateContentResponse = generativeModel.generateContent(prompt)
