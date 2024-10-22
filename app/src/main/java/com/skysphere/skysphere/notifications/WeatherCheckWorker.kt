@@ -30,6 +30,7 @@ class WeatherCheckWorker @AssistedInject constructor(
 
 
     private var lastRainForecastTimestamp = LocalDateTime.now()
+    private var hasDailyBeenSent = false
 
 
 
@@ -53,6 +54,16 @@ class WeatherCheckWorker @AssistedInject constructor(
                NotificationManager.showRainForecastNotification(applicationContext, rainForecast)
            }
 
+           // If the daily summary has not been sent from 7:00 - 7:59 and notification is enabled, show notification
+           val currentTime = LocalDateTime.now()
+           if(currentTime.hour == 15 && isNotificationEnabled(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY)){
+                if(!hasDailyBeenSent){
+                    NotificationManager.showDailySummaryNotification(applicationContext, weatherResults)
+                    hasDailyBeenSent = true
+                }
+           }
+
+
 
             Result.success()
         } catch (e: Exception) {
@@ -62,7 +73,7 @@ class WeatherCheckWorker @AssistedInject constructor(
 
     // Make sure that the notifications are enabled from settings.
     private fun isNotificationEnabled(key: String): Boolean {
-        return settingsManager.checkNotification(key, true)
+        return settingsManager.checkNotification(key, false)
     }
 
 
@@ -73,7 +84,7 @@ class WeatherCheckWorker @AssistedInject constructor(
         val severeWeatherCodes = listOf(95, 96, 99) // Thunderstorm codes
         return weatherData?.current?.weatherCode in severeWeatherCodes
         */
-        return weatherData?.current?.weatherCode in listOf(95, 96, 99)
+        return weatherData?.current?.weatherCode in listOf(0, 1, 2, 3)
 
     }
 

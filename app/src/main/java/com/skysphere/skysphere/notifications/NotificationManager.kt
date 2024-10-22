@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
+import com.skysphere.skysphere.data.weather.WeatherResults
 
 object NotificationManager {
     // Including the channel id and notification id here
@@ -83,6 +84,45 @@ object NotificationManager {
             .build()
 
         notificationManager.notify(RAIN_FORECAST_NOTIFICATION_ID, notification)
+    }
+
+    fun showDailySummaryNotification(context: Context, weatherResults: WeatherResults?) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Create the notification channel for daily notifications
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "Daily Weather Summary",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Create the intent for the severe weather notification
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        // Build and show the severe weather notification
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle("Daily Weather Summary")
+            .setContentText("Expand to view.")
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText("Current temperature is ${weatherResults?.current?.temperature}, " +
+                        "feels like ${weatherResults?.current?.apparentTemperature}. " +
+                        "High today is ${weatherResults?.daily?.temperatureMax?.get(0)}, " +
+                        "Low today is ${weatherResults?.daily?.temperatureMax?.get(0)}. " +
+                        "Conditions today will be mostly ${WeatherType.fromWMO(weatherResults?.daily?.weatherCode?.get(0)).weatherDesc}. " +
+                        "Tap for more information "))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(DAILY_SUMMARY_NOTIFICATION_ID, notification)
     }
 
 }

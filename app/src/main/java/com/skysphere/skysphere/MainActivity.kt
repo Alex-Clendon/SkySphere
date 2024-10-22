@@ -2,6 +2,7 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,7 @@ import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
+import com.skysphere.skysphere.data.SettingsManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -44,6 +46,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: WeatherViewModel
+
+    @Inject
+    lateinit var settingsManager: SettingsManager
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -214,11 +219,27 @@ class MainActivity : AppCompatActivity() {
     // Starts the weather service if notification permissions are granted
 
     private fun startWeatherServiceIfEnabled() {
-        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val isNotificationEnabled =
-            sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
-        if (isNotificationEnabled) {
-            WeatherService.startWeatherMonitoring(this)
+
+        // Only start the service if it is not already running and at least 1 notification option is selected
+        if (!isServiceRunning(WeatherService::class.java)) {
+            if (settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, true) ||
+                settingsManager.checkNotification(SettingsFragment.RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, true) ||
+                settingsManager.checkNotification(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, true)) {
+                WeatherService.startWeatherMonitoring(this)
+            }
+        } else {
+            Log.d("WeatherService", "Service is already running, no need to start.")
         }
+    }
+
+    // Function to check if the WeatherService is running
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

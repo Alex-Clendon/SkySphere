@@ -41,7 +41,7 @@ class SettingsFragment : Fragment() {
     companion object {
         const val SEVERE_NOTIFICATION_PREFERENCE_KEY = "severe_notification_preference"
         const val RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY = "rain_forecast_notification_preference"
-        const val DAILY_SUMMARY_PREFERENCE_KEY = "daily_summary_notification_preference"
+        const val DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY = "daily_summary_notification_preference"
     }
 
     // Declared the views that have been created in the XML files
@@ -308,14 +308,15 @@ class SettingsFragment : Fragment() {
 
         // Determining the checked state of the daily summary notification preference (off by default)
         dailySummaryCheckBox.isChecked =
-            settingsManager.checkNotification(DAILY_SUMMARY_PREFERENCE_KEY, false)
+            settingsManager.checkNotification(DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
 
         // Setting up the listener for the daily summary checkbox
         dailySummaryCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 if (checkNotificationPermission()) {
-                    settingsManager.saveNotificationPreference(DAILY_SUMMARY_PREFERENCE_KEY, true)
-                    // TODO enable daily summary notifications
+                    settingsManager.saveNotificationPreference(
+                        DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, true)
+                    WeatherService.startWeatherMonitoring(requireContext())
                 } else {
                     // Uncheck the box if permission is not granted
                     dailySummaryCheckBox.isChecked = false
@@ -326,8 +327,8 @@ class SettingsFragment : Fragment() {
                     ).show()
                 }
             } else {
-                settingsManager.saveNotificationPreference(DAILY_SUMMARY_PREFERENCE_KEY, false)
-                // TODO disable daily summary notifications
+                settingsManager.saveNotificationPreference(DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
+                WeatherService.stopWeatherMonitoring(requireContext())
             }
         }
 

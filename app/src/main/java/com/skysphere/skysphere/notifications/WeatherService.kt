@@ -43,11 +43,12 @@ class WeatherService : Service() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        // Check to make sure user has either severe or rain notifications enabled
-        val forSevere = settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, true)
-        val forRain = settingsManager.checkNotification(SettingsFragment.RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, true)
+        // Check to make sure user has any type of notification selected
+        val forSevere = settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
+        val forRain = settingsManager.checkNotification(SettingsFragment.RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, false)
+        val forDaily = settingsManager.checkNotification(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, false)
 
-        if (forSevere || forRain) {
+        if (forSevere || forRain || forDaily) {
             scheduleWeatherCheck()
         } else {
             cancelWeatherCheck()
