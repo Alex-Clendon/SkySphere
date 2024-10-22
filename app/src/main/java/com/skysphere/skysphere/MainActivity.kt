@@ -292,9 +292,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
 
             if (isCalendarPermissionDenied) {
-                // User has previously denied permission, just log and show a toast
-                Log.d("CalendarPermissions", "User denied calendar permissions previously; skipping request.")
-                Toast.makeText(this, "Calendar features are disabled due to lack of permissions.", Toast.LENGTH_SHORT).show()
+                // User has previously denied permission, handle accordingly (e.g., show a message to the user)
             } else {
                 ActivityCompat.requestPermissions(
                     this,
