@@ -29,11 +29,12 @@ import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.calendar.CalendarManager
+import com.skysphere.skysphere.data.ConversionHelper
 import com.skysphere.skysphere.data.SettingsManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.util.Calendar
-import java.util.TimeZone
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -149,11 +150,10 @@ class MainActivity : AppCompatActivity() {
 
     // Method to update calendar events
     fun updateCalendarEvents() {
-        val currentUnit = settingsManager.getTemperatureUnit()
-        setupObservers(currentUnit)
+        setupObservers()
     }
 
-    private fun setupObservers(currentUnit: String) {
+    private fun setupObservers() {
         // Creating a preference key for weather event for calendar
         val eventAddedKey = "event_added"
 
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                // Get the current date
+                // Loop through the next 7 days
                 val calendar = Calendar.getInstance()
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
                 calendar.set(Calendar.MINUTE, 0)
@@ -186,40 +186,57 @@ class MainActivity : AppCompatActivity() {
                 calendar.set(Calendar.MILLISECOND, 0)
 
                 // Loop through the next 6 days
-                for (i in 0 until 6) {
-                    val calendar = Calendar.getInstance()
-                    calendar.add(Calendar.DAY_OF_MONTH, i) // Increment day
+                for (i in 0 until 7) {
+                    // Increment day
+                    val dayCalendar = Calendar.getInstance()
+                    dayCalendar.timeInMillis = calendar.timeInMillis
+                    dayCalendar.add(Calendar.DAY_OF_MONTH, i)
 
-                    val title = "Weather for the Day"
+                    // Get the name of the day of the week
+                    val weekDay = dayCalendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) ?: "Day"
 
-                    // Get the preferred temperature unit from SharedPreferences
-                    val temperature = if (currentUnit == "Celsius") {
-                        it.current?.roundedTemperature ?: "N/A" // Fallback
-                    } else {
-                        // Convert to Fahrenheit
-                        (it.current?.roundedTemperature?.toDouble()?.times(9/5)?.plus(32))?.toString() ?: "N/A" // Fallback
-                    }
-                    val unit = settingsManager.getTemperatureSymbol()
+                    // Title updated to include the specific day
+                    val title = "Weather for $weekDay"
+
+                    // Getting temperature from Weather Repository
+                    val temperature = it.current?.temperature
+
+                    // Convert precipitation and wind speed using the ConversionHelper
+                    val convertedTemperature = ConversionHelper.convertTemperature(temperature, settingsManager.getTemperatureUnit())
+
+                    // Format wind speed to one decimal place
+                    val formattedTemperature = String.format("%.0f", convertedTemperature ?: 0.0)
 
                     val dailyData = it.daily
-                    if (dailyData != null && dailyData.roundedTemperatureMax.size > i && dailyData.roundedTemperatureMin.size > i) {
+                    if (dailyData != null && dailyData.roundedTemperatureMax.size > i) {
                         val daymax = dailyData.roundedTemperatureMax[i]
                         val daymin = dailyData.roundedTemperatureMin[i]
+                        val precipitation = dailyData.precipitationSum[i] ?: 0.0 // Handle nulls
+                        val windSpeed = dailyData.windSpeed[i] ?: 0.0 // Handle nulls
 
-                        // Add event to calendar...
-                        val description: String = if (calendarManager.isSameDay(calendar.timeInMillis, System.currentTimeMillis())) {
-                            // If it's today, include current weather
-                            "Current Temperature: $temperature $unit\n" +
+                        // Convert precipitation and wind speed using the ConversionHelper
+                        val convertedPrecipitation = ConversionHelper.convertPrecipitation(precipitation, settingsManager.getPrecipitationUnit())
+                        val convertedWindSpeed = ConversionHelper.convertWindSpeed(windSpeed, settingsManager.getWindSpeedUnit())
+
+                        // Format wind speed to one decimal place
+                        val formattedWindSpeed = String.format("%.1f", convertedWindSpeed ?: 0.0)
+
+                        // Update the description with all relevant data
+                        val description: String = if (calendarManager.isSameDay(dayCalendar.timeInMillis, System.currentTimeMillis())) {
+                            "Current Temperature: $formattedTemperature ${settingsManager.getTemperatureSymbol()}\n" +
                                     "Expected Temperatures:\n" +
-                                    "Max: $daymax $unit & Min: $daymin $unit"
+                                    "   Max: $daymax ${settingsManager.getTemperatureSymbol()} & Min: $daymin ${settingsManager.getTemperatureSymbol()}\n" +
+                                    "Precipitation: $convertedPrecipitation mm\n" +
+                                    "Wind Speed: $formattedWindSpeed ${settingsManager.getWindSpeedUnit()}\n"
                         } else {
-                            // If it's not today, only show expected weather
                             "Expected Temperatures:\n" +
-                                    "Max: $daymax $unit & Min: $daymin $unit"
+                                    "   Max: $daymax ${settingsManager.getTemperatureSymbol()} & Min: $daymin ${settingsManager.getTemperatureSymbol()}\n" +
+                                    "Precipitation: $convertedPrecipitation mm\n" +
+                                    "Wind Speed: $formattedWindSpeed ${settingsManager.getWindSpeedUnit()}\n"
                         }
 
                         // Start of the day
-                        val startTime = calendar.apply {
+                        val startTime = dayCalendar.apply {
                             set(Calendar.HOUR_OF_DAY, 0)
                             set(Calendar.MINUTE, 0)
                             set(Calendar.SECOND, 0)
@@ -227,8 +244,8 @@ class MainActivity : AppCompatActivity() {
                         }.timeInMillis
 
                         // End of the day
-                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                        val endTime = calendar.timeInMillis // End of the day
+                        dayCalendar.add(Calendar.DAY_OF_MONTH, 1)
+                        val endTime = dayCalendar.timeInMillis // End of the day
 
                         val calendarId = calendarManager.getCalendarId()
 
@@ -367,13 +384,11 @@ class MainActivity : AppCompatActivity() {
         // Check if permissions are granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             // Proceed with calendar operations
-            val currentUnit = settingsManager.getTemperatureUnit()
             calendarManager.getCalendarId()
-            setupObservers(currentUnit)
+            setupObservers()
         } else {
             // Log and notify user that calendar features are disabled
             Log.d("CalendarOperations", "Calendar permissions not granted; skipping calendar operations.")
-            Toast.makeText(this, "Calendar features are disabled due to lack of permissions.", Toast.LENGTH_SHORT).show()
             // You can also disable related UI elements here if needed
         }
     }

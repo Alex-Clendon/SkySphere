@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.provider.CalendarContract
 import android.util.Log
-import android.widget.Toast
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -18,10 +17,10 @@ class CalendarManager(private val context: Context) {
         endTime: Long,
         calendarId: Long
     ) {
-        val existingEventId = findExistingEventId(title, startTime)
-        if (existingEventId != null) {
-            // If an existing event is found, delete it before adding a new one
-            deleteEvent(existingEventId)
+        // Check for existing events and delete them if found
+        val existingEventIds = getEventsByTitleAndTime(title, startTime, calendarId)
+        for (eventId in existingEventIds) {
+            deleteEvent(eventId)
         }
 
         val values = ContentValues().apply {
@@ -35,9 +34,9 @@ class CalendarManager(private val context: Context) {
 
         val uri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
         if (uri != null) {
-            Toast.makeText(context, "Event added to calendar", Toast.LENGTH_SHORT).show()
+            Log.d("CalendarManager", "Event added to calendar: $title")
         } else {
-            Toast.makeText(context, "Failed to add event", Toast.LENGTH_SHORT).show()
+            Log.e("CalendarManager", "Failed to add event: $title")
         }
     }
 
@@ -61,7 +60,6 @@ class CalendarManager(private val context: Context) {
                         return it.getLong(calendarIdIndex)
                     } else {
                         Log.e("CalendarProvider", "No calendar found or query failed")
-                        null
                     }
                 }
             }
@@ -72,24 +70,24 @@ class CalendarManager(private val context: Context) {
         }
     }
 
-    // Method to find existing events based on the title
-    private fun findExistingEventId(title: String, startTime: Long): Long? {
+    // Method to find existing events based on the title and start time
+    private fun getEventsByTitleAndTime(title: String, startTime: Long, calendarId: Long): List<Long> {
+        val eventIds = mutableListOf<Long>()
+
         val projection = arrayOf(CalendarContract.Events._ID)
-        val selection = "${CalendarContract.Events.TITLE} = ? AND ${CalendarContract.Events.DTSTART} = ?"
-        val selectionArgs = arrayOf(title, startTime.toString())
+        val selection = "${CalendarContract.Events.TITLE} = ? AND ${CalendarContract.Events.DTSTART} = ? AND ${CalendarContract.Events.CALENDAR_ID} = ?"
+        val selectionArgs = arrayOf(title, startTime.toString(), calendarId.toString())
         val cursor = context.contentResolver.query(CalendarContract.Events.CONTENT_URI, projection, selection, selectionArgs, null)
 
         cursor?.use {
-            if (it.moveToFirst()) {
+            while (it.moveToNext()) {
                 val eventIdIndex = it.getColumnIndex(CalendarContract.Events._ID)
-                return if (eventIdIndex != -1) {
-                    it.getLong(eventIdIndex)
-                } else {
-                    null
+                if (eventIdIndex != -1) {
+                    eventIds.add(it.getLong(eventIdIndex))
                 }
             }
         }
-        return null // Return null if no event is found
+        return eventIds // Return the list of found event IDs
     }
 
     // Helper function to check if two timestamps are on the same day
