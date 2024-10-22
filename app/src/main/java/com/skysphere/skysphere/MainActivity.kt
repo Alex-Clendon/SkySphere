@@ -2,11 +2,9 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
-import android.content.ContentValues
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
