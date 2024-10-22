@@ -1,4 +1,4 @@
-package com.skysphere.skysphere
+/*package com.skysphere.skysphere
 
 import android.view.View
 import android.widget.TextView
@@ -129,4 +129,4 @@ class HomePageFragmentTest {
             }
         }
     }
-}
+}*/

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
 import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
@@ -117,6 +118,10 @@ class SettingsFragment : Fragment() {
                     }
                     updateTemperatureUnitTextView()
                     viewModel.fetchWeatherData()
+
+                    // Notify MainActivity to update calendar events
+                    (activity as? MainActivity)?.updateCalendarEvents()
+
                     dialog.dismiss()
                 }
 
