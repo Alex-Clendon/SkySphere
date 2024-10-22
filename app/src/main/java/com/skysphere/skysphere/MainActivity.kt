@@ -86,7 +86,6 @@ class MainActivity : AppCompatActivity() {
             ) // If work has already been run within 90 minutes, do not enqueue a new job
         }
 
-
         setSupportActionBar(binding.appBarMain.toolbar)
 
         // Initialize Firebase Auth
@@ -134,9 +133,6 @@ class MainActivity : AppCompatActivity() {
         // Set login flag to false
         updateNavigationMenu(false)
         updateNavigationMenu(auth.currentUser != null)
-
-        // Initialize Firebase Auth
-        auth = FirebaseAuth.getInstance()
 
         // Check for calendar permission before accessing calendar
         checkCalendarPermissions()
@@ -195,10 +191,10 @@ class MainActivity : AppCompatActivity() {
 
                     // Get the preferred temperature unit from SharedPreferences
                     val temperature = if (currentUnit == "Celsius") {
-                        it.current?.roundedTemperature // Celsius
+                        it.current?.roundedTemperature ?: "N/A" // Fallback
                     } else {
                         // Convert to Fahrenheit
-                        (it.current?.roundedTemperature?.toDouble()?.times(9/5)?.plus(32))?.toString()
+                        (it.current?.roundedTemperature?.toDouble()?.times(9/5)?.plus(32))?.toString() ?: "N/A" // Fallback
                     }
                     val unit = settingsManager.getTemperatureSymbol()
 
@@ -276,7 +272,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Code for getting calendar permissions
+    // Code for getting calendar permissions
     private val CALENDAR_PERMISSIONS_REQUEST_CODE = 100
 
     // Permissions request for calendar
@@ -325,13 +321,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Handle calendar operations after permission is granted
-    private fun handleCalendarOperations() {
-        val currentUnit = settingsManager.getTemperatureUnit()
-        getCalendarId()
-        setupObservers(currentUnit)
-    }
-
     // Handle permission result
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -344,7 +333,8 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                     handleCalendarOperations() // Handle calendar operations only after permission is granted
                 } else {
-                    Toast.makeText(this, "Calendar permissions are required.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Calendar permissions are required. Calendar events will not be added.", Toast.LENGTH_SHORT).show()
+                    // Optionally, you can disable features that require calendar access here
                 }
             }
             NOTIFICATION_PERMISSION_REQUEST_CODE -> {
@@ -355,6 +345,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // Handle calendar operations after permission is granted
+    private fun handleCalendarOperations() {
+        // Only attempt to get calendar events if permissions are granted
+        val currentUnit = settingsManager.getTemperatureUnit()
+        getCalendarId()
+        setupObservers(currentUnit)
     }
 
     // Starts the weather service if notification permissions are granted
@@ -412,13 +410,14 @@ class MainActivity : AppCompatActivity() {
         val cursor = contentResolver.query(uri, projection, null, null, null)
 
         cursor?.use {
-            if (it.moveToFirst()) {
+            if (cursor != null && it.moveToFirst()) {
                 val calendarIdIndex = it.getColumnIndex(CalendarContract.Calendars._ID)
                 if (calendarIdIndex != -1) {
                     // Retrieve the calendar ID
                     return it.getLong(calendarIdIndex)
                 } else {
-                    Log.e("CalendarProvider", "Column _ID not found")
+                    Log.e("CalendarProvider", "No calendar found or query failed")
+                    return null
                 }
             }
         }
