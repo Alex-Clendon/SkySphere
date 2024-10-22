@@ -10,7 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.data.WeatherResults
 
 object NotificationManager {
     // Including the channel id and notification id here
