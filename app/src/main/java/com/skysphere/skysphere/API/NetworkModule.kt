@@ -2,18 +2,22 @@ package com.skysphere.skysphere.API
 
 import android.content.Context
 import androidx.room.Room
-import com.skysphere.skysphere.WeatherViewModel
-import com.skysphere.skysphere.data.WeatherDatabase
-import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.data.dao.CurrentWeatherDao
-import com.skysphere.skysphere.data.dao.DailyWeatherDao
-import com.skysphere.skysphere.data.dao.HourlyWeatherDao
+import com.skysphere.skysphere.data.dao.locations.LocationDao
+import com.skysphere.skysphere.data.dao.weather.CurrentWeatherDao
+import com.skysphere.skysphere.data.dao.weather.DailyWeatherDao
+import com.skysphere.skysphere.data.dao.weather.HourlyWeatherDao
+import com.skysphere.skysphere.data.databases.locations.LocationDatabase
+import com.skysphere.skysphere.data.databases.weather.WeatherDatabase
+import com.skysphere.skysphere.data.repositories.LocationRepository
+import com.skysphere.skysphere.data.repositories.WeatherRepository
+import com.skysphere.skysphere.view_models.LocationViewModel
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 /*
       Module class for Hilt Injection, providing instances of the necessary components
@@ -35,6 +39,14 @@ object NetworkModule {
         weatherRepository: WeatherRepository
     ): WeatherViewModel {
         return WeatherViewModel(weatherRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationViewModel(
+        locationRepository: LocationRepository
+    ): LocationViewModel {
+        return LocationViewModel(locationRepository)
     }
 
     @Provides
@@ -63,5 +75,21 @@ object NetworkModule {
     @Singleton
     fun provideDailyWeatherDao(db: WeatherDatabase): DailyWeatherDao {
         return db.dailyWeatherDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDatabase(@ApplicationContext appContext: Context): LocationDatabase {
+        return Room.databaseBuilder(
+            appContext,
+            LocationDatabase::class.java,
+            "location_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(db: LocationDatabase): LocationDao {
+        return db.locationDao()
     }
 }

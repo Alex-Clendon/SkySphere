@@ -23,4 +23,5 @@
     <color name="dark_grey">#787779</color>
     <color name="card_white">#ededf5</color>
     <color name="background_white">#faf9fe</color>
+    <color name="blue_grey">#2f303b</color>
 </resources>

@@ -24,17 +24,18 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.BackoffPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -47,20 +48,25 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.skysphere.skysphere.WeatherViewModel
+import com.google.android.material.snackbar.Snackbar
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.data.SettingsManager
-import com.skysphere.skysphere.data.WeatherRepository
-import com.skysphere.skysphere.data.weather.WeatherResults
+import com.skysphere.skysphere.data.repositories.WeatherRepository
+import com.skysphere.skysphere.data.WeatherResults
+import com.skysphere.skysphere.data.repositories.LocationRepository
 import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefreshLayout.OnRefreshListener {
+@RequiresApi(Build.VERSION_CODES.O)
+class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback,
+    SwipeRefreshLayout.OnRefreshListener {
 
     /*
         Inject Hilt components
@@ -72,7 +78,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     lateinit var settingsManager: SettingsManager
 
     @Inject
-    lateinit var repository: WeatherRepository
+    lateinit var locationRepository: LocationRepository
 
     private var weatherResults: WeatherResults? = null
     private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
@@ -193,6 +199,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        updateColours()
+
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
         // Assign the views to variables declared above.
@@ -223,7 +231,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
         // Play card view animation if required
         var isFirstOpen = settingsManager.isFirstOpened()
-        Log.d("FirstOpened", "${isFirstOpen}")
         if (!isFirstOpen) {
             fadeInCardViews(listOf(hourlyCardView, dailyCardView))
         }
@@ -258,14 +265,26 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
             textToSpeechDialog()
         }
 
-        currentLocationButton.setOnClickListener {
-            getLocation()
-            refreshWeather()
-            Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()
-        }
-
+        // Update the current location of the device
+        getLocation()
 
         return view
+    }
+
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
     }
 
     // Text for text to speech
@@ -297,6 +316,17 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
     private fun refreshWeather() {
+
+        val connectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        val isConnected = activeNetwork?.isConnectedOrConnecting == true
+
+        if (!isConnected) {
+            // Show a Snackbar if there is no internet connection
+            view?.let { Snackbar.make(it, "Network Unavailable", Snackbar.LENGTH_SHORT).show() }
+        }
+
         val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
             repeatInterval = 90,    // Set worker interval to 90 minutes
             repeatIntervalTimeUnit = TimeUnit.MINUTES,
@@ -399,10 +429,17 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         gpsManager.getCurrentLocation(this)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onLocationRetrieved(latitude: Double, longitude: Double, locality: String?) {
-        locationTextView.text = locality ?: "Unknown Location"
-        saveLocationToPrefs(latitude, longitude) // Save location to SharedPreferences
+
+    override fun onLocationRetrieved(
+        latitude: Double,
+        longitude: Double,
+        locality: String?,
+        country: String?
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            // Insert current location into local database
+            locationRepository.saveCurrentLocation(locality, country, latitude, longitude)
+        }
     }
 
     override fun onLocationError(error: String) {
@@ -424,16 +461,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
             .getAppWidgetIds(ComponentName(applicationContext, SkySphereWidget::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
         requireContext().sendBroadcast(intent)
-    }
-
-    private fun saveLocationToPrefs(latitude: Double, longitude: Double) {
-        val sharedPrefs =
-            requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
-        with(sharedPrefs.edit()) {
-            putFloat("latitude", latitude.toFloat())
-            putFloat("longitude", longitude.toFloat())
-            apply()
-        }
     }
 
     // Handles when the user grants or denies location permissions.
@@ -500,8 +527,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
     override fun onStart() {
         super.onStart()
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        updateColours()
         setData()
     }
 

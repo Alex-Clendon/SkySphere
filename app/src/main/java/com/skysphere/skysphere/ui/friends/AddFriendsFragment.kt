@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui.friends
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -47,7 +49,8 @@ class AddFriendsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_friend, container, false)
-        activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.gradient_end)
+
+        updateColours()
 
         searchBar = view.findViewById(R.id.searchBar)
         searchButton = view.findViewById(R.id.searchButton)
@@ -62,6 +65,22 @@ class AddFriendsFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
     }
 
     private fun searchUser(searchQuery: String) {

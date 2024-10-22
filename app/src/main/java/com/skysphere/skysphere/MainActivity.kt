@@ -10,27 +10,27 @@ import android.util.Log
 import android.widget.Toast
 import android.widget.ImageButton
 import androidx.annotation.RequiresApi
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.skysphere.skysphere.background.WeatherUpdateWorker
 import com.skysphere.skysphere.databinding.ActivityMainBinding
 import com.skysphere.skysphere.notifications.WeatherService
 import com.skysphere.skysphere.ui.settings.SettingsFragment
-import com.skysphere.skysphere.background.WeatherUpdateWorker
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import com.skysphere.skysphere.calendar.CalendarManager
 import com.skysphere.skysphere.data.ConversionHelper
 import com.skysphere.skysphere.data.SettingsManager
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             ) // If work has already been run within 90 minutes, do not enqueue a new job
         }
 
+
         setSupportActionBar(binding.appBarMain.toolbar)
 
         // Initialize Firebase Auth
@@ -103,7 +104,13 @@ class MainActivity : AppCompatActivity() {
         val settingsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.settingsButton)
         settingsButton.setOnClickListener {
             // Navigate to the settings
-            navController.navigate(R.id.nav_settings)
+            navController.navigate(R.id.action_nav_settings)
+        }
+
+        val locationsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.locationsButton)
+        locationsButton.setOnClickListener {
+            // Navigate to the settings
+            navController.navigate(R.id.action_nav_locations)
         }
 
         // Passing each menu ID as a set of Ids because each
@@ -111,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
-                R.id.nav_locations,
                 R.id.nav_recommendations,
                 R.id.nav_login,
                 R.id.nav_logout,
@@ -130,6 +136,7 @@ class MainActivity : AppCompatActivity() {
                     auth.signOut()
                     updateNavigationMenu(false)
                     navController.navigate(R.id.nav_login)
+                    true
                     true // Indicate that the logout was handled
                 }
 
@@ -405,6 +412,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Starts the weather service if notification permissions are granted
+
     private fun startWeatherServiceIfEnabled() {
 
         // Only start the service if it is not already running and at least 1 notification option is selected

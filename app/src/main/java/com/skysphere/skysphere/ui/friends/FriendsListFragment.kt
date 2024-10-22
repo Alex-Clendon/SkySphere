@@ -1,11 +1,13 @@
 package com.skysphere.skysphere.ui.friends
 
 import android.app.AlertDialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -44,8 +46,8 @@ class FriendsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_friends_list, container, false)
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+
+        updateColours()
 
         myFriends = view.findViewById(R.id.friendsList)
         myFriends.setHasFixedSize(true)
@@ -57,6 +59,22 @@ class FriendsListFragment : Fragment() {
         displayFriends()
 
         return view
+    }
+
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
     }
 
     private fun displayFriends() {

@@ -1,25 +1,32 @@
 package com.skysphere.skysphere.ui.recommendations
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.GenerateContentResponse
+import com.google.android.material.textfield.TextInputLayout
 import com.skysphere.skysphere.API.WeatherType
 import com.skysphere.skysphere.R
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import com.skysphere.skysphere.view_models.WeatherViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
-import java.util.*
-import android.widget.EditText
-import com.google.android.material.textfield.TextInputLayout
+import java.util.Date
+import java.util.Locale
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recommendations) {
 
     // UI components
@@ -34,15 +41,20 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
     private lateinit var askQuestionButton: Button
     private lateinit var answerTextView: TextView
 
-
     // User preference for activities (indoor, outdoor, or both)
     private var preference: String = "both"
 
     // Initialize AI model for generating recommendations
     private lateinit var generativeModel: GenerativeModel
 
+    // Inject ViewModel
+    @Inject
+    lateinit var weatherViewModel: WeatherViewModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        updateColours()
 
         // Initialize views
         currentWeatherTextView = view.findViewById(R.id.tvCurrentWeather)
@@ -67,11 +79,41 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         // Set up toggle buttons for preference
         setupToggleButtons()
 
+        // Observe ViewModel weather data
+        observeWeatherData()
+
         // Load saved recommendations
         loadSavedRecommendations()
     }
 
-    // Setting up the indoor and outdoor preference buttons
+    // Observe live data from view model
+    private fun observeWeatherData() {
+        weatherViewModel.weatherResults.observe(viewLifecycleOwner) { weatherResults ->
+            weatherResults?.let {
+                // Update UI with the latest weather data from the ViewModel
+                currentWeatherTextView.text = it.current?.weatherText
+                // You can use the weatherResults object to update other UI elements as needed
+            }
+        }
+    }
+
+    // Function to update the UI colours
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
+    }
+
     private fun setupToggleButtons() {
         toggleIndoor.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -92,7 +134,6 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         }
     }
 
-    // Function to load the saved recommendations from earlier session using sharedprefs, to save current recommendations and prevent automatically updating recommendations each time
     private fun loadSavedRecommendations() {
         val sharedPrefs = requireContext().getSharedPreferences("recommendations", Context.MODE_PRIVATE)
         currentWeatherTextView.text = sharedPrefs.getString("current_weather", "")
@@ -101,82 +142,57 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         lastUpdatedTextView.text = sharedPrefs.getString("last_updated", "")
     }
 
-    // Function to update recommendations
     private fun updateRecommendations() {
-        // Getting weather values from the main fragment via SharedPreferences
-        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
-        val temperature = sharedPrefs.getFloat("temperature_celsius", 0f)
-        val weatherCode = sharedPrefs.getInt("weather_code", 0)
-        val currentTime = sharedPrefs.getString("current_time", null)
+        // Observe weather data from the ViewModel
+        weatherViewModel.weatherResults.observe(viewLifecycleOwner) { weatherResults ->
+            if (weatherResults != null) {
+                val temperature = weatherResults.current?.roundedTemperature
+                val weatherText = weatherResults.current?.weatherText
+                val currentTime = weatherResults.current?.time
 
-        // Disable update button after clicking to prevent multiple requests
-        updateButton.isEnabled = false
+                updateButton.isEnabled = false
 
-        // Launch coroutine to perform AI request in the background
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val recommendations = withContext(Dispatchers.IO) {
-                    // Get AI recommendations on IO dispatcher
-                    getAIRecommendations(temperature, weatherCode, currentTime, preference)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        val recommendations = withContext(Dispatchers.IO) {
+                            getAIRecommendations(temperature, weatherText, currentTime, preference)
+                        }
+                        updateUI(recommendations)
+                    } catch (e: Exception) {
+                        updateUIWithError(e.message ?: "An error occurred")
+                    } finally {
+                        updateButton.isEnabled = true
+                    }
                 }
-                // Update UI with new recommendations
-                updateUI(recommendations)
-            } catch (e: Exception) {
-                updateUIWithError(e.message ?: "An error occurred")
-            } finally {
-                // Re-enable update button after process
-                updateButton.isEnabled = true
             }
         }
     }
 
-    // Function to get AI-generated recommendations based on weather conditions and user preferences
-    private suspend fun getAIRecommendations(temperature: Float, weatherCode: Int, currentTime: String?, preference: String): Recommendations {
-        // Get the weather type description from the weather code - thanks stephen
-        val weatherType = WeatherType.fromWMO(weatherCode)
 
-        // Making prompt for AI model
+    private suspend fun getAIRecommendations(temperature: Int?, weatherText: String?, currentTime: String?, preference: String): Recommendations {
         val prompt = """
         Given the following weather conditions:
         - Temperature: $temperature°C
-        - Weather: ${weatherType.weatherDesc}
+        - Weather: ${weatherText}
         - Current time: $currentTime
         - User preference: $preference (indoor, outdoor, or both)
 
         Please provide:
-        1. A brief description of the current weather, incorporating the provided weather description.
-        2. Three unique activity recommendations suitable for these conditions(temperature, weather, current time) and the user's preference.
-        3. Three clothing recommendations appropriate for this weather and the recommended activities.
+        1. A brief description of the current weather.
+        2. Three activity recommendations.
+        3. Three clothing recommendations.
+        """.trimIndent()
 
-        Format your response as follows:
-
-        Current Weather: [Brief description incorporating ${weatherType.weatherDesc}]
-
-        Activity Recommendations:
-        1. [Activity 1]
-        2. [Activity 2]
-        3. [Activity 3]
-
-        Clothing Recommendations:
-        1. [Clothing item 1]
-        2. [Clothing item 2]
-        3. [Clothing item 3]
-    """.trimIndent()
-
-        // Generate content using the GeminiAI model
         val response: GenerateContentResponse = generativeModel.generateContent(prompt)
         val content = response.text ?: throw Exception("Unable to generate recommendations")
 
-        // Parse AI response into separate sections
         val currentWeather = content.substringAfter("Current Weather:").substringBefore("Activity Recommendations:").trim()
         val activities = content.substringAfter("Activity Recommendations:").substringBefore("Clothing Recommendations:").trim()
         val clothing = content.substringAfter("Clothing Recommendations:").trim()
 
-        // Return Recommendations object with parsed data
         return Recommendations(currentWeather, activities, clothing)
     }
 
-    // Function to update the UI with new recommendations
     private fun updateUI(recommendations: Recommendations) {
         currentWeatherTextView.text = recommendations.currentWeather
         activityRecommendationsTextView.text = recommendations.activities
@@ -186,18 +202,15 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         val lastUpdatedStr = "Last updated: ${dateFormat.format(Date())}"
         lastUpdatedTextView.text = lastUpdatedStr
 
-        // Save new recommendations
         saveRecommendations(recommendations, lastUpdatedStr)
     }
 
-    // Function to update the UI in case of error
     private fun updateUIWithError(errorMessage: String) {
         currentWeatherTextView.text = "Error: $errorMessage"
         activityRecommendationsTextView.text = ""
         clothingRecommendationsTextView.text = ""
     }
 
-    // Function to save recommendations to SharedPreferences
     private fun saveRecommendations(recommendations: Recommendations, lastUpdated: String) {
         val sharedPrefs = requireContext().getSharedPreferences("recommendations", Context.MODE_PRIVATE)
         with(sharedPrefs.edit()) {
@@ -209,62 +222,46 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
         }
     }
 
-    // Function to handle weather questions
     private fun askWeatherQuestion() {
         val question = questionInput.editText?.text.toString()
         if (question.isNotEmpty()) {
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    // Disable button to prevent multiple requests
                     askQuestionButton.isEnabled = false
-                    // Get AI answer in background thread
                     val answer = withContext(Dispatchers.IO) {
                         getAIAnswer(question)
                     }
-                    // Update UI with the answer
                     updateAnswerUI(answer)
                 } catch (e: Exception) {
-                    updateAnswerUI("Sorry, I couldn't generate an answer. Please try again.")
+                    updateAnswerUI("Sorry, I couldn't generate an answer.")
                 } finally {
-                    // Re-enable button
                     askQuestionButton.isEnabled = true
                 }
             }
         }
     }
 
-    // Function to get AI-generated answer for user's question
     private suspend fun getAIAnswer(question: String): String {
-        // Getting weather values from the main fragment via SharedPreferences
-        val sharedPrefs = requireContext().getSharedPreferences("weather_data", Context.MODE_PRIVATE)
-        val temperature = sharedPrefs.getFloat("temperature_celsius", 0f)
-        val weatherCode = sharedPrefs.getInt("weather_code", 0)
-        val currentTime = sharedPrefs.getString("current_time", null)
-        val weatherType = WeatherType.fromWMO(weatherCode)
+        val weatherResults = weatherViewModel.getData()
+        val temperature = weatherResults?.current?.roundedTemperature
+        val weatherText = weatherResults?.current?.weatherText
+        val currentTime = weatherResults?.current?.time
 
-        // Making prompt for AI model
         val prompt = """
-        Given the following weather conditions and time of day:
+        Given the following weather conditions:
         - Temperature: $temperature°C
-        - Weather: ${weatherType.weatherDesc}
+        - Weather: ${weatherText}
         - Current time: $currentTime
 
-
-        Please answer the following question about the weather:
+        Please answer the following weather-related question:
         $question
-        
-        Provide a concise and helpful answer, including time as a factor, Do not answer questions that do not relate to weather
         """.trimIndent()
 
-        // Generate content using the GeminiAI model
         val response: GenerateContentResponse = generativeModel.generateContent(prompt)
         return response.text ?: "I'm sorry, I couldn't generate an answer."
     }
 
-    // Function to update UI with AI's answer
     private fun updateAnswerUI(answer: String) {
         answerTextView.text = answer
     }
-
-
 }

@@ -5,7 +5,6 @@ package com.skysphere.skysphere.data
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.google.android.gms.maps.model.LatLng
 import com.skysphere.skysphere.ui.settings.SettingsFragment.Companion.SEVERE_NOTIFICATION_PREFERENCE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -62,10 +61,10 @@ class SettingsManager @Inject constructor(
         return locationPreferences.getString("place_name", "Custom Location")
     }
 
-    fun saveLocation(latLng: LatLng, location: String?) {
+    fun saveLocation(latitude: Double, longitude: Double, location: String?) {
         val editor = locationPreferences.edit()
-        editor.putFloat("latitude", latLng.latitude.toFloat())
-        editor.putFloat("longitude", latLng.longitude.toFloat())
+        editor.putFloat("latitude", latitude.toFloat())
+        editor.putFloat("longitude", longitude.toFloat())
         editor.putString("place_name", location)
         editor.apply()
     }

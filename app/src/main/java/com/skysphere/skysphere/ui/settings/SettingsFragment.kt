@@ -19,9 +19,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.skysphere.skysphere.MainActivity
 import com.skysphere.skysphere.R
-import com.skysphere.skysphere.WeatherViewModel
 import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.notifications.WeatherService
+import com.skysphere.skysphere.view_models.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -397,16 +397,6 @@ class SettingsFragment : Fragment() {
     // Change colors back when destroyed
     override fun onDestroyView() {
         super.onDestroyView()
-        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
-        actionBar?.setBackgroundDrawable(
-            ColorDrawable(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.gradient_start
-                )
-            )
-        )
-        activity?.window?.statusBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_start) // Status Bar Color
+
     }
 }

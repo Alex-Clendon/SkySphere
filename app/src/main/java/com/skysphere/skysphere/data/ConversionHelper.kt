@@ -2,9 +2,7 @@ package com.skysphere.skysphere.data
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.transition.Visibility
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -115,13 +113,13 @@ object ConversionHelper {
 
     fun convertUV(uvIndex: Double?): String? {
         if (uvIndex != null) {
-            if (uvIndex >= 1 && uvIndex <= 2) {
+            if (uvIndex >= 0 && uvIndex <= 2.9) {
                 return "(Low)"
-            } else if (uvIndex >= 3 && uvIndex <= 5) {
+            } else if (uvIndex >= 3 && uvIndex <= 5.9) {
                 return "(Moderate)"
-            } else if (uvIndex >= 6 && uvIndex <= 7) {
+            } else if (uvIndex >= 6 && uvIndex <= 7.9) {
                 return "(High)"
-            } else if (uvIndex >= 8 && uvIndex <= 10) {
+            } else if (uvIndex >= 8 && uvIndex <= 10.9) {
                 return "(Very High)"
             } else {
                 return "(Extreme)"

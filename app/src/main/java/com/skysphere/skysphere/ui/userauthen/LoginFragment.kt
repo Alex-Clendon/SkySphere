@@ -1,5 +1,6 @@
 package com.skysphere.skysphere.ui.userauthen
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,17 @@ class LoginFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
         // Change nav bar colour to match new theme
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
         activity?.window?.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.sunset)
         // Initialize UI variables
         loginButton = view.findViewById(R.id.login_button)
