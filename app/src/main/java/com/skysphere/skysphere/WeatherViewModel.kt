@@ -29,5 +29,11 @@ private val repository: WeatherRepository
             _weatherResults.postValue(weatherResults)
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getData(): WeatherResults? {
+        return repository.getWeatherDataFromDatabase()
+    }
+
 }
 

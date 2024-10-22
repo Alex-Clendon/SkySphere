@@ -37,6 +37,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import com.airbnb.lottie.LottieAnimationView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -54,6 +56,7 @@ import com.skysphere.skysphere.ui.adapters.DailyWeatherAdapter
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -87,7 +90,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     private lateinit var lastUpdatedText: TextView
     private lateinit var textToSpeech: TextToSpeech
     private lateinit var textToSpeechBtn: ImageButton
-    private lateinit var settingsButton: ImageButton
     private lateinit var hourlyCardView: CardView
     private lateinit var dailyCardView: CardView
     private lateinit var currentLocationButton: ImageButton
@@ -190,8 +192,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
 
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
@@ -205,7 +205,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         weatherStateTextView = view.findViewById(R.id.tvWeatherState)
         homeTextView = view.findViewById(R.id.text_home)
         textToSpeechBtn = view.findViewById(R.id.ttsBtn)
-        settingsButton = view.findViewById(R.id.settingsButton)
         lastUpdatedText = view.findViewById(R.id.tvLastUpdated)
         hourlyCardView = view.findViewById(R.id.cvHourly)
         dailyCardView = view.findViewById(R.id.daily_card)
@@ -220,10 +219,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         upperRegion.setOnClickListener {
             val navController = findNavController()
             navController.navigate(R.id.action_nav_current_details)
-        }
-        settingsButton.setOnClickListener {
-            val navController = findNavController()
-            navController.navigate(R.id.action_settings)
         }
 
         // Play card view animation if required
@@ -302,18 +297,20 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     }
 
     private fun refreshWeather() {
-        val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-            .setBackoffCriteria(
-                backoffPolicy = BackoffPolicy.LINEAR,
-                duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-            )
+        val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+            repeatInterval = 90,    // Set worker interval to 90 minutes
+            repeatIntervalTimeUnit = TimeUnit.MINUTES,
+        ).setBackoffCriteria(
+            backoffPolicy = BackoffPolicy.LINEAR,
+            duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+        )
             .build()
 
         val workManager = WorkManager.getInstance(requireContext())
 
-        workManager.enqueueUniqueWork(
+        workManager.enqueueUniquePeriodicWork(
             "WeatherUpdateWork",
-            ExistingWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.REPLACE,
             workRequest
         )
         settingsManager.saveFirstOpened(false)
@@ -503,6 +500,8 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
     override fun onStart() {
         super.onStart()
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
         setData()
     }
 

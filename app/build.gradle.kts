@@ -101,6 +101,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
 
     // Coroutines
+    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
     // Hilt

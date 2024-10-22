@@ -14,8 +14,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.work.BackoffPolicy
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,6 +37,7 @@ import com.skysphere.skysphere.data.WeatherRepository
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -120,18 +123,20 @@ class LocationsFragment : Fragment(), OnMapReadyCallback {
                 // Updated device preferences using SettingsManager
                 settingsManager.saveLocation(selectedLatLng, selectedAddress)
                 // Initiate a Coroutine to store API data in a database
-                val workRequest = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-                    .setBackoffCriteria(
-                        backoffPolicy = BackoffPolicy.LINEAR,
-                        duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
-                    )
+                val workRequest = PeriodicWorkRequestBuilder<WeatherUpdateWorker>(
+                    repeatInterval = 90,    // Set worker interval to 90 minutes
+                    repeatIntervalTimeUnit = TimeUnit.MINUTES,
+                ).setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    duration = Duration.ofMinutes(15) // Retry in 15 minutes if needed
+                )
                     .build()
 
                 val workManager = WorkManager.getInstance(requireContext())
 
-                workManager.enqueueUniqueWork(
+                workManager.enqueueUniquePeriodicWork(
                     "WeatherUpdateWork",
-                    ExistingWorkPolicy.REPLACE,
+                    ExistingPeriodicWorkPolicy.REPLACE,
                     workRequest
                 )
                 Toast.makeText(requireContext(), "Location Updated", Toast.LENGTH_SHORT).show()

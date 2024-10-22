@@ -2,11 +2,13 @@ package com.skysphere.skysphere
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.widget.ImageButton
 import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -95,6 +98,14 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        // Initialize settings button
+        val settingsButton = binding.appBarMain.toolbar.findViewById<ImageButton>(R.id.settingsButton)
+        settingsButton.setOnClickListener {
+            // Navigate to the settings
+            navController.navigate(R.id.nav_settings)
+        }
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -271,7 +282,7 @@ class MainActivity : AppCompatActivity() {
 
         // Return true if more than 90 minutes have passed
         val result = elapsedTime >= 90 * 60 * 1000
-        Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = $result")
+        Log.d("WeatherWorkerTime", "Time since last call (ms): ${elapsedTime}, boolean = ${result}")
         return result
     }
 
@@ -344,7 +355,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Handle permission result
+    // Handles the result of the permission request
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -395,11 +406,27 @@ class MainActivity : AppCompatActivity() {
 
     // Starts the weather service if notification permissions are granted
     private fun startWeatherServiceIfEnabled() {
-        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val isNotificationEnabled =
-            sharedPreferences.getBoolean(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, false)
-        if (isNotificationEnabled) {
-            WeatherService.startWeatherMonitoring(this)
+
+        // Only start the service if it is not already running and at least 1 notification option is selected
+        if (!isServiceRunning(WeatherService::class.java)) {
+            if (settingsManager.checkNotification(SettingsFragment.SEVERE_NOTIFICATION_PREFERENCE_KEY, true) ||
+                settingsManager.checkNotification(SettingsFragment.RAIN_FORECAST_NOTIFICATION_PREFERENCE_KEY, true) ||
+                settingsManager.checkNotification(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY, true)) {
+                WeatherService.startWeatherMonitoring(this)
+            }
+        } else {
+            Log.d("WeatherService", "Service is already running, no need to start.")
         }
+    }
+
+    // Function to check if the WeatherService is running
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

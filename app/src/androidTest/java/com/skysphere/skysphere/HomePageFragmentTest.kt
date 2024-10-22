@@ -79,7 +79,7 @@ class HomePageFragmentTest {
         Thread.sleep(1000)
 
         // Check if the last refresh time has changed
-        onView(withId(R.id.lastRefreshTextView)).check(matches(not(withText(initialRefreshTime))))
+        onView(withId(R.id.tvLastUpdated)).check(matches(not(withText(initialRefreshTime))))
     }
 
 
@@ -95,7 +95,7 @@ class HomePageFragmentTest {
     // Helper function to get the current last refresh time
     private fun getLastRefreshTime(): String {
         var refreshTime = ""
-        onView(withId(R.id.lastRefreshTextView)).check { view, _ ->
+        onView(withId(R.id.tvLastUpdated)).check { view, _ ->
             refreshTime = (view as TextView).text.toString()
         }
         return refreshTime
