@@ -1,6 +1,7 @@
 package com.skysphere.skysphere.ui.recommendations
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -18,6 +19,8 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 
 class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recommendations) {
@@ -44,6 +47,8 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        updateColours()
+
         // Initialize views
         currentWeatherTextView = view.findViewById(R.id.tvCurrentWeather)
         activityRecommendationsTextView = view.findViewById(R.id.tvActivityRecommendations)
@@ -69,6 +74,22 @@ class WeatherRecommendationsFragment : Fragment(R.layout.fragment_weather_recomm
 
         // Load saved recommendations
         loadSavedRecommendations()
+    }
+
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
     }
 
     // Setting up the indoor and outdoor preference buttons

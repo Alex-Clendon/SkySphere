@@ -24,9 +24,11 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.speech.tts.TextToSpeech
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -196,8 +198,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        activity?.window?.statusBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        updateColours()
 
         dailyRecyclerView = view.findViewById((R.id.dailyRecycler))
 
@@ -266,6 +267,22 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         getLocation()
 
         return view
+    }
+
+    private fun updateColours() {
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_start)
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.gradient_start
+                )
+            )
+        )
     }
 
     // Text for text to speech
@@ -437,16 +454,6 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
         requireContext().sendBroadcast(intent)
     }
 
-    private fun saveLocationToPrefs(latitude: Double, longitude: Double) {
-        val sharedPrefs =
-            requireContext().getSharedPreferences("custom_location_prefs", Context.MODE_PRIVATE)
-        with(sharedPrefs.edit()) {
-            putFloat("latitude", latitude.toFloat())
-            putFloat("longitude", longitude.toFloat())
-            apply()
-        }
-    }
-
     // Handles when the user grants or denies location permissions.
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -511,8 +518,7 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback, SwipeRefresh
 
     override fun onStart() {
         super.onStart()
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.gradient_end)
+        updateColours()
         setData()
     }
 

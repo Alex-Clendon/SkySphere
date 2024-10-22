@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.work.BackoffPolicy
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -38,6 +39,7 @@ import com.skysphere.skysphere.data.SettingsManager
 import com.skysphere.skysphere.data.repositories.LocationRepository
 import com.skysphere.skysphere.widgets.SkySphereWidget
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -136,8 +138,11 @@ class LocationsMapFragment : Fragment(), OnMapReadyCallback {
                 // Updated device preferences using SettingsManager
                 viewLifecycleOwner.lifecycleScope.launch {
                     locationRepository.insertLocation(area, country, latitude, longitude)
+                    delay(100)
+                    val navController = findNavController()
+                    navController.navigate(R.id.nav_locations)
                 }
-                Toast.makeText(requireContext(), "Location Added", Toast.LENGTH_SHORT).show()
+
             }
         }
 

@@ -75,23 +75,9 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         // Inflate the layout using view binding
         _binding = FragmentLocationsBinding.inflate(inflater, container, false)
         gpsManager = GPSManager(requireContext())
-        activity?.window?.navigationBarColor =
-            ContextCompat.getColor(requireContext(), R.color.background_white)
-        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
-        actionBar?.setBackgroundDrawable(
-            ColorDrawable(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.background_white
-                )
-            )
-        ) // Action Bar Color
-        // Change default app colours
-        activity?.window?.statusBarColor =
-            ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
-        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setTitle("")
+
+        updateColours()
+
         // Initialize the RecyclerView and Adapter
         locationsAdapter = LocationsAdapter { location ->
             // Check if there is an internet connection
@@ -210,6 +196,26 @@ class LocationsFragment : Fragment(), GPSManager.GPSManagerCallback {
         }
 
         return binding.root
+    }
+
+    private fun updateColours() {
+        activity?.window?.navigationBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white)
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.background_white) // Status Bar Color
+        val actionBar = (activity as? AppCompatActivity)?.supportActionBar
+        actionBar?.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.background_white
+                )
+            )
+        )
+        // Change default app colours
+        actionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setTitle("")
     }
 
     private fun updateWidget() {
