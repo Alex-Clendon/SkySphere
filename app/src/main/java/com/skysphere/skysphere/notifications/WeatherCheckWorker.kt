@@ -31,11 +31,13 @@ class WeatherCheckWorker @AssistedInject constructor(
 
     private var lastRainForecastTimestamp = LocalDateTime.now()
     private var hasDailyBeenSent = false
-
+    private var dailySummaryTriggerTime = 7 // 7 AM
+    private var severeWeatherCodes = listOf(95, 96, 99)
+    private var rainCodes = listOf(51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82)
 
 
     private var weatherResults: WeatherResults? = null
-    // Fetch weather data and check if it's severe, sending a notification if it is
+    // Fetch weather data and check if it meets a condition to send a notification, sending one if true
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
        try {
            // Initialize weather results directly from viewModel
@@ -56,7 +58,7 @@ class WeatherCheckWorker @AssistedInject constructor(
 
            // If the daily summary has not been sent from 7:00 - 7:59 and notification is enabled, show notification
            val currentTime = LocalDateTime.now() // 24 hr time
-           if(currentTime.hour == 15 && isNotificationEnabled(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY)){
+           if(currentTime.hour == dailySummaryTriggerTime && isNotificationEnabled(SettingsFragment.DAILY_SUMMARY_NOTIFICATION_PREFERENCE_KEY)){
                 if(!hasDailyBeenSent){
                     NotificationManager.showDailySummaryNotification(applicationContext, weatherResults)
                     hasDailyBeenSent = true
@@ -80,19 +82,12 @@ class WeatherCheckWorker @AssistedInject constructor(
     // Check if the weather code is one of the severe codes.
     private fun isSevereWeather(weatherData: WeatherResults?): Boolean {
 
-        /* Production code (REVERT BACK TO THIS AFTER TESTING)
-        val severeWeatherCodes = listOf(95, 96, 99) // Thunderstorm codes
         return weatherData?.current?.weatherCode in severeWeatherCodes
-        */
-        return weatherData?.current?.weatherCode in listOf(0, 1, 2, 3)
-
     }
 
     private fun checkRainForecast(weatherData: WeatherResults?): Pair<Int?, String>? {
         val hourlyCodes = weatherData?.hourly?.weatherCode?.take(24) // 24 hours of the day
         val hourlyTimes = weatherData?.hourly?.time?.take(24) // 24 hours of the day
-
-        val rainCodes = listOf(0, 1, 2, 3) // rain codes (DUMMY VALUES FOR TESTING)
 
         // Current time in ISO 8601 format to compare against
         val currentTime = LocalDateTime.now()
