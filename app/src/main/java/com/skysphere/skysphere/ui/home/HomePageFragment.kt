@@ -27,6 +27,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -265,8 +266,14 @@ class HomePageFragment : Fragment(), GPSManager.GPSManagerCallback,
             textToSpeechDialog()
         }
 
-        // Update the current location of the device
-        getLocation()
+        val connectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetworkInfo
+        val isConnected = activeNetwork?.isConnectedOrConnecting == true
+
+        if (isConnected) {
+            getLocation()
+        }
 
         return view
     }
